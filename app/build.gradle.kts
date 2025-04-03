@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    kotlin("plugin.serialization") version "1.8.0"
 }
 
 android {
@@ -57,4 +58,10 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation("androidx.compose.material:material:1.4.3")
+    implementation(libs.androidx.appcompat)
+    implementation("androidx.navigation:navigation-compose:2.7.5")
+    implementation("com.google.ar:core:1.43.0")
+    implementation("com.gorisse.thomas.sceneform:sceneform:1.21.0")
+    implementation("com.google.mlkit:image-labeling:17.0.7")
+    implementation(libs.arsceneview)
 }

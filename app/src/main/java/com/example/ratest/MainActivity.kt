@@ -16,7 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.ratest.screens.MainScreen
+import com.example.ratest.presentation.screens.MainScreen
 import com.example.ratest.ui.theme.RAtestTheme
 import kotlinx.coroutines.delay
 

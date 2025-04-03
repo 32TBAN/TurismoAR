@@ -1,4 +1,4 @@
-package com.example.ratest.screens
+package com.example.ratest.presentation.Screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -25,7 +25,7 @@ import com.example.ratest.R
     showBackground = true
 )
 @Composable
-fun InicioScreen() {
+fun InicioScreen(onNavigate: (String) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -46,7 +46,7 @@ fun InicioScreen() {
 
         // Botones de navegación
         Button(
-            onClick = { /* Navegar a la sección de Rutas */ },
+            onClick = {  onNavigate("rutas") },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = "Explorar Rutas")
@@ -55,7 +55,7 @@ fun InicioScreen() {
         Spacer(modifier = Modifier.height(20.dp))
 
         Button(
-            onClick = { /* Navegar a la sección de Historia */ },
+            onClick = { onNavigate("historia") },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = "Conocer Historia")

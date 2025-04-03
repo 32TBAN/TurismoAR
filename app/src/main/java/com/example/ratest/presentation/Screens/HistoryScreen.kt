@@ -1,4 +1,4 @@
-package com.example.ratest.screens
+package com.example.ratest.presentation.Screens
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -7,9 +7,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
+
 @Composable
-fun RoutesScreen() {
+fun HistoryScreen() {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text(text = "Aquí se mostrarán las rutas en ARCore")
+        Text(text = "Información histórica de los centros de interés")
     }
 }
