@@ -59,4 +59,6 @@ dependencies {
 
     implementation(libs.androidx.appcompat)
     implementation(libs.arsceneview)
+    implementation("androidx.navigation:navigation-compose:2.5.0")
+    implementation("com.google.android.filament:filament-android:1.35.4")
 }
