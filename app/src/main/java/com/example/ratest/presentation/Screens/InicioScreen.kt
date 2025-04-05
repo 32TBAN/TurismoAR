@@ -19,24 +19,23 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.ratest.R
+import com.example.ratest.presentation.Navigation.HistoryScreen
+import com.example.ratest.presentation.Navigation.InicioScreen
+import com.example.ratest.presentation.Navigation.RoutesScreen
 
-@Preview(
-    showBackground = true
-)
 @Composable
-fun InicioScreen(onNavigate: (String) -> Unit) {
+fun InicioScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Título
         Text(text = "Bienvenido", style = MaterialTheme.typography.h4)
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Descripción
         Text(
             text = "Descubre las rutas turísticas, conoce la historia local y vive una experiencia única en el cantón Salcedo.",
             style = MaterialTheme.typography.body1
@@ -44,9 +43,8 @@ fun InicioScreen(onNavigate: (String) -> Unit) {
 
         Spacer(modifier = Modifier.height(40.dp))
 
-        // Botones de navegación
         Button(
-            onClick = {  onNavigate("rutas") },
+            onClick = {  navController.navigate(RoutesScreen) },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = "Explorar Rutas")
@@ -55,7 +53,7 @@ fun InicioScreen(onNavigate: (String) -> Unit) {
         Spacer(modifier = Modifier.height(20.dp))
 
         Button(
-            onClick = { onNavigate("historia") },
+            onClick = { navController.navigate(HistoryScreen) },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = "Conocer Historia")

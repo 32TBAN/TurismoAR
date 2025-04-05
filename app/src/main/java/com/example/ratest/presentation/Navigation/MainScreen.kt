@@ -12,8 +12,17 @@ import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.ui.Modifier
-import com.example.ratest.presentation.Navigation.NavGraph
-import com.example.ratest.presentation.Navigation.Screen
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
+import com.example.ratest.presentation.Navigation.HistoryScreen
+import com.example.ratest.presentation.Navigation.InicioScreen
+import com.example.ratest.presentation.Navigation.RARScreen
+import com.example.ratest.presentation.Navigation.RoutesScreen
+import com.example.ratest.presentation.Screens.ARScreen
+import com.example.ratest.presentation.Screens.HistoryScreen
+import com.example.ratest.presentation.Screens.InicioScreen
+import com.example.ratest.presentation.Screens.RoutesScreen
 
 @Composable
 fun MainScreen() {
@@ -22,30 +31,69 @@ fun MainScreen() {
     Scaffold(
         bottomBar = {
             BottomNavigation {
+                // Botón para "Rutas"
                 BottomNavigationItem(
-                    icon = { Icon(painterResource(id = R.drawable.ic_route), contentDescription = "Rutas") },
+                    icon = {
+                        Icon(
+                            painterResource(id = R.drawable.ic_route),
+                            contentDescription = "Rutas"
+                        )
+                    },
                     label = { Text("Rutas") },
-                    selected = navController.currentDestination?.route == Screen.Rutas.route,
-                    onClick = { navController.navigate(Screen.Rutas.route) }
+                    selected = navController.currentDestination?.route == "routes", // Comparar con la ruta de RoutesScreen
+                    onClick = { navController.navigate(RoutesScreen) } // Navegar a RoutesScreen
                 )
+
+                // Botón para "Inicio"
                 BottomNavigationItem(
-                    icon = { Icon(painterResource(id = R.drawable.ic_home), contentDescription = "Inicio") },
+                    icon = {
+                        Icon(
+                            painterResource(id = R.drawable.ic_home),
+                            contentDescription = "Inicio"
+                        )
+                    },
                     label = { Text("Inicio") },
-                    selected = navController.currentDestination?.route == Screen.Inicio.route,
-                    onClick = { navController.navigate(Screen.Inicio.route) }
+                    selected = navController.currentDestination?.route == "inicio", // Comparar con la ruta de InicioScreen
+                    onClick = { navController.navigate(InicioScreen) } // Navegar a InicioScreen
                 )
+
+                // Botón para "Historia"
                 BottomNavigationItem(
-                    icon = { Icon(painterResource(id = R.drawable.ic_history), contentDescription = "Historia") },
+                    icon = {
+                        Icon(
+                            painterResource(id = R.drawable.ic_history),
+                            contentDescription = "Historia"
+                        )
+                    },
                     label = { Text("Historia") },
-                    selected = navController.currentDestination?.route == Screen.Historia.route,
-                    onClick = { navController.navigate(Screen.Historia.route) }
+                    selected = navController.currentDestination?.route == "history", // Comparar con la ruta de HistoryScreen
+                    onClick = { navController.navigate(HistoryScreen) } // Navegar a HistoryScreen
                 )
             }
         }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
-            NavGraph(navController = navController)
+            NavHost(
+                navController = navController,
+                startDestination = InicioScreen // Ruta de inicio
+            ) {
+                composable<InicioScreen> {
+                    InicioScreen(navController) // Composable paara la pantalla de inicio
+                }
+                composable<RoutesScreen> {
+                    RoutesScreen(navController) // Composable para la pantalla de rutas
+                }
+                composable<HistoryScreen> {
+                    HistoryScreen() // Composable para la pantalla de historia
+                }
+                composable<RARScreen> {
+                    val model = it.toRoute<RARScreen>().model
+                    ARScreen(navController,model)
+                }
+            }
         }
+
     }
 }
+
 

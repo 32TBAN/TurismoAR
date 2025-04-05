@@ -1,8 +1,6 @@
 package com.example.ratest.presentation.Screens
 
-import android.os.Build
 import android.view.MotionEvent
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -27,9 +25,9 @@ import io.github.sceneview.rememberNodes
 import io.github.sceneview.rememberOnGestureListener
 import io.github.sceneview.rememberView
 
-@RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
+
 @Composable
-fun ARScreen(navController: NavController, model: String) {
+fun ARScreen(navController: NavController,model: String) {
 
     val engine = rememberEngine()
     val modelLoader = rememberModelLoader(engine = engine)
@@ -90,7 +88,7 @@ fun ARScreen(navController: NavController, model: String) {
                             materialLoader = materialLoader,
                             modelInstance = modelInstance,
                             anchor = it,
-                            model = Utils.getModelForAlphabet(model)
+                            model = Utils.getModel(model)
                         )
                         childNodes += nodeModel
                     }
