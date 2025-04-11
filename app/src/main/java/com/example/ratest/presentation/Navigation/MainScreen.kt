@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.example.ratest.presentation.Components.layouts.CustomBottomBar
 import com.example.ratest.presentation.Navigation.HistoryScreen
 import com.example.ratest.presentation.Navigation.InicioScreen
 import com.example.ratest.presentation.Navigation.RARScreen
@@ -30,46 +31,7 @@ fun MainScreen() {
 
     Scaffold(
         bottomBar = {
-            BottomNavigation {
-                // Botón para "Rutas"
-                BottomNavigationItem(
-                    icon = {
-                        Icon(
-                            painterResource(id = R.drawable.ic_route),
-                            contentDescription = "Rutas"
-                        )
-                    },
-                    label = { Text("Rutas") },
-                    selected = navController.currentDestination?.route == "routes", // Comparar con la ruta de RoutesScreen
-                    onClick = { navController.navigate(RoutesScreen) } // Navegar a RoutesScreen
-                )
-
-                // Botón para "Inicio"
-                BottomNavigationItem(
-                    icon = {
-                        Icon(
-                            painterResource(id = R.drawable.ic_home),
-                            contentDescription = "Inicio"
-                        )
-                    },
-                    label = { Text("Inicio") },
-                    selected = navController.currentDestination?.route == "inicio", // Comparar con la ruta de InicioScreen
-                    onClick = { navController.navigate(InicioScreen) } // Navegar a InicioScreen
-                )
-
-                // Botón para "Historia"
-                BottomNavigationItem(
-                    icon = {
-                        Icon(
-                            painterResource(id = R.drawable.ic_history),
-                            contentDescription = "Historia"
-                        )
-                    },
-                    label = { Text("Historia") },
-                    selected = navController.currentDestination?.route == "history", // Comparar con la ruta de HistoryScreen
-                    onClick = { navController.navigate(HistoryScreen) } // Navegar a HistoryScreen
-                )
-            }
+            CustomBottomBar(selectedIndex = 0, onTabSelected = navController::navigate)
         }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
