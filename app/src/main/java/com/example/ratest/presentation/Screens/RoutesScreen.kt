@@ -1,67 +1,48 @@
 package com.example.ratest.presentation.Screens
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.ratest.presentation.Navigation.RARScreen
+import com.example.ratest.Utils.getCards
+import com.example.ratest.presentation.Components.layouts.SectionCards
 
 @Composable
 fun RoutesScreen(navController: NavController) {
+    val (cardsRutes) = getCards()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .clickable {
-            },
-        contentAlignment = Alignment.Center
+            .padding(16.dp),
+        contentAlignment = Alignment.TopCenter
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize().padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-            Button(onClick = {
-                // Pasar el modelo al ARScreen al hacer clic
-                navController.navigate(RARScreen("1"))
-            }) {
-                Text("Ruta 1")
-            }
-            Button(onClick = {
-                // Pasar el modelo al ARScreen al hacer clic
-                navController.navigate(RARScreen("2"))
-            }) {
-                Text("Ruta 2")
-            }
-            Button(onClick = {
-                // Pasar el modelo al ARScreen al hacer clic
-                navController.navigate(RARScreen("3"))
-            }) {
-                Text("Ruta 3")
-            }
-            Button(onClick = {
-                // Pasar el modelo al ARScreen al hacer clic
-                navController.navigate(RARScreen("4"))
-            }) {
-                Text("Ruta 4")
-            }
-            Button(onClick = {
-                // Pasar el modelo al ARScreen al hacer clic
-                navController.navigate(RARScreen("5"))
-            }) {
-                Text("Ruta 5")
-            }
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Text(
+                text = "Explora las Rutas Turísticas",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+            SectionCards(
+                title = "Rutas Turísticas",
+                cards = cardsRutes,
+                tipe = "Info",
+                scrollDirection = "vertical",
+                navController = navController
+            )
         }
     }
 }
+
 
 

@@ -2,35 +2,55 @@ package com.example.ratest.presentation.Components.layouts
 
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Place
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import com.example.ratest.R
+import androidx.compose.ui.res.painterResource
+import com.example.ratest.Utils.BottomBarIcon
+import androidx.compose.material3.Icon
+import com.example.ratest.presentation.Navigation.lables
+import com.example.ratest.presentation.Navigation.screens
+import com.example.ratest.ui.theme.Green
+import androidx.compose.ui.text.font.FontWeight
+import com.example.ratest.ui.theme.DarkGreen
+import com.example.ratest.ui.theme.White
 
 @Composable
 fun CustomBottomBar(
     selectedIndex: Int,
-    onTabSelected: (Int) -> Unit
+    onTabSelected: (Any) -> Unit
 ) {
-    val items = listOf("Home", "Search", "Favorites", "More")
+
     val icons = listOf(
-        Icons.Default.Home,
-        Icons.Default.Search,
-        Icons.Default.Star,
-        Icons.Default.Place
+        BottomBarIcon.Vector(Icons.Default.Home),
+        BottomBarIcon.Vector(Icons.Default.Place),
+        BottomBarIcon.Drawable(R.drawable.ic_history)
     )
 
-    BottomNavigation {
-        items.forEachIndexed { index, label ->
+    BottomNavigation(backgroundColor = Green, contentColor = White) {
+        icons.forEachIndexed { index, icon ->
             BottomNavigationItem(
-                icon = { Icon(icons[index], contentDescription = label) },
-                label = { Text(label) },
+                icon = {
+                    when (icon) {
+                        is BottomBarIcon.Vector -> Icon(
+                            imageVector = icon.icon,
+                            contentDescription = null
+                        )
+
+                        is BottomBarIcon.Drawable -> Icon(
+                            painter = painterResource(id = icon.resId),
+                            contentDescription = null
+                        )
+                    }
+                },
+                label = { Text(lables[index], color = DarkGreen, fontWeight = FontWeight.Bold) },
                 selected = selectedIndex == index,
-                onClick = { onTabSelected(index) }
+                onClick = { onTabSelected(screens[index]) },
+                selectedContentColor = Green,
+                unselectedContentColor = Green.copy(alpha = 0.5f)
             )
         }
     }

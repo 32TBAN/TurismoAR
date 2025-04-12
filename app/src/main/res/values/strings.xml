@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">RAtest</string>
+    <string name="text_title_tourist_routes">Rutas Turísticas</string>
+    <string name="cart_title_tourist_routes1">Comida tipica</string>
+    <string name="cart_description_tourist_routes1">Ruta de comida tipica de Salcedo</string>
+    <string name="cart_title_tourist_routes2">Monumentos</string>
+    <string name="cart_description_tourist_routes2">Ruta de monumentos de Salcedo</string>
+    <string name="cart_title_tourist_routes3">Plazas</string>
+    <string name="cart_description_tourist_routes3">Ruta de plazas de Salcedo</string>
+    <string name="cart_title_tourist_routes4">Transporte</string>
+    <string name="cart_description_tourist_routes4">Ruta de transporte de Salcedo</string>
+    <string name="text_title_places_of_interest">Lugares de interés</string>
+    <string name="cart_description_places_of_interest1">Monumento a la madre</string>
+    <string name="cart_description_places_of_interest2">Monumento a Fray Manuel Salcedo</string>
+    <string name="cart_description_places_of_interest3">Palacio municipal</string>
+    <string name="cart_description_places_of_interest4">Iglesia</string>
+    <string name="cart_description_places_of_interest5">Coliseo</string>
+    <string name="text_title_events">Evento cercanos</string>
+    <string name="cart_description_events1">Feria traditional y costumbers de la semana santa</string>
+    <string name="cart_description_events2">Concurso de fanesca "sabor y tradicción"</string>
+    <string name="cart_description_events3">Festival taurino interprovincial San Isidro Labrador</string>
 </resources>

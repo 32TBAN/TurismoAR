@@ -13,3 +13,15 @@ object RoutesScreen
 
 @Serializable
 object HistoryScreen
+
+val screens = listOf(
+    InicioScreen,
+    RoutesScreen,
+    HistoryScreen
+)
+
+val lables = listOf(
+    "Inicio",
+    "Rutas",
+    "Historia"
+)
