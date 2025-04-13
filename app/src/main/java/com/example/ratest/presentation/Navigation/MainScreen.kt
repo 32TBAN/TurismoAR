@@ -47,7 +47,7 @@ fun MainScreen() {
                     RoutesScreen(navController) // Composable para la pantalla de rutas
                 }
                 composable<HistoryScreen> {
-                    HistoryScreen() // Composable para la pantalla de historia
+                    HistoryScreen(navController) // Composable para la pantalla de historia
                 }
                 composable<RARScreen> {
                     val model = it.toRoute<RARScreen>().model

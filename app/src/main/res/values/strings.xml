@@ -1,22 +1,48 @@
 <resources>
     <string name="app_name">RAtest</string>
     <string name="text_title_tourist_routes">Rutas Turísticas</string>
-    <string name="cart_title_tourist_routes1">Comida tipica</string>
-    <string name="cart_description_tourist_routes1">Ruta de comida tipica de Salcedo</string>
+    <string name="cart_title_tourist_routes1">Comida Típica</string>
+    <string name="cart_description_tourist_routes1">Disfruta de la comida típica de Salcedo, famosa por su sabor auténtico y platos tradicionales</string>
+
     <string name="cart_title_tourist_routes2">Monumentos</string>
-    <string name="cart_description_tourist_routes2">Ruta de monumentos de Salcedo</string>
+    <string name="cart_description_tourist_routes2">Recorre los monumentos más emblemáticos de Salcedo, como el Monumento a la Madre y el Monumento a Fray Manuel Salcedo, que reflejan su rica historia y cultura.</string>
+
     <string name="cart_title_tourist_routes3">Plazas</string>
-    <string name="cart_description_tourist_routes3">Ruta de plazas de Salcedo</string>
+    <string name="cart_description_tourist_routes3">Visita las principales plazas de Salcedo, espacios de encuentro y cultura como la Plaza Central y otras plazas llenas de historia y belleza.</string>
+
     <string name="cart_title_tourist_routes4">Transporte</string>
-    <string name="cart_description_tourist_routes4">Ruta de transporte de Salcedo</string>
+    <string name="cart_description_tourist_routes4">Explora la ciudad y sus alrededores con las rutas de transporte de Salcedo, que ofrecen conexiones fáciles a todos los puntos turísticos importantes.</string>
+
     <string name="text_title_places_of_interest">Lugares de interés</string>
-    <string name="cart_description_places_of_interest1">Monumento a la madre</string>
-    <string name="cart_description_places_of_interest2">Monumento a Fray Manuel Salcedo</string>
-    <string name="cart_description_places_of_interest3">Palacio municipal</string>
-    <string name="cart_description_places_of_interest4">Iglesia</string>
-    <string name="cart_description_places_of_interest5">Coliseo</string>
-    <string name="text_title_events">Evento cercanos</string>
-    <string name="cart_description_events1">Feria traditional y costumbers de la semana santa</string>
-    <string name="cart_description_events2">Concurso de fanesca "sabor y tradicción"</string>
-    <string name="cart_description_events3">Festival taurino interprovincial San Isidro Labrador</string>
+    <string name="cart_title_places_of_interest1">Monumento a la Madre</string>
+    <string name="cart_description_places_of_interest1">Un emotivo homenaje a las madres, ubicado en el corazón de la ciudad.</string>
+
+    <string name="cart_title_places_of_interest2">Monumento a Fray Manuel Salcedo</string>
+    <string name="cart_description_places_of_interest2">Un reconocimiento a la figura histórica que jugó un papel crucial en la fundación de la ciudad.</string>
+
+    <string name="cart_title_places_of_interest3">Palacio Municipal</string>
+    <string name="cart_description_places_of_interest3">Un edificio histórico que alberga el gobierno local, con una arquitectura colonial impresionante.</string>
+
+    <string name="cart_title_places_of_interest4">Iglesia de Salcedo</string>
+    <string name="cart_description_places_of_interest4">Un importante lugar de culto que ha sido testigo de muchas tradiciones religiosas a lo largo de los años.</string>
+
+    <string name="cart_title_places_of_interest5">Coliseo de Salcedo.</string>
+    <string name="cart_description_places_of_interest5">Un espacio dedicado a los eventos deportivos y culturales, especialmente durante las festividades locales.</string>
+
+    <string name="cart_title_places_of_interest6">Mercado Central</string>
+    <string name="cart_description_places_of_interest6">El corazón comercial de Salcedo, donde se pueden encontrar productos frescos y artesanías locales, reflejando la vida cotidiana de la ciudad.</string>
+
+    <string name="text_title_events">Eventos Cercanos</string>
+    <string name="cart_title_events1">Feria Tradicional y Costumbres de la Semana Santa</string>
+    <string name="cart_description_events1">Celebra la Semana Santa con eventos culturales, procesiones y actividades religiosas que destacan la rica tradición de Salcedo.</string>
+
+    <string name="cart_title_events2">Concurso de Fanesca "Sabor y Tradición"</string>
+    <string name="cart_description_events2">Una competencia culinaria que resalta la preparación de la fanesca, un plato tradicional de la región, con concursos y degustaciones.</string>
+
+    <string name="cart_title_events3">Festival Taurino Interprovincial San Isidro Labrador </string>
+    <string name="cart_description_events3">Un evento que reúne a los mejores toreros y aficionados de la región para una emocionante temporada de corridas de toros.</string>
+    <string name="text_title_section_home">¡Embárcate en un viaje único por los lugares turísticos de Salcedo!</string>
+    <string name="text_subtitle_home">Tus lugares favoritos, listos para explorar desde tu móvil.</string>
+    <string name="button_text_home1">Comienza tu aventura</string>
+
 </resources>

@@ -108,7 +108,7 @@ fun SmallCard(title: String, description: String = "", onClick: () -> Unit = {})
 }
 
 @Composable
-fun HistoricPlaceCard(
+fun CardBackgroundImage(
     title: String,
     description: String,
     imageRes: Int,
@@ -125,7 +125,7 @@ fun HistoricPlaceCard(
         Box(
             modifier = Modifier.fillMaxWidth()
         ) {
-            // Imagen de fondo
+
             Image(
                 painter = painterResource(id = imageRes),
                 contentDescription = title,
@@ -135,26 +135,33 @@ fun HistoricPlaceCard(
                     .clip(RoundedCornerShape(12.dp)),
                 contentScale = ContentScale.Crop
             )
-
-            Column(
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
-                    .align(Alignment.BottomStart)
+                    .height(150.dp)
+                    .background(Color.Black.copy(alpha = 0.5f))
             ) {
-                Text(
-                    text = title,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp,
-                    color = Color.White,
-                    modifier = Modifier.padding(bottom = 4.dp)
-                )
-                Text(
-                    text = description,
-                    style = MaterialTheme.typography.body2,
-                    color = Color.White
-                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .align(Alignment.BottomStart)
+                ) {
+                    Text(
+                        text = title,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp,
+                        color = Color.White,
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+                    Text(
+                        text = description,
+                        style = MaterialTheme.typography.body2,
+                        color = Color.White
+                    )
+                }
             }
+
         }
     }
 }

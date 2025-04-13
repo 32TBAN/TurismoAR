@@ -27,7 +27,7 @@ fun InicioScreen(navController: NavController) {
             .background(White)
             .verticalScroll(rememberScrollState())
     ) {
-        TopSection()
+        TopSection(navController)
         cardLists.forEachIndexed { index, cards ->
             val title = when(index) {
                 0 -> stringResource(id = R.string.text_title_tourist_routes)
