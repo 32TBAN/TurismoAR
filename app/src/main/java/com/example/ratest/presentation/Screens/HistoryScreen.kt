@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.ratest.Utils.getCards
 import com.example.ratest.presentation.Components.layouts.CardBackgroundImage
+import com.example.ratest.presentation.Navigation.DetalleScreen
 
 
 @Composable
@@ -33,7 +34,8 @@ fun HistoryScreen(navController: NavController) {
                 CardBackgroundImage(
                     title = card.title,
                     description = card.description,
-                    imageRes = card.imageRes
+                    imageRes = card.imageRes,
+                    onClick = { navController.navigate(DetalleScreen(card.title)) }
                 )
             }
         }

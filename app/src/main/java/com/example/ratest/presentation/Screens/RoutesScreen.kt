@@ -22,8 +22,7 @@ fun RoutesScreen(navController: NavController) {
 
     Box(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
+            .fillMaxSize(),
         contentAlignment = Alignment.TopCenter
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
@@ -31,10 +30,10 @@ fun RoutesScreen(navController: NavController) {
                 text = "Explora las Rutas Turísticas",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 16.dp)
+                modifier = Modifier.padding(16.dp)
             )
+
             SectionCards(
-                title = "Rutas Turísticas",
                 cards = cardsRutes,
                 tipe = "Info",
                 scrollDirection = "vertical",

@@ -1,9 +1,8 @@
-package com.example.ratest.presentation.Components.layouts.Home
+package com.example.ratest.presentation.Components.models
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -30,7 +29,7 @@ fun ImageSlider(images: List<Int>) {
                 modifier = Modifier
                     .padding(8.dp)
                     .fillMaxSize()
-                    .aspectRatio(2.7f)
+                    .aspectRatio(2.5f)
             ) {
                 Image(
                     painter = painterResource(id = imageRes),

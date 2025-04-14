@@ -11,6 +11,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.example.ratest.presentation.Components.layouts.CustomBottomBar
+import com.example.ratest.presentation.Components.layouts.DetalleInfo
+import com.example.ratest.presentation.Navigation.DetalleScreen
 import com.example.ratest.presentation.Navigation.HistoryScreen
 import com.example.ratest.presentation.Navigation.InicioScreen
 import com.example.ratest.presentation.Navigation.RARScreen
@@ -38,20 +40,24 @@ fun MainScreen() {
         Box(modifier = Modifier.padding(innerPadding)) {
             NavHost(
                 navController = navController,
-                startDestination = InicioScreen // Ruta de inicio
+                startDestination = InicioScreen
             ) {
                 composable<InicioScreen> {
-                    InicioScreen(navController) // Composable paara la pantalla de inicio
+                    InicioScreen(navController)
                 }
                 composable<RoutesScreen> {
-                    RoutesScreen(navController) // Composable para la pantalla de rutas
+                    RoutesScreen(navController)
                 }
                 composable<HistoryScreen> {
-                    HistoryScreen(navController) // Composable para la pantalla de historia
+                    HistoryScreen(navController)
                 }
                 composable<RARScreen> {
                     val model = it.toRoute<RARScreen>().model
                     ARScreen(navController, model)
+                }
+                composable<DetalleScreen> {
+                    val routeId = it.toRoute<DetalleScreen>().routeId
+                    DetalleInfo(routeId, navController)
                 }
             }
         }

@@ -48,7 +48,8 @@ fun InfoCard(
     description: String,
     icon: ImageVector = Icons.Default.Place,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
+    color: Color = DarkGreen
 ) {
     Card(
         modifier = modifier.padding(8.dp),
@@ -58,6 +59,7 @@ fun InfoCard(
         Row(
             modifier = Modifier
                 .clickable(onClick = onClick)
+                .background(color)
                 .padding(16.dp)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
@@ -65,15 +67,20 @@ fun InfoCard(
             Icon(icon, contentDescription = null, tint = LightGreen)
             Spacer(modifier = Modifier.width(12.dp))
             Column {
-                Text(title, fontWeight = FontWeight.Bold)
-                Text(description, style = MaterialTheme.typography.body2)
+                Text(title, fontWeight = FontWeight.Bold, color = Green)
+                Text(description, style = MaterialTheme.typography.body2, color = White)
             }
         }
     }
 }
 
 @Composable
-fun SmallCard(title: String, description: String = "", onClick: () -> Unit = {}) {
+fun SmallCard(
+    title: String,
+    description: String = "",
+    onClick: () -> Unit = {},
+    color: Color = DarkGreen
+) {
     Card(
         modifier = Modifier
             .clickable(onClick = onClick)
@@ -84,23 +91,30 @@ fun SmallCard(title: String, description: String = "", onClick: () -> Unit = {})
             .shadow(4.dp, shape = RoundedCornerShape(8.dp), clip = true)
     ) {
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Icon(Icons.Default.Place, contentDescription = null)
+            Icon(
+                Icons.Default.Place,
+                contentDescription = null,
+                modifier = Modifier.size(48.dp),
+                LightGreen
+            )
             Text(
                 title,
                 textAlign = TextAlign.Center,
-                color = DarkGreen,
+                color = White,
                 fontWeight = FontWeight.Bold,
-                fontSize = 18.sp,
+                fontSize = 14.sp,
                 fontFamily = FontFamily.SansSerif
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = description,
-                color = Green,
+                color = White,
                 fontSize = 12.sp
             )
         }
@@ -123,7 +137,7 @@ fun CardBackgroundImage(
         shape = RoundedCornerShape(12.dp)
     ) {
         Box(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().background(DarkGreen)
         ) {
 
             Image(
@@ -151,13 +165,13 @@ fun CardBackgroundImage(
                         text = title,
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp,
-                        color = Color.White,
+                        color = Green,
                         modifier = Modifier.padding(bottom = 4.dp)
                     )
                     Text(
                         text = description,
                         style = MaterialTheme.typography.body2,
-                        color = Color.White
+                        color = White
                     )
                 }
             }

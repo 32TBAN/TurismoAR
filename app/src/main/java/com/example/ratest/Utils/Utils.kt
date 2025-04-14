@@ -16,10 +16,10 @@ object Utils {
     fun getModel(modelname: String): String {
         Log.e("nombre modelo", modelname)
         return when (modelname) {
-            "1" -> "models/frostmourne_with_animations.glb"
-            "2" -> "models/helm_of_domination.glb"
-            "3" -> "models/anime_fox_girl.glb"
-            "4" -> "models/warcraft_draenei_fanart.glb"
+            "comidas" -> "models/frostmourne_with_animations.glb"
+            "monumentos" -> "models/helm_of_domination.glb"
+            "plazas" -> "models/anime_fox_girl.glb"
+            "transportes" -> "models/warcraft_draenei_fanart.glb"
             "5" -> "models/aqua__anime_chibi_model.glb"
             else -> "models/warcraft_draenei_fanart.glb"
         }
@@ -33,12 +33,10 @@ object Utils {
         anchor: Anchor,
         model: String
     ): AnchorNode {
-        // Verificar si el modelo no es nulo
         if (model.isNullOrEmpty()) {
             Log.e("ARScreen", "Model path is null or empty!")
         }
         if (modelLoader == null) {
-            // Maneja el caso cuando modelLoader es nulo
             Log.e("ARScreen", "ModelLoader is null!")
         }
 

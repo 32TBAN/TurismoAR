@@ -18,28 +18,30 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.ratest.Utils.CardItem
+import com.example.ratest.presentation.Navigation.DetalleScreen
 import com.example.ratest.presentation.Navigation.RARScreen
 
 @Composable
 fun SectionCards(
-    title: String,
+    title: String = "",
     cards: List<CardItem>,
     tipe: String = "Small",
     modifierT: Modifier = Modifier,
     scrollDirection: String = "horizontal",
     navController: NavController
 ) {
-    Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-        Text(
-            text = title,
-            fontWeight = FontWeight.Bold,
-            fontSize = 20.sp,
-            modifier = Modifier
-                .padding(bottom = 8.dp)
-                .animateContentSize()
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-
+    Column(modifier = Modifier.padding(horizontal = 8.dp)) {
+        if (title != "") {
+            Text(
+                text = title,
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp,
+                modifier = Modifier
+                    .padding(bottom = 8.dp)
+                    .animateContentSize()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+        }
         if (scrollDirection == "horizontal") {
             Row(
                 modifier = modifierT
@@ -50,13 +52,13 @@ fun SectionCards(
                     cards.forEachIndexed { index, item ->
                         InfoCard(title = item.title, description = item.description,
                             onClick = {
-                                navController.navigate(RARScreen((index + 1).toString()))
+                                navController.navigate(DetalleScreen(item.title))
                             })
                     }
                 } else {
                     cards.forEachIndexed {index, item ->
                         SmallCard(title = item.title, onClick = {
-                            navController.navigate(RARScreen((index + 1).toString()))
+                            navController.navigate(DetalleScreen(item.title))
                         })
                     }
                 }
@@ -70,13 +72,13 @@ fun SectionCards(
                 if (tipe == "Info") {
                     cards.forEachIndexed { index, item ->
                         InfoCard(title = item.title, description = item.description, onClick = {
-                            navController.navigate(RARScreen((index + 1).toString()))
+                            navController.navigate(DetalleScreen(item.title))
                         })
                     }
                 } else {
                     cards.forEachIndexed { index, item ->
                         SmallCard(title = item.title, onClick = {
-                            navController.navigate(RARScreen((index + 1).toString()))
+                            navController.navigate(DetalleScreen(item.title))
                         })
                     }
                 }

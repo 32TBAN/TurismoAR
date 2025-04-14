@@ -12,9 +12,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.ratest.R
 import com.example.ratest.Utils.getCards
-import com.example.ratest.presentation.Components.layouts.Home.MapSection
 import com.example.ratest.ui.theme.White
 import com.example.ratest.presentation.Components.layouts.Home.TopSection
+import com.example.ratest.presentation.Components.layouts.MapSection
 import com.example.ratest.presentation.Components.layouts.SectionCards
 
 @Composable
