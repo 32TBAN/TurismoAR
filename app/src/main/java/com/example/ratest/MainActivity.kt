@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -28,29 +27,10 @@ class MainActivity : ComponentActivity() {
         //WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             RAtestTheme {
-            var showSplash by remember { mutableStateOf(true) }
-
-            if (showSplash) {
-                SplashScreen { showSplash = false }
-            } else {
                 MainScreen()
             }
         }
-        }
-    }
-}
 
-@Composable
-fun SplashScreen(onTimeout: () -> Unit) {
-    LaunchedEffect(Unit) {
-        delay(2000)
-        onTimeout()
-    }
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Image(painter = painterResource(id = R.drawable.logo), contentDescription = "Logo")
     }
 }
 

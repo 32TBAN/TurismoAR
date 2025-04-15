@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -27,12 +28,11 @@ fun MapSection(
     controls: Boolean = true,
     tipe: String = "ruta"
 ) {
-    Column() {
+    Column(modifier = Modifier.padding(horizontal = 8.dp)) {
         Text(
             text = title,
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,
-            modifier = Modifier
         )
         Spacer(modifier = Modifier.height(50.dp))
         AndroidView(
@@ -50,7 +50,7 @@ fun MapSection(
                 if (!geoPoints.isEmpty()) {
                     mapview.controller.setCenter(GeoPoint(geoPoints[0].first, geoPoints[0].second))
 
-                    if (tipe == "marcador"){
+                    if (tipe == "marcador") {
                         geoPoints.forEach { (lat, lon, nombre) ->
                             if (!nombre.isEmpty()) {
                                 val marker = Marker(mapview)

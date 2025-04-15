@@ -9,7 +9,7 @@ data class CardItem(
     val description: String = "",
     val imageRes: Int = R.drawable.monumento,
     val rute: String = "",
-    val tipe: String = "ruta",
+    val type: String = "ruta",
     val geoPoints: List<Triple<Double, Double, String>> = emptyList()
 )
 
@@ -81,7 +81,7 @@ fun getCards(): List<List<CardItem>> {
             description = stringResource(id = R.string.cart_description_places_of_interest1),
             imageRes = R.drawable.monumento_madre_ai,
             rute = "monumento_madre",
-            tipe = "marcador",
+            type = "marcador",
             geoPoints = listOf(
                 Triple(
                     -1.045560,
@@ -95,7 +95,7 @@ fun getCards(): List<List<CardItem>> {
             description = stringResource(id = R.string.cart_description_places_of_interest2),
             imageRes = R.drawable.monumento_fray_ia,
             rute = "monumento_fray",
-            tipe = "marcador",
+            type = "marcador",
             geoPoints = listOf(
                 Triple(
                     -1.043688,
@@ -109,7 +109,7 @@ fun getCards(): List<List<CardItem>> {
             description = stringResource(id = R.string.cart_description_places_of_interest3),
             imageRes = R.drawable.palacio_municipal,
             rute = "palacio_municipal",
-            tipe = "marcador",
+            type = "marcador",
             geoPoints = listOf(
                 Triple(-1.0440112, -78.5904399, stringResource(id = R.string.cart_title_places_of_interest3))
             )
@@ -119,7 +119,7 @@ fun getCards(): List<List<CardItem>> {
             description = stringResource(id = R.string.cart_description_places_of_interest4),
             imageRes = R.drawable.iglesia_ai,
             rute = "iglesia",
-            tipe = "marcador",
+            type = "marcador",
             geoPoints = listOf(
                 Triple(-1.044253, -78.593392, stringResource(id = R.string.cart_title_places_of_interest4))
             )
@@ -129,7 +129,7 @@ fun getCards(): List<List<CardItem>> {
             description = stringResource(id = R.string.cart_description_places_of_interest5),
             imageRes = R.drawable.coliseo_ai,
             rute = "coliseo",
-            tipe = "marcador",
+            type = "marcador",
             geoPoints = listOf(
                 Triple(-1.047000, -78.588446, stringResource(id = R.string.cart_title_places_of_interest5))
             )
@@ -139,7 +139,7 @@ fun getCards(): List<List<CardItem>> {
             description = stringResource(id = R.string.cart_description_places_of_interest6),
             imageRes = R.drawable.mercado_ai,
             rute = "mercado",
-            tipe = "marcador",
+            type = "marcador",
             geoPoints = listOf(
                 Triple(-1.043098, -78.588930, stringResource(id = R.string.cart_title_places_of_interest6))
             )

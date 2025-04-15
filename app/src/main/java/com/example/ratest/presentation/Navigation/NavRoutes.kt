@@ -28,3 +28,9 @@ val lables = listOf(
     "Rutas",
     "Historia"
 )
+
+val titlesTopBar = listOf(
+    InicioScreen to "Inicio",
+    RoutesScreen to "Explora las rutas turísticas",
+    HistoryScreen to "Historia local"
+)
