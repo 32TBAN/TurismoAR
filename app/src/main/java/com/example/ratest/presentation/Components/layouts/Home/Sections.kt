@@ -31,11 +31,6 @@ fun TopSection(navController: NavController) {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
-        SectionTitle(title = "¡Bienvenido!", color = DarkGreen)
-
-        Spacer(modifier = Modifier.height(16.dp))
-
         ImageSlider(images = images)
 
         Spacer(modifier = Modifier.height(16.dp))
