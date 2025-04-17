@@ -15,11 +15,16 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.material3.Scaffold
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -41,7 +46,11 @@ import com.example.ratest.presentation.Screens.ARScreen
 import com.example.ratest.presentation.Screens.HistoryScreen
 import com.example.ratest.presentation.Screens.InicioScreen
 import com.example.ratest.presentation.Screens.RoutesScreen
+import com.example.ratest.ui.theme.Blue
+import com.example.ratest.ui.theme.DarkGreen
 import com.example.ratest.ui.theme.Green
+import com.example.ratest.ui.theme.LightGreen
+import com.example.ratest.ui.theme.White
 
 @Composable
 fun MainScreen() {
@@ -116,14 +125,24 @@ fun MainScreen() {
             modifier = Modifier
                 .padding(innerPadding)
                 .border(width = .2.dp, color = Color.White)
-                .background(Green.copy(alpha = 0.011f))
+                .background( White.copy(alpha = 0.9f)
+//                    Brush.linearGradient(
+//                        colors = listOf(
+//                            Blue.copy(alpha = 0.2f),
+//                            LightGreen.copy(alpha = 0.4f),
+//                            LightGreen.copy(alpha = 0.6f),
+//                        ),
+//                        start = Offset(400f, 400f),
+//                        end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
+//                    )
+                )
         ) {
             Image(
                 painter = painterResource(id = R.drawable.collage_gastron_mico_salcedo),
                 contentDescription = "Fondo",
                 modifier = Modifier
                     .fillMaxSize()
-                    .alpha(0.03f),
+                    .alpha(0.1f),
                 contentScale = ContentScale.Crop
             )
             NavHost(

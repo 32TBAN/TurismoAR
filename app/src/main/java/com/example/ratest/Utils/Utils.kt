@@ -20,7 +20,7 @@ object Utils {
             "monumentos" -> "models/helm_of_domination.glb"
             "plazas" -> "models/anime_fox_girl.glb"
             "transportes" -> "models/warcraft_draenei_fanart.glb"
-            "5" -> "models/aqua__anime_chibi_model.glb"
+            "arrow" -> "models/arrow.glb"
             else -> "models/warcraft_draenei_fanart.glb"
         }
     }
@@ -73,5 +73,44 @@ object Utils {
         }
         return anchorNode
 
+    }
+
+    fun createArrowNode(
+        engine: Engine,
+        modelLoader: ModelLoader,
+        materialLoader: MaterialLoader,
+        modelInstances: MutableList<ModelInstance>,
+        anchor: Anchor
+    ): AnchorNode {
+        val anchorNode = AnchorNode(engine = engine, anchor = anchor)
+        val modelNode = ModelNode(
+            modelInstance = modelInstances.apply {
+                if (isEmpty()) {
+                    this += modelLoader.createInstancedModel("models/arrow.glb", 10)
+                }
+            }.removeAt(modelInstances.lastIndex),
+            // Scale to fit in a 0.5 meters cube
+            scaleToUnits = 0.5f
+        ).apply {
+            // Model Node needs to be editable for independent rotation from the anchor rotation
+            isEditable = true
+        }
+        val boundingBoxNode = CubeNode(
+            engine,
+            size = modelNode.extents,
+            center = modelNode.center,
+            materialInstance = materialLoader.createColorInstance(Color.White.copy(alpha = 0.5f))
+        ).apply {
+            isVisible = false
+        }
+        modelNode.addChildNode(boundingBoxNode)
+        anchorNode.addChildNode(modelNode)
+
+        listOf(modelNode, anchorNode).forEach {
+            it.onEditingChanged = { editingTransforms ->
+                boundingBoxNode.isVisible = editingTransforms.isNotEmpty()
+            }
+        }
+        return anchorNode
     }
 }

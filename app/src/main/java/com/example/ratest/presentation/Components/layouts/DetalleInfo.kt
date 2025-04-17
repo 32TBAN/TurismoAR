@@ -45,6 +45,7 @@ import com.example.ratest.ui.theme.White
 import com.google.ar.core.ArCoreApk
 import android.widget.Toast
 import androidx.compose.ui.platform.LocalContext
+import com.example.ratest.ui.theme.Blue
 
 @Composable
 fun DetalleInfo(
@@ -102,7 +103,7 @@ fun DetalleInfo(
                                 ArCoreApk.Availability.UNSUPPORTED_DEVICE_NOT_CAPABLE -> {
                                     Toast.makeText(
                                         context,
-                                        "Tu dispositivo no es compatible con AR",
+                                        "Tu dispositivo no es compatible con Realidad Aumentada",
                                         Toast.LENGTH_LONG
                                     ).show()
                                 }
@@ -115,7 +116,7 @@ fun DetalleInfo(
                                 else -> {
                                     Toast.makeText(
                                         context,
-                                        "AR no disponible, por favor instala ARCore",
+                                        "Realidad aumentada no disponible, por favor instala ARCore",
                                         Toast.LENGTH_LONG
                                     ).show()
                                     val intent = Intent(
@@ -137,9 +138,9 @@ fun DetalleInfo(
                             .background(
                                 Brush.horizontalGradient(
                                     colors = listOf(
-                                        Color(0xFF0554F2),
+                                        Blue,
                                         Green
-                                    )  // Gradiente de azul oscuro a verde
+                                    )
                                 )
                             )
                             .padding(horizontal = 7.dp)

@@ -1,5 +1,6 @@
 package com.example.ratest.presentation.Screens
 
+import android.transition.Scene
 import android.view.MotionEvent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -8,11 +9,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.example.ratest.Utils.Utils
+import com.example.ratest.Utils.Utils.createArrowNode
 import com.google.ar.core.Config
 import com.google.ar.core.Frame
+import com.google.ar.core.Plane
 import com.google.ar.core.TrackingFailureReason
 import io.github.sceneview.ar.ARScene
 import io.github.sceneview.ar.arcore.createAnchorOrNull
+import io.github.sceneview.ar.arcore.getUpdatedPlanes
 import io.github.sceneview.ar.arcore.isValid
 import io.github.sceneview.ar.rememberARCameraNode
 import io.github.sceneview.model.ModelInstance
@@ -25,9 +29,8 @@ import io.github.sceneview.rememberNodes
 import io.github.sceneview.rememberOnGestureListener
 import io.github.sceneview.rememberView
 
-
 @Composable
-fun ARScreen(navController: NavController,model: String) {
+fun ARScreen(navController: NavController, model: String) {
 
     val engine = rememberEngine()
     val modelLoader = rememberModelLoader(engine = engine)
@@ -36,6 +39,7 @@ fun ARScreen(navController: NavController,model: String) {
     val childNodes = rememberNodes()
     val view = rememberView(engine = engine)
     val collisionSystem = rememberCollisionSystem(view = view)
+
     val planeRenderer = remember {
         mutableStateOf(true)
     }
@@ -47,6 +51,16 @@ fun ARScreen(navController: NavController,model: String) {
     }
     val frame = remember {
         mutableStateOf<Frame?>(null)
+    }
+
+    val arrowNode = remember {
+        createArrowNode(
+            engine,
+            modelLoader,
+            materialLoader,
+            modelInstance,
+            frame.value?.createAnchorOrNull()!!
+        )
     }
 
     ARScene(
@@ -64,6 +78,21 @@ fun ARScreen(navController: NavController,model: String) {
         },
         onSessionUpdated = { _, updatedFrame ->
             frame.value = updatedFrame
+
+            if (childNodes.isEmpty()) {
+                updatedFrame.getUpdatedPlanes()
+                    .firstOrNull { it.type == Plane.Type.HORIZONTAL_UPWARD_FACING }
+                    ?.let { it.createAnchorOrNull(it.centerPose) }?.let { anchor ->
+                        childNodes += Utils.createAnchorNodeSimple(
+                            engine = engine,
+                            modelLoader = modelLoader,
+                            materialLoader = materialLoader,
+                            modelInstances = modelInstance,
+                            anchor = anchor,
+                            model = Utils.getModel("arrow")
+                        )
+                    }
+            }
         },
         sessionConfiguration = { session, config ->
             config.depthMode = when (session.isDepthModeSupported(Config.DepthMode.AUTOMATIC)) {
@@ -95,6 +124,8 @@ fun ARScreen(navController: NavController,model: String) {
                 }
             }
         )
-
     )
+
 }
+
+
