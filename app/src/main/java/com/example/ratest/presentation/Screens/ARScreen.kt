@@ -1,6 +1,5 @@
 package com.example.ratest.presentation.Screens
 
-import android.transition.Scene
 import android.view.MotionEvent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -9,11 +8,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.example.ratest.Utils.Utils
-import com.example.ratest.Utils.Utils.createArrowNode
+import com.google.android.filament.utils.Quaternion
 import com.google.ar.core.Config
 import com.google.ar.core.Frame
 import com.google.ar.core.Plane
 import com.google.ar.core.TrackingFailureReason
+import dev.romainguy.kotlin.math.Float3
 import io.github.sceneview.ar.ARScene
 import io.github.sceneview.ar.arcore.createAnchorOrNull
 import io.github.sceneview.ar.arcore.getUpdatedPlanes
@@ -25,6 +25,7 @@ import io.github.sceneview.rememberCollisionSystem
 import io.github.sceneview.rememberEngine
 import io.github.sceneview.rememberMaterialLoader
 import io.github.sceneview.rememberModelLoader
+import io.github.sceneview.rememberNode
 import io.github.sceneview.rememberNodes
 import io.github.sceneview.rememberOnGestureListener
 import io.github.sceneview.rememberView
@@ -52,16 +53,7 @@ fun ARScreen(navController: NavController, model: String) {
     val frame = remember {
         mutableStateOf<Frame?>(null)
     }
-
-    val arrowNode = remember {
-        createArrowNode(
-            engine,
-            modelLoader,
-            materialLoader,
-            modelInstance,
-            frame.value?.createAnchorOrNull()!!
-        )
-    }
+    var arrowNode = rememberNode(engine = engine)
 
     ARScene(
         modifier = Modifier.fillMaxSize(),
@@ -78,20 +70,55 @@ fun ARScreen(navController: NavController, model: String) {
         },
         onSessionUpdated = { _, updatedFrame ->
             frame.value = updatedFrame
-
             if (childNodes.isEmpty()) {
                 updatedFrame.getUpdatedPlanes()
                     .firstOrNull { it.type == Plane.Type.HORIZONTAL_UPWARD_FACING }
                     ?.let { it.createAnchorOrNull(it.centerPose) }?.let { anchor ->
-                        childNodes += Utils.createAnchorNodeSimple(
+                        var arrowAnchor = Utils.createAnchorNode(
                             engine = engine,
                             modelLoader = modelLoader,
                             materialLoader = materialLoader,
-                            modelInstances = modelInstance,
+                            modelInstance = modelInstance,
                             anchor = anchor,
                             model = Utils.getModel("arrow")
                         )
+                        arrowNode = arrowAnchor
+                        childNodes += arrowAnchor
                     }
+            } else {
+                val cameraPose = updatedFrame?.camera?.pose
+                cameraPose?.let {
+                    val cameraPosition = Float3(it.tx(), it.ty(), it.tz())
+
+                    val targetPosition = Float3(-1.0162584f, -78.5652868f, 21f)
+
+                    val directionToTarget = targetPosition - cameraPosition
+
+                    arrowNode?.apply {
+                        this.position = Float3(
+                            it.tx() + (directionToTarget.x * 0.3f),
+                            it.ty() - 0.2f,
+                            it.tz() + (directionToTarget.z * 0.3f)
+                        )
+
+                        val rotationQuaternion = FloatArray(4)
+                        Utils.rotationBetweenVectors(
+                            Float3(0f, 0f, 1f),
+                            directionToTarget,
+                            rotationQuaternion
+                        )
+                        val eulerAngles = Utils.quaternionToEulerAngles(
+                            Quaternion(
+                                rotationQuaternion[0],
+                                rotationQuaternion[1],
+                                rotationQuaternion[2],
+                                rotationQuaternion[3]
+                            )
+                        )
+                        this.rotation = eulerAngles
+                    }
+                }
+
             }
         },
         sessionConfiguration = { session, config ->
