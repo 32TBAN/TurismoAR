@@ -30,6 +30,7 @@ object Utils {
             "plazas" -> "models/anime_fox_girl.glb"
             "transportes" -> "models/warcraft_draenei_fanart.glb"
             "arrow" -> "models/arrow.glb"
+            "pin" -> "models/navigator_pin.glb"
             else -> "models/warcraft_draenei_fanart.glb"
         }
     }

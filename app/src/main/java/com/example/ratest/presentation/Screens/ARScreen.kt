@@ -12,6 +12,7 @@ import com.google.android.filament.utils.Quaternion
 import com.google.ar.core.Config
 import com.google.ar.core.Frame
 import com.google.ar.core.Plane
+import com.google.ar.core.Pose
 import com.google.ar.core.TrackingFailureReason
 import dev.romainguy.kotlin.math.Float3
 import io.github.sceneview.ar.ARScene
@@ -54,6 +55,8 @@ fun ARScreen(navController: NavController, model: String) {
         mutableStateOf<Frame?>(null)
     }
     var arrowNode = rememberNode(engine = engine)
+    val isMarkerCreated = remember { mutableStateOf(false) }
+    val isArrowCreated = remember { mutableStateOf(false) }
 
     ARScene(
         modifier = Modifier.fillMaxSize(),
@@ -70,7 +73,9 @@ fun ARScreen(navController: NavController, model: String) {
         },
         onSessionUpdated = { _, updatedFrame ->
             frame.value = updatedFrame
-            if (childNodes.isEmpty()) {
+            val cameraPose = updatedFrame?.camera?.pose
+
+            if (isArrowCreated.value == false) {
                 updatedFrame.getUpdatedPlanes()
                     .firstOrNull { it.type == Plane.Type.HORIZONTAL_UPWARD_FACING }
                     ?.let { it.createAnchorOrNull(it.centerPose) }?.let { anchor ->
@@ -84,21 +89,23 @@ fun ARScreen(navController: NavController, model: String) {
                         )
                         arrowNode = arrowAnchor
                         childNodes += arrowAnchor
+                        isArrowCreated.value = true
                     }
             } else {
-                val cameraPose = updatedFrame?.camera?.pose
                 cameraPose?.let {
                     val cameraPosition = Float3(it.tx(), it.ty(), it.tz())
-
-                    val targetPosition = Float3(-1.0162584f, -78.5652868f, 21f)
+                    val forwardDirection = Utils.quaternionToForward(it.rotationQuaternion)
+                    val targetPosition = Float3(-1.016257f, -78.565153f, 20.71f)
 
                     val directionToTarget = targetPosition - cameraPosition
 
                     arrowNode?.apply {
+                        val distance = -0.3f
+
                         this.position = Float3(
-                            it.tx() + (directionToTarget.x * 0.3f),
+                            it.tx() + forwardDirection.x * distance,
                             it.ty() - 0.2f,
-                            it.tz() + (directionToTarget.z * 0.3f)
+                            it.tz() + forwardDirection.z * distance
                         )
 
                         val rotationQuaternion = FloatArray(4)
@@ -116,9 +123,33 @@ fun ARScreen(navController: NavController, model: String) {
                             )
                         )
                         this.rotation = eulerAngles
+
+                        if (!isMarkerCreated.value) {
+                            val targetPose = Pose(
+                                floatArrayOf(
+                                    targetPosition.x,
+                                    targetPosition.y,
+                                    targetPosition.z
+                                ), FloatArray(4) { 0f })
+
+                            updatedFrame.getUpdatedPlanes()
+                                .firstOrNull { it.type == Plane.Type.HORIZONTAL_UPWARD_FACING }
+                                ?.let { it.createAnchorOrNull(it.centerPose) }?.let { anchor ->
+                                    var targetAnchor = Utils.createAnchorNode(
+                                        engine = engine,
+                                        modelLoader = modelLoader,
+                                        materialLoader = materialLoader,
+                                        modelInstance = modelInstance,
+                                        anchor = anchor,
+                                        model = Utils.getModel("pin")
+                                    )
+                                    targetAnchor.position = targetPosition
+                                    childNodes += targetAnchor
+                                }
+                            isMarkerCreated.value = true
+                        }
                     }
                 }
-
             }
         },
         sessionConfiguration = { session, config ->
@@ -152,7 +183,6 @@ fun ARScreen(navController: NavController, model: String) {
             }
         )
     )
-
 }
 
 
