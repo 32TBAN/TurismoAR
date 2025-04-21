@@ -1,16 +1,32 @@
 package com.example.ratest.presentation.Screens
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Text
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
+import com.example.ratest.Utils.getCards
+import com.example.ratest.presentation.Components.layouts.CardBackgroundImage
+import com.example.ratest.presentation.Navigation.DetalleScreen
 
 
 @Composable
-fun HistoryScreen() {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text(text = "Información histórica de los centros de interés")
+fun HistoryScreen(
+    navController: NavController,
+    listState: LazyListState = rememberLazyListState()
+) {
+    val (cardsRutes, cardsPlaces) = getCards()
+
+    LazyColumn(state = listState) {
+        items(cardsPlaces) { card ->
+            CardBackgroundImage(
+                title = card.title,
+                description = card.description,
+                imageRes = card.imageRes,
+                onClick = { navController.navigate(DetalleScreen(card.title)) }
+            )
+        }
     }
+
 }

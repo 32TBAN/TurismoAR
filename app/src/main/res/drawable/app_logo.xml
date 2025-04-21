@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+
+    <!-- Fondo del icono (circular) -->
+    <path
+        android:fillColor="#FFAA00"
+        android:pathData="M24,4 A20,20 0 1,1 24,44 A20,20 0 1,1 24,4Z"/>
+
+    <!-- Un ícono representativo, por ejemplo un círculo central -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M24,14 A10,10 0 1,1 24,34 A10,10 0 1,1 24,14Z"/>
+
+    <!-- Un pequeño símbolo, por ejemplo una línea diagonal -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:pathData="M16,16 L32,32"/>
+
+    <!-- Un pequeño círculo en el centro del icono -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M22,24 A2,2 0 1,1 22,28 A2,2 0 1,1 22,24Z"/>
+</vector>
+

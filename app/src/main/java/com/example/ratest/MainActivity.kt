@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.view.WindowCompat
 import com.example.ratest.presentation.screens.MainScreen
 import com.example.ratest.ui.theme.RAtestTheme
 import kotlinx.coroutines.delay
@@ -23,31 +24,13 @@ import kotlinx.coroutines.delay
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        //WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             RAtestTheme {
-                var showSplash by remember { mutableStateOf(true) }
-
-                if (showSplash) {
-                    SplashScreen { showSplash = false }
-                } else {
-                    MainScreen()
-                }
+                MainScreen()
             }
         }
-    }
-}
 
-@Composable
-fun SplashScreen(onTimeout: () -> Unit) {
-    LaunchedEffect(Unit) {
-        delay(2000)
-        onTimeout()
-    }
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Image(painter = painterResource(id = R.drawable.logo), contentDescription = "Logo")
     }
 }
 
