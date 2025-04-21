@@ -1,10 +1,7 @@
 package com.example.ratest.presentation.screens
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.FastOutLinearInEasing
-import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -15,16 +12,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -33,6 +26,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.example.ratest.R
+import com.example.ratest.presentation.Components.layouts.CheckLocationPermission
 import com.example.ratest.presentation.Components.layouts.CustomBottomBar
 import com.example.ratest.presentation.Components.layouts.CustomTopBar
 import com.example.ratest.presentation.Components.layouts.DetalleInfo
@@ -46,10 +40,7 @@ import com.example.ratest.presentation.Screens.ARScreen
 import com.example.ratest.presentation.Screens.HistoryScreen
 import com.example.ratest.presentation.Screens.InicioScreen
 import com.example.ratest.presentation.Screens.RoutesScreen
-import com.example.ratest.ui.theme.Blue
-import com.example.ratest.ui.theme.DarkGreen
-import com.example.ratest.ui.theme.Green
-import com.example.ratest.ui.theme.LightGreen
+
 import com.example.ratest.ui.theme.White
 
 @Composable
@@ -160,9 +151,24 @@ fun MainScreen() {
                 }
                 composable<RARScreen> {
                     val model = it.toRoute<RARScreen>().model
-                    isTopBarVisible = false
-                    isBottomBarVisible = false
-                    ARScreen(navController, model)
+                    var isPermissionGranted by remember { mutableStateOf(false) }
+
+                    CheckLocationPermission(
+                        onGranted = {
+                            isPermissionGranted = true
+                        },
+                        onDenied = {
+                            isPermissionGranted = false
+                        }
+                    )
+
+                    if (isPermissionGranted) {
+                        isTopBarVisible = false
+                        isBottomBarVisible = false
+                        ARScreen(navController, model)
+                    } else {
+                        Text("Se requiere permiso de ubicación para continuar")
+                    }
                 }
                 composable<DetalleScreen> {
                     val routeId = it.toRoute<DetalleScreen>().routeId

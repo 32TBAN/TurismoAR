@@ -17,20 +17,22 @@ import kotlin.collections.plusAssign
 import kotlin.math.abs
 import kotlin.math.asin
 import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.sin
 import kotlin.math.sqrt
 import kotlin.math.withSign
 
 object Utils {
 
     fun getModel(modelname: String): String {
-        Log.e("nombre modelo", modelname)
+        Log.e("GeoAR", modelname)
         return when (modelname) {
             "comidas" -> "models/frostmourne_with_animations.glb"
             "monumentos" -> "models/helm_of_domination.glb"
             "plazas" -> "models/anime_fox_girl.glb"
             "transportes" -> "models/warcraft_draenei_fanart.glb"
             "arrow" -> "models/arrow.glb"
-            "pin" -> "models/navigator_pin.glb"
+            "pin" -> "models/navigation_pin.glb"
             else -> "models/warcraft_draenei_fanart.glb"
         }
     }
@@ -43,17 +45,11 @@ object Utils {
         anchor: Anchor,
         model: String
     ): AnchorNode {
-        if (model.isNullOrEmpty()) {
-            Log.e("ARScreen", "Model path is null or empty!")
-        }
-        if (modelLoader == null) {
-            Log.e("ARScreen", "ModelLoader is null!")
-        }
-
-
         val anchorNode = AnchorNode(engine = engine, anchor = anchor)
+
         val modelNode = ModelNode(
             modelInstance = modelInstance.apply {
+                this.clear()
                 if (isEmpty()) {
                     try {
                         this += modelLoader.createInstancedModel(model, 10)
@@ -104,7 +100,6 @@ object Utils {
         return Float3(forwardX, forwardY, forwardZ)
     }
 
-    // Calcula el cuaternión necesario para rotar un vector hacia otro vector
     fun rotationBetweenVectors(from: Float3, to: Float3, out: FloatArray) {
         val dot = from.x * to.x + from.y * to.y + from.z * to.z
         val cross = Float3(
@@ -144,5 +139,42 @@ object Utils {
 
         return Float3(roll, pitch.toFloat(), yaw)  // Retorna los ángulos en Euler
     }
+
+    fun haversineDistance(
+        lat1: Double, lon1: Double,
+        lat2: Double, lon2: Double
+    ): Double {
+        val R = 6371000.0 // Radio de la Tierra en metros
+        val dLat = Math.toRadians(lat2 - lat1)
+        val dLon = Math.toRadians(lon2 - lon1)
+        val a = sin(dLat / 2).pow(2.0) +
+                cos(Math.toRadians(lat1)) *
+                cos(Math.toRadians(lat2)) *
+                sin(dLon / 2).pow(2.0)
+        val c = 2 * atan2(sqrt(a), sqrt(1 - a))
+        return R * c
+    }
+
+    private fun Double.pow(exp: Double) = Math.pow(this, exp)
+
+    fun directionToTarget(
+        geoLat: Double,
+        geoLng: Double,
+        targetLat: Double,
+        targetLng: Double
+    ): Float3 {
+        val dLat = Math.toRadians(targetLat - geoLat)
+        val dLng = Math.toRadians(targetLng - geoLng)
+        val y = Math.sin(dLng) * Math.cos(Math.toRadians(targetLat))
+        val x = Math.cos(Math.toRadians(geoLat)) * Math.sin(Math.toRadians(targetLat)) -
+                Math.sin(Math.toRadians(geoLat)) * Math.cos(Math.toRadians(targetLat)) * Math.cos(dLng)
+        val bearing = Math.atan2(y, x) // en radianes
+        val angle = Math.toDegrees(bearing)
+
+        // Convertimos el ángulo en un vector hacia el norte relativo (Z+)
+        val rad = Math.toRadians(angle)
+        return Float3(Math.sin(rad).toFloat(), 0f, Math.cos(rad).toFloat())
+    }
+
 
 }
