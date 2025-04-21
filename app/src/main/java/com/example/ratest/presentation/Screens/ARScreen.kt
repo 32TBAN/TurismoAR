@@ -27,7 +27,7 @@ import io.github.sceneview.rememberNodes
 import io.github.sceneview.rememberView
 
 @Composable
-fun ARScreen(navController: NavController, model: String) {
+fun ARScreen(navController: NavController, model: String) {    //todo: dependiendo de la ruta enviar todas las coordenadas
     val engine = rememberEngine()
     val modelLoader = rememberModelLoader(engine = engine)
     val materialLoader = rememberMaterialLoader(engine = engine)
@@ -74,6 +74,8 @@ fun ARScreen(navController: NavController, model: String) {
             val geoPose = earth?.cameraGeospatialPose
             val cameraPose = updatedFrame.camera.pose
 
+            //todo: revisar por que no se muestra el marcador
+            //todo revisar el error cuando no se inicia bien el  TrackingState
             if (geoPose != null && earth.trackingState == TrackingState.TRACKING) {
                 val distance = Utils.haversineDistance(
                     targetLatLng.first,

@@ -1,9 +1,11 @@
 package com.example.ratest.presentation.Components.layouts
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,21 +36,33 @@ fun MapSection(
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,
         )
-        Spacer(modifier = Modifier.height(50.dp))
+        Spacer(modifier = Modifier.height(96.dp))
         AndroidView(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(250.dp), factory = { context ->
+                .height(250.dp),
+            factory = { context ->
                 val userAgent = "com.example.ratest/1.0"
                 Configuration.getInstance().userAgentValue = userAgent
                 val mapview = MapView(context)
                 mapview.setTileSource(TileSourceFactory.MAPNIK)
                 mapview.setBuiltInZoomControls(controls)
                 mapview.setMultiTouchControls(controls)
+
                 mapview.controller.setZoom(zoomLevel)
 
+//                mapview.maxZoomLevel = 19.0
+//                mapview.minZoomLevel = zoomLevel
+
+                mapview.setTilesScaledToDpi(true)
+
                 if (!geoPoints.isEmpty()) {
-                    mapview.controller.setCenter(GeoPoint(geoPoints[0].first, geoPoints[0].second))
+                    mapview.controller.setCenter(
+                        GeoPoint(
+                            geoPoints[0].first,
+                            geoPoints[0].second
+                        )
+                    )
 
                     if (tipe == "marcador") {
                         geoPoints.forEach { (lat, lon, nombre) ->
