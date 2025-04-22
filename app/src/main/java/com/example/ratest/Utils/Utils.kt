@@ -43,7 +43,8 @@ object Utils {
         materialLoader: MaterialLoader,
         modelInstance: MutableList<ModelInstance>,
         anchor: Anchor,
-        model: String
+        model: String,
+        scaleToUnits: Float = 0.2f
     ): AnchorNode {
         val anchorNode = AnchorNode(engine = engine, anchor = anchor)
 
@@ -58,7 +59,7 @@ object Utils {
                     }
                 }
             }.removeAt(modelInstance.lastIndex),
-            scaleToUnits = 0.2f
+            scaleToUnits = scaleToUnits
         ).apply {
             isEditable = true
         }
@@ -77,7 +78,9 @@ object Utils {
                 boundingBox.isVisible = editingTransforms.isNotEmpty()
             }
         }
+        Log.d("GeoAR", "AnchorNode creado y agregado al árbol de nodos.")
         return anchorNode
+
     }
 
     fun quaternionToForward(q: FloatArray?): Float3 {
@@ -175,6 +178,7 @@ object Utils {
         val rad = Math.toRadians(angle)
         return Float3(Math.sin(rad).toFloat(), 0f, Math.cos(rad).toFloat())
     }
+
 
 
 }

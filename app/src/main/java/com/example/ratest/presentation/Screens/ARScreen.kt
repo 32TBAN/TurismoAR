@@ -1,11 +1,20 @@
 package com.example.ratest.presentation.Screens
 
+import android.annotation.SuppressLint
 import android.util.Log
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.ratest.Utils.Utils
 import com.google.android.filament.utils.Quaternion
@@ -14,10 +23,15 @@ import com.google.ar.core.Frame
 import com.google.ar.core.Pose
 import com.google.ar.core.TrackingFailureReason
 import com.google.ar.core.TrackingState
+import com.google.ar.core.exceptions.NotTrackingException
 import dev.romainguy.kotlin.math.Float3
 import io.github.sceneview.ar.ARScene
+import io.github.sceneview.ar.node.AnchorNode
 import io.github.sceneview.ar.rememberARCameraNode
+import io.github.sceneview.math.Position
+import io.github.sceneview.math.Rotation
 import io.github.sceneview.model.ModelInstance
+import io.github.sceneview.node.ModelNode
 import io.github.sceneview.rememberCollisionSystem
 import io.github.sceneview.rememberEngine
 import io.github.sceneview.rememberMaterialLoader
@@ -26,16 +40,36 @@ import io.github.sceneview.rememberNode
 import io.github.sceneview.rememberNodes
 import io.github.sceneview.rememberView
 
+@SuppressLint("DefaultLocale")
 @Composable
-fun ARScreen(navController: NavController, model: String) {    //todo: dependiendo de la ruta enviar todas las coordenadas
+fun ARScreen(
+    navController: NavController,
+    model: String
+) {    //todo: dependiendo de la ruta enviar todas las coordenadas
     val engine = rememberEngine()
     val modelLoader = rememberModelLoader(engine = engine)
     val materialLoader = rememberMaterialLoader(engine = engine)
     val cameraNode = rememberARCameraNode(engine = engine)
-    val childNodes = rememberNodes()
+    val childNodes = rememberNodes {
+        add(
+            ModelNode(
+                modelInstance = modelLoader.createModelInstance(
+                    assetFileLocation = "models/arrow.glb"
+                ),
+                scaleToUnits = 0.2f
+            )
+        )
+        add(
+            ModelNode(
+                modelInstance = modelLoader.createModelInstance(
+                    assetFileLocation = "models/navigation_pin.glb"
+                ),
+                scaleToUnits = 3.0f
+            )
+        )
+    }
     val view = rememberView(engine = engine)
     val collisionSystem = rememberCollisionSystem(view = view)
-
     val planeRenderer = remember {
         mutableStateOf(true)
     }
@@ -48,12 +82,8 @@ fun ARScreen(navController: NavController, model: String) {    //todo: dependien
     val frame = remember {
         mutableStateOf<Frame?>(null)
     }
-
-    val isMarkerCreated = remember { mutableStateOf(false) }
-
-    var arrowNode = rememberNode(engine = engine)
-    val isArrowCreated = remember { mutableStateOf(false) }
     val targetLatLng = Pair(-1.016257, -78.565127)
+    val distanceText = remember { mutableStateOf("Distancia: 0.0m") }
 
     ARScene(
         modifier = Modifier.fillMaxSize(),
@@ -71,39 +101,44 @@ fun ARScreen(navController: NavController, model: String) {    //todo: dependien
         onSessionUpdated = { session, updatedFrame ->
             frame.value = updatedFrame
             val earth = session.earth
-            val geoPose = earth?.cameraGeospatialPose
             val cameraPose = updatedFrame.camera.pose
 
             //todo: revisar por que no se muestra el marcador
             //todo revisar el error cuando no se inicia bien el  TrackingState
-            if (geoPose != null && earth.trackingState == TrackingState.TRACKING) {
-                val distance = Utils.haversineDistance(
-                    targetLatLng.first,
-                    targetLatLng.second,
-                    geoPose.altitude,
-                    geoPose.longitude
-                )
-                Log.e("GeoAR","$distance")
-                if (!isMarkerCreated.value) {
-                    val anchor = earth.createAnchor(
-                        targetLatLng.first,
-                        targetLatLng.second,
-                        geoPose.altitude,
-                        floatArrayOf(0f, 0f, 0f, 1f)
-                    )
-                    var pinNode = Utils.createAnchorNode(
-                        engine = engine,
-                        modelLoader = modelLoader,
-                        materialLoader = materialLoader,
-                        modelInstance = modelInstance,
-                        anchor = anchor,
-                        model = Utils.getModel("pin")
-                    )
-                    childNodes += pinNode
-                    isMarkerCreated.value = true
-                }
+            try {
+                if (earth?.trackingState == TrackingState.TRACKING) {
+                    val geoPose = earth.cameraGeospatialPose
 
-                if (!isArrowCreated.value) {
+                    val distance = Utils.haversineDistance(
+                        geoPose.latitude,
+                        geoPose.longitude,
+                        targetLatLng.first,
+                        targetLatLng.second
+                    )
+                    distanceText.value = "Distancia: ${String.format("%.2f", distance)} m"
+
+                    if (childNodes.isNotEmpty()) {
+                        val anchor = earth.createAnchor(
+                            targetLatLng.first,
+                            targetLatLng.second,
+                            geoPose.altitude,
+                            floatArrayOf(0f, 0f, 0f, 1f)
+                        )
+
+                        val adjustedTargetPosition = Float3(
+                            targetLatLng.first.toFloat(),
+                            targetLatLng.second.toFloat(),
+                            geoPose.altitude.toFloat()
+                        )
+
+                        val anchorNode = AnchorNode(engine = engine, anchor = anchor).apply {
+                            position = adjustedTargetPosition
+                        }
+
+                        childNodes[1].apply {
+                            this.addChildNode(anchorNode)
+                        }
+                    }
                     var arrowAnchor = session.createAnchor(
                         cameraPose.compose(
                             Pose.makeTranslation(
@@ -113,20 +148,7 @@ fun ARScreen(navController: NavController, model: String) {    //todo: dependien
                             )
                         )
                     )
-                    var arrowNodeInstance = Utils.createAnchorNode(
-                        engine = engine,
-                        modelLoader = modelLoader,
-                        materialLoader = materialLoader,
-                        modelInstance = modelInstance,
-                        anchor = arrowAnchor,
-                        model = Utils.getModel("arrow")
-                    )
-                    childNodes += arrowNodeInstance
-                    arrowNode = arrowNodeInstance
-                    isArrowCreated.value = true
-                }
 
-                if (isArrowCreated.value) {
                     cameraPose?.let {
                         val cameraPosition = Float3(it.tx(), it.ty(), it.tz())
                         val forwardDirection = Utils.quaternionToForward(it.rotationQuaternion)
@@ -138,7 +160,7 @@ fun ARScreen(navController: NavController, model: String) {    //todo: dependien
 
                         val directionToTarget = targetPosition - cameraPosition
 
-                        arrowNode?.apply {
+                        childNodes[0].apply {
                             val distance = -0.3f
                             this.position = Float3(
                                 it.tx() + forwardDirection.x * distance,
@@ -162,8 +184,17 @@ fun ARScreen(navController: NavController, model: String) {    //todo: dependien
                             )
                         }
                     }
+
                 }
+            } catch (e: NotTrackingException) {
+                // Handle the tracking loss
+                Log.e("GeoAR", "ARCore not tracking: ${e.message}")
+                // Inform the user or try to recover
+            } catch (e: Exception) {
+                // Handle other potential exceptions
+                Log.e("GeoAR", "An unexpected error occurred: ${e.message}")
             }
+
         },
         sessionConfiguration = { session, config ->
             config.geospatialMode = Config.GeospatialMode.ENABLED
@@ -175,4 +206,17 @@ fun ARScreen(navController: NavController, model: String) {    //todo: dependien
             session.configure(config)
         }
     )
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Top
+    ) {
+        Text(
+            text = distanceText.value,
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.White
+        )
+    }
 }

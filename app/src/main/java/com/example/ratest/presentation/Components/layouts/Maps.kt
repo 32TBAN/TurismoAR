@@ -1,11 +1,9 @@
 package com.example.ratest.presentation.Components.layouts
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,6 +35,7 @@ fun MapSection(
             fontSize = 20.sp,
         )
         Spacer(modifier = Modifier.height(96.dp))
+        //todo: arreglar bug visuald del mapa
         AndroidView(
             modifier = Modifier
                 .fillMaxWidth()
@@ -54,7 +53,7 @@ fun MapSection(
 //                mapview.maxZoomLevel = 19.0
 //                mapview.minZoomLevel = zoomLevel
 
-                mapview.setTilesScaledToDpi(true)
+//                mapview.setTilesScaledToDpi(true)
 
                 if (!geoPoints.isEmpty()) {
                     mapview.controller.setCenter(
