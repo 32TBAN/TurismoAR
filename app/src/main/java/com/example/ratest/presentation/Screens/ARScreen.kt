@@ -59,14 +59,6 @@ fun ARScreen(
                 scaleToUnits = 0.2f
             )
         )
-        add(
-            ModelNode(
-                modelInstance = modelLoader.createModelInstance(
-                    assetFileLocation = "models/navigation_pin.glb"
-                ),
-                scaleToUnits = 3.0f
-            )
-        )
     }
     val view = rememberView(engine = engine)
     val collisionSystem = rememberCollisionSystem(view = view)
@@ -82,8 +74,12 @@ fun ARScreen(
     val frame = remember {
         mutableStateOf<Frame?>(null)
     }
-    val targetLatLng = Pair(-1.016257, -78.565127)
+//    val targetLatLng = Pair(-1.016257, -78.565127)
+    val targetLatLng = Pair(-1.016239, -78.565150)
     val distanceText = remember { mutableStateOf("Distancia: 0.0m") }
+    val coordsText = remember { mutableStateOf("0,0") }
+    val visibleRange = 10.0
+    val isPinCreated = remember { mutableStateOf(false) }
 
     ARScene(
         modifier = Modifier.fillMaxSize(),
@@ -103,8 +99,6 @@ fun ARScreen(
             val earth = session.earth
             val cameraPose = updatedFrame.camera.pose
 
-            //todo: revisar por que no se muestra el marcador
-            //todo revisar el error cuando no se inicia bien el  TrackingState
             try {
                 if (earth?.trackingState == TrackingState.TRACKING) {
                     val geoPose = earth.cameraGeospatialPose
@@ -115,9 +109,11 @@ fun ARScreen(
                         targetLatLng.first,
                         targetLatLng.second
                     )
+//                    Log.d("GeoAR", "Distance: $distance meters")
                     distanceText.value = "Distancia: ${String.format("%.2f", distance)} m"
+                    coordsText.value = " ${geoPose.latitude}, ${geoPose.longitude}"
 
-                    if (childNodes.isNotEmpty()) {
+                    if (distance <= visibleRange && !isPinCreated.value) {
                         val anchor = earth.createAnchor(
                             targetLatLng.first,
                             targetLatLng.second,
@@ -131,23 +127,27 @@ fun ARScreen(
                             geoPose.altitude.toFloat()
                         )
 
+                        val pinNode = ModelNode(
+                            modelInstance = modelLoader.createModelInstance(
+                                assetFileLocation = "models/navigation_pin.glb"
+                            ),
+                            scaleToUnits = 0.5f
+                        )
+
                         val anchorNode = AnchorNode(engine = engine, anchor = anchor).apply {
                             position = adjustedTargetPosition
                         }
 
-                        childNodes[1].apply {
+                        pinNode.apply {
                             this.addChildNode(anchorNode)
                         }
+
+                        childNodes.add(pinNode)
+                        isPinCreated.value = true
+                    }else if (distance > visibleRange && isPinCreated.value) {
+                        childNodes.removeAt(1)
+                        isPinCreated.value = false
                     }
-                    var arrowAnchor = session.createAnchor(
-                        cameraPose.compose(
-                            Pose.makeTranslation(
-                                0f,
-                                -0.5f,
-                                -1.5f
-                            )
-                        )
-                    )
 
                     cameraPose?.let {
                         val cameraPosition = Float3(it.tx(), it.ty(), it.tz())
@@ -187,11 +187,9 @@ fun ARScreen(
 
                 }
             } catch (e: NotTrackingException) {
-                // Handle the tracking loss
                 Log.e("GeoAR", "ARCore not tracking: ${e.message}")
                 // Inform the user or try to recover
             } catch (e: Exception) {
-                // Handle other potential exceptions
                 Log.e("GeoAR", "An unexpected error occurred: ${e.message}")
             }
 
@@ -214,6 +212,12 @@ fun ARScreen(
     ) {
         Text(
             text = distanceText.value,
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.White
+        )
+        Text(
+            text = coordsText.value,
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             color = Color.White

@@ -11,6 +11,7 @@ data class CardItem(
     val rute: String = "",
     val type: String = "ruta",
     val geoPoints: List<Triple<Double, Double, String>> = emptyList()
+    //todo agregar icono, nose si es necesario aqui.
 )
 
 @Composable
