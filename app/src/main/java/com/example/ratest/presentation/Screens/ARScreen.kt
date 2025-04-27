@@ -17,28 +17,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.ratest.Utils.Utils
-import com.google.android.filament.utils.Quaternion
 import com.google.ar.core.Config
 import com.google.ar.core.Frame
-import com.google.ar.core.Pose
 import com.google.ar.core.TrackingFailureReason
 import com.google.ar.core.TrackingState
 import com.google.ar.core.exceptions.NotTrackingException
-import dev.romainguy.kotlin.math.Float3
+import com.google.android.filament.utils.Float3
+import com.google.android.filament.utils.Quaternion
 import io.github.sceneview.ar.ARScene
 import io.github.sceneview.ar.node.AnchorNode
 import io.github.sceneview.ar.rememberARCameraNode
-import io.github.sceneview.math.Position
-import io.github.sceneview.math.Rotation
 import io.github.sceneview.model.ModelInstance
 import io.github.sceneview.node.ModelNode
 import io.github.sceneview.rememberCollisionSystem
 import io.github.sceneview.rememberEngine
 import io.github.sceneview.rememberMaterialLoader
 import io.github.sceneview.rememberModelLoader
-import io.github.sceneview.rememberNode
 import io.github.sceneview.rememberNodes
 import io.github.sceneview.rememberView
+import kotlin.math.atan2
+import dev.romainguy.kotlin.math.Float3 as KotlinFloat3
 
 @SuppressLint("DefaultLocale")
 @Composable
@@ -75,10 +73,10 @@ fun ARScreen(
         mutableStateOf<Frame?>(null)
     }
 //    val targetLatLng = Pair(-1.016257, -78.565127)
-    val targetLatLng = Pair(-1.016239, -78.565150)
+    val targetLatLng = Pair(-1.016238, -78.565148)
     val distanceText = remember { mutableStateOf("Distancia: 0.0m") }
     val coordsText = remember { mutableStateOf("0,0") }
-    val visibleRange = 10.0
+    val visibleRange = 5.0
     val isPinCreated = remember { mutableStateOf(false) }
 
     ARScene(
@@ -120,68 +118,84 @@ fun ARScreen(
                             geoPose.altitude,
                             floatArrayOf(0f, 0f, 0f, 1f)
                         )
+                        val anchorLatLng = earth.getGeospatialPose(anchor.pose).let {
+                            val lat = it.latitude
+                            val lng = it.longitude
+                            val alt = it.altitude
 
-                        val adjustedTargetPosition = Float3(
-                            targetLatLng.first.toFloat(),
-                            targetLatLng.second.toFloat(),
+                            Triple(lat, lng, alt)
+                        }
+
+                        val adjustedTargetPosition = KotlinFloat3(
+                            anchorLatLng.first.toFloat(),
+                            anchorLatLng.second.toFloat(),
                             geoPose.altitude.toFloat()
                         )
 
-                        val pinNode = ModelNode(
-                            modelInstance = modelLoader.createModelInstance(
-                                assetFileLocation = "models/navigation_pin.glb"
-                            ),
+                        val pinNode = Utils.createAnchorNode(
+                            engine = engine,
+                            modelLoader = modelLoader,
+                            materialLoader = materialLoader,
+                            modelInstance = modelInstance,
+                            anchor = anchor,
+                            model = "models/navigation_pin.glb",
                             scaleToUnits = 0.5f
                         )
 
-                        val anchorNode = AnchorNode(engine = engine, anchor = anchor).apply {
-                            position = adjustedTargetPosition
-                        }
-
-                        pinNode.apply {
-                            this.addChildNode(anchorNode)
-                        }
-
+                        pinNode.position = adjustedTargetPosition
                         childNodes.add(pinNode)
                         isPinCreated.value = true
-                    }else if (distance > visibleRange && isPinCreated.value) {
+                    } else if (distance > visibleRange && isPinCreated.value) {
                         childNodes.removeAt(1)
                         isPinCreated.value = false
                     }
 
                     cameraPose?.let {
-                        val cameraPosition = Float3(it.tx(), it.ty(), it.tz())
                         val forwardDirection = Utils.quaternionToForward(it.rotationQuaternion)
-                        val targetPosition = Float3(
-                            targetLatLng.first.toFloat(),
-                            targetLatLng.second.toFloat(),
-                            geoPose.altitude.toFloat()
-                        )
-
-                        val directionToTarget = targetPosition - cameraPosition
 
                         childNodes[0].apply {
                             val distance = -0.3f
-                            this.position = Float3(
+                            this.position = KotlinFloat3(
                                 it.tx() + forwardDirection.x * distance,
                                 it.ty() - 0.2f,
                                 it.tz() + forwardDirection.z * distance
                             )
+                            val cameraPosition = Float3(it.tx(), it.ty(), it.tz())
 
-                            val rotationQuaternion = FloatArray(4)
-                            Utils.rotationBetweenVectors(
-                                Float3(0f, 0f, 1f),
-                                directionToTarget,
-                                rotationQuaternion
-                            )
-                            this.rotation = Utils.quaternionToEulerAngles(
-                                Quaternion(
-                                    rotationQuaternion[0],
-                                    rotationQuaternion[1],
-                                    rotationQuaternion[2],
-                                    rotationQuaternion[3]
+                            if (childNodes.size > 1) {
+                                val pinPosition = childNodes[1].worldPosition
+                                val directionToTarget = Float3(
+                                    pinPosition.x - cameraPosition.x,
+                                    pinPosition.y - cameraPosition.y,
+                                    pinPosition.z - cameraPosition.z
                                 )
-                            )
+                                val angle = atan2(
+                                    directionToTarget.x.toDouble(),
+                                    directionToTarget.z.toDouble()
+                                )
+                                val rotationQuaternion =
+                                    Quaternion.fromAxisAngle(Float3(0f, 1f, 0f), angle.toFloat())
+                                this.rotation = Utils.quaternionToEulerAngles(rotationQuaternion)
+                            }else{
+                                val pinPosition = Float3(
+                                    targetLatLng.first.toFloat(),
+                                    targetLatLng.second.toFloat(),
+                                    geoPose.altitude.toFloat()
+                                )
+                                val directionToTarget = Float3(
+                                    pinPosition.x - cameraPosition.x,
+                                    pinPosition.y - cameraPosition.y,
+                                    pinPosition.z - cameraPosition.z
+                                )
+                                val angle = atan2(
+                                    directionToTarget.x.toDouble(),
+                                    directionToTarget.z.toDouble()
+                                )
+                                val rotationQuaternion =
+                                    Quaternion.fromAxisAngle(Float3(0f, 1f, 0f), angle.toFloat())
+                                this.rotation = Utils.quaternionToEulerAngles(rotationQuaternion)
+                            }
+
                         }
                     }
 
@@ -201,6 +215,7 @@ fun ARScreen(
                 else -> Config.DepthMode.DISABLED
             }
             config.lightEstimationMode = Config.LightEstimationMode.ENVIRONMENTAL_HDR
+            config.updateMode = Config.UpdateMode.LATEST_CAMERA_IMAGE
             session.configure(config)
         }
     )

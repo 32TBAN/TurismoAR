@@ -78,7 +78,7 @@ object Utils {
                 boundingBox.isVisible = editingTransforms.isNotEmpty()
             }
         }
-        Log.d("GeoAR", "AnchorNode creado y agregado al árbol de nodos.")
+//        Log.d("GeoAR", "AnchorNode creado y agregado al árbol de nodos.")
         return anchorNode
 
     }
