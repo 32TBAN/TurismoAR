@@ -150,7 +150,8 @@ fun MainScreen() {
                     HistoryScreen(navController, listState)
                 }
                 composable<RARScreen> {
-                    val model = it.toRoute<RARScreen>().model
+//                    val model = it.toRoute<RARScreen>().model
+                    val geoPoints = it.toRoute<RARScreen>().geoPoints
                     var isPermissionGranted by remember { mutableStateOf(false) }
 
                     CheckLocationPermission(
@@ -165,7 +166,7 @@ fun MainScreen() {
                     if (isPermissionGranted) {
                         isTopBarVisible = false
                         isBottomBarVisible = false
-                        ARScreen(navController, model)
+                        ARScreen(navController, geoPoints)
                     } else {
                         Text("Se requiere permiso de ubicación para continuar")
                     }

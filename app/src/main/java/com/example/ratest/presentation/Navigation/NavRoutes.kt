@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 object InicioScreen
 
 @Serializable
-data class RARScreen(val model: String)
+data class RARScreen(val model: String, var geoPoints: List<Triple<Double, Double, String>> = emptyList())
 
 @Serializable
 object RoutesScreen

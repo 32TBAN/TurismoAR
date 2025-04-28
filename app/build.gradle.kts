@@ -1,5 +1,6 @@
 plugins {
     id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
+    id("kotlin-kapt")
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     kotlin("plugin.serialization") version "1.8.0"
@@ -44,6 +45,8 @@ android {
 }
 
 dependencies {
+    kapt(libs.hilt.android.compiler)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -67,4 +70,9 @@ dependencies {
     implementation("org.osmdroid:osmdroid-android:6.1.20")
     implementation("com.google.android.gms:play-services-location:18.0.0")
     implementation("com.google.android.gms:play-services-location:16 (or later)")
+
+}
+
+kapt {
+    correctErrorTypes = true
 }
