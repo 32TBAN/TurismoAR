@@ -26,6 +26,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.example.ratest.R
+import com.example.ratest.Utils.Utils
+import com.example.ratest.Utils.getGeoPointsForRoute
 import com.example.ratest.presentation.Components.layouts.CheckLocationPermission
 import com.example.ratest.presentation.Components.layouts.CustomBottomBar
 import com.example.ratest.presentation.Components.layouts.CustomTopBar
@@ -150,8 +152,8 @@ fun MainScreen() {
                     HistoryScreen(navController, listState)
                 }
                 composable<RARScreen> {
-//                    val model = it.toRoute<RARScreen>().model
-                    val geoPoints = it.toRoute<RARScreen>().geoPoints
+                    val model = it.toRoute<RARScreen>().model
+                    val geoPoints = getGeoPointsForRoute(model)
                     var isPermissionGranted by remember { mutableStateOf(false) }
 
                     CheckLocationPermission(

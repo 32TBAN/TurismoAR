@@ -3,6 +3,14 @@ package com.example.ratest.Utils
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.example.ratest.R
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class GeoPoint(
+    val latitude: Double,
+    val longitude: Double,
+    val name: String
+)
 
 data class CardItem(
     val title: String,
@@ -10,7 +18,7 @@ data class CardItem(
     val imageRes: Int = R.drawable.monumento,
     val rute: String = "",
     val type: String = "ruta",
-    val geoPoints: List<Triple<Double, Double, String>> = emptyList()
+    var geoPoints: List<GeoPoint> = emptyList()
     //todo agregar icono, nose si es necesario aqui.
 )
 
@@ -23,12 +31,12 @@ fun getCards(): List<List<CardItem>> {
             imageRes = R.drawable.comidas,
             rute = "comidas",
             geoPoints = listOf(
-                Triple(-1.0440176, -78.5907475, "Helados"),
-                Triple(-1.0440112, -78.5904399, ""),
-                Triple(-1.043231, -78.590489, ""),
-                Triple(-1.0432587, -78.5899706, "Hornado"),
-                Triple(-1.043082, -78.588926, ""),
-                Triple(-1.043201, -78.588422, "Confiteria (Humas, Quimbolitos)")
+                GeoPoint(-1.0440176, -78.5907475, "Helados"),
+                GeoPoint(-1.0440112, -78.5904399, ""),
+                GeoPoint(-1.043231, -78.590489, ""),
+                GeoPoint(-1.0432587, -78.5899706, "Hornado"),
+                GeoPoint(-1.043082, -78.588926, ""),
+                GeoPoint(-1.043201, -78.588422, "Confiteria (Humas, Quimbolitos)")
             )
         ),
         CardItem(
@@ -37,13 +45,13 @@ fun getCards(): List<List<CardItem>> {
             imageRes = R.drawable.monumentos,
             rute = "monumentos",
             geoPoints = listOf(
-                Triple(
+                GeoPoint(
                     -1.043688,
                     -78.591043,
                     stringResource(id = R.string.cart_title_places_of_interest2)
                 ),
-                Triple(-1.0440112, -78.5904399, ""),
-                Triple(
+                GeoPoint(-1.0440112, -78.5904399, ""),
+                GeoPoint(
                     -1.045560,
                     -78.590215,
                     stringResource(id = R.string.cart_title_places_of_interest1)
@@ -56,23 +64,30 @@ fun getCards(): List<List<CardItem>> {
             imageRes = R.drawable.plazas,
             rute = "plazas",
             geoPoints = listOf(
-                Triple(-1.046304, -78.593458, "Plaza Agusto Dávalos"),
-                Triple(-1.045852, -78.593208, ""),
-                Triple(-1.044253, -78.593392, ""),
-                Triple(-1.044032, -78.591116, ""),
-                Triple(-1.043684, -78.590821, "Parque Central"),
-                Triple(-1.043231, -78.590489, ""),
-                Triple(-1.043082, -78.588926, ""),
-                Triple(-1.043098, -78.588930, "Mercado Central"),
-                Triple(-1.047000, -78.588446, ""),
-                Triple(-1.047127, -78.588209, "Plaza San Antonío")
+                GeoPoint(-1.046304, -78.593458, "Plaza Agusto Dávalos"),
+                GeoPoint(-1.045852, -78.593208, ""),
+                GeoPoint(-1.044253, -78.593392, ""),
+                GeoPoint(-1.044032, -78.591116, ""),
+                GeoPoint(-1.043684, -78.590821, "Parque Central"),
+                GeoPoint(-1.043231, -78.590489, ""),
+                GeoPoint(-1.043082, -78.588926, ""),
+                GeoPoint(-1.043098, -78.588930, "Mercado Central"),
+                GeoPoint(-1.047000, -78.588446, ""),
+                GeoPoint(-1.047127, -78.588209, "Plaza San Antonío")
             )
         ),
         CardItem(
             title = stringResource(id = R.string.cart_title_tourist_routes4),
             description = stringResource(id = R.string.cart_description_tourist_routes4),
             imageRes = R.drawable.transporte,
-            rute = "transportes"
+            rute = "transportes",
+            geoPoints = listOf(
+                GeoPoint(-1.016265, -78.565139, "Punto 1"),
+                GeoPoint(-1.016179, -78.565177, "Punto 2"),
+                GeoPoint(-1.016179, -78.565177, ""),
+                GeoPoint(-1.016179, -78.565177, "")
+
+            )
         )
     )
 
@@ -84,7 +99,7 @@ fun getCards(): List<List<CardItem>> {
             rute = "monumento_madre",
             type = "marcador",
             geoPoints = listOf(
-                Triple(
+                GeoPoint(
                     -1.045560,
                     -78.590215,
                     stringResource(id = R.string.cart_title_places_of_interest1)
@@ -98,7 +113,7 @@ fun getCards(): List<List<CardItem>> {
             rute = "monumento_fray",
             type = "marcador",
             geoPoints = listOf(
-                Triple(
+                GeoPoint(
                     -1.043688,
                     -78.591043,
                     stringResource(id = R.string.cart_title_places_of_interest2)
@@ -112,7 +127,7 @@ fun getCards(): List<List<CardItem>> {
             rute = "palacio_municipal",
             type = "marcador",
             geoPoints = listOf(
-                Triple(-1.0440112, -78.5904399, stringResource(id = R.string.cart_title_places_of_interest3))
+                GeoPoint(-1.0440112, -78.5904399, stringResource(id = R.string.cart_title_places_of_interest3))
             )
         ),
         CardItem(
@@ -122,7 +137,7 @@ fun getCards(): List<List<CardItem>> {
             rute = "iglesia",
             type = "marcador",
             geoPoints = listOf(
-                Triple(-1.044253, -78.593392, stringResource(id = R.string.cart_title_places_of_interest4))
+                GeoPoint(-1.044253, -78.593392, stringResource(id = R.string.cart_title_places_of_interest4))
             )
         ),
         CardItem(
@@ -132,7 +147,7 @@ fun getCards(): List<List<CardItem>> {
             rute = "coliseo",
             type = "marcador",
             geoPoints = listOf(
-                Triple(-1.047000, -78.588446, stringResource(id = R.string.cart_title_places_of_interest5))
+                GeoPoint(-1.047000, -78.588446, stringResource(id = R.string.cart_title_places_of_interest5))
             )
         ),
         CardItem(
@@ -142,7 +157,7 @@ fun getCards(): List<List<CardItem>> {
             rute = "mercado",
             type = "marcador",
             geoPoints = listOf(
-                Triple(-1.043098, -78.588930, stringResource(id = R.string.cart_title_places_of_interest6))
+                GeoPoint(-1.043098, -78.588930, stringResource(id = R.string.cart_title_places_of_interest6))
             )
         )
     )
@@ -163,6 +178,14 @@ fun getCards(): List<List<CardItem>> {
     )
 
     return listOf(cardsRutes, cardsPlaces, cardsEvents)
+}
+
+@Composable
+fun getGeoPointsForRoute(rute: String): List<GeoPoint> {
+    val cards = getCards()
+    val allCards = cards.flatten()
+
+    return allCards.firstOrNull { it.rute == rute }?.geoPoints ?: emptyList()
 }
 
 @Composable

@@ -19,11 +19,11 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
-
+import com.example.ratest.Utils.GeoPoint as GeoPointCustom
 @Composable
 fun MapSection(
     title: String = "Mapa de Salcedo",
-    geoPoints: List<Triple<Double, Double, String>> = emptyList(),
+    geoPoints: List<GeoPointCustom> = emptyList(),
     zoomLevel: Double = 12.7,
     controls: Boolean = true,
     tipe: String = "ruta"
@@ -58,18 +58,18 @@ fun MapSection(
                 if (!geoPoints.isEmpty()) {
                     mapview.controller.setCenter(
                         GeoPoint(
-                            geoPoints[0].first,
-                            geoPoints[0].second
+                            geoPoints[0].latitude,
+                            geoPoints[0].longitude
                         )
                     )
 
                     if (tipe == "marcador") {
-                        geoPoints.forEach { (lat, lon, nombre) ->
-                            if (!nombre.isEmpty()) {
+                        geoPoints.forEach { geoPoint ->
+                            if (geoPoint.name.isNotEmpty()) {
                                 val marker = Marker(mapview)
 
-                                marker.position = GeoPoint(lat, lon)
-                                marker.title = nombre
+                                marker.position = GeoPoint(geoPoint.latitude, geoPoint.longitude)
+                                marker.title = geoPoint.name
                                 mapview.overlays.add(marker)
                             }
                         }

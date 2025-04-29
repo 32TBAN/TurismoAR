@@ -1,12 +1,13 @@
 package com.example.ratest.presentation.Navigation
 
+import com.example.ratest.Utils.GeoPoint
 import kotlinx.serialization.Serializable
 
 @Serializable
 object InicioScreen
 
 @Serializable
-data class RARScreen(val model: String, var geoPoints: List<Triple<Double, Double, String>> = emptyList())
+data class RARScreen(val model: String)
 
 @Serializable
 object RoutesScreen

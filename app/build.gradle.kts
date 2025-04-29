@@ -70,7 +70,7 @@ dependencies {
     implementation("org.osmdroid:osmdroid-android:6.1.20")
     implementation("com.google.android.gms:play-services-location:18.0.0")
     implementation("com.google.android.gms:play-services-location:16 (or later)")
-
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 }
 
 kapt {

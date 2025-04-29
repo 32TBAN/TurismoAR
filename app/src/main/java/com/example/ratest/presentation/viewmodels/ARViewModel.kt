@@ -1,9 +1,11 @@
 package com.example.ratest.presentation.viewmodels
 
 
+import android.content.Context
 import android.util.Log
-import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.example.ratest.Utils.GeoPoint
 import com.example.ratest.Utils.Utils
 import com.google.android.filament.Engine
 import com.google.ar.core.Earth
@@ -18,39 +20,69 @@ import io.github.sceneview.node.ModelNode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import dev.romainguy.kotlin.math.Float3 as KotlinFloat3
+import androidx.compose.runtime.State
+import androidx.lifecycle.viewModelScope
+import com.example.ratest.domain.usecase.TourManager
+import kotlinx.coroutines.launch
 
 class ARViewModel : ViewModel() {
+    private lateinit var tourManager: TourManager
+
     private val distanceTextMutable = MutableStateFlow("0.0 m")
     val distanceText: StateFlow<String> = distanceTextMutable
 
+    private val currentTargetMutable = MutableStateFlow<GeoPoint?>(null)
+    val currentTarget: StateFlow<GeoPoint?> get() = currentTargetMutable
+
+    private val allVisitedMutable = mutableStateOf(false)
+    val allVisited: State<Boolean> = allVisitedMutable
+
     private val isPinCreated = MutableStateFlow(false)
+    val visibleRange = 5.0
 
-    val targetLatLng = Pair(-1.016238, -78.565148)
-    val visibleRange = 7.0
+    private val uiStateMutable = MutableStateFlow<TourUIState>(TourUIState.Loading)
+    val uiState: StateFlow<TourUIState> = uiStateMutable
 
-    private val geoPoints = mutableStateListOf<Triple<Double, Double, String>>()
-    private val visitedPoints = mutableStateListOf<String>()
+    fun initialize(context: Context, geoPoints: List<GeoPoint>) {
+        tourManager = TourManager(context)
+        tourManager.setGeoPoints(geoPoints)
 
-    private val currentTargetMutable = MutableStateFlow<Triple<Double, Double, String>?>(null)
-    val currentTarget: StateFlow<Triple<Double, Double, String>?> get() = currentTargetMutable
-
-    fun setGeoPoints(points: List<Triple<Double, Double, String>>) {
-        geoPoints.clear()
-        geoPoints.addAll(points)
+        viewModelScope.launch {
+            try {
+                tourManager.loadVisitedPoints()
+                uiStateMutable.value = TourUIState.InProgress(
+                    target = tourManager.getNextTarget(0.0, 0.0) ?: GeoPoint(0.0, 0.0, "Sin destino")
+                )
+            } catch (e: Exception) {
+                uiStateMutable.value = TourUIState.Error(e.localizedMessage ?: "Error desconocido")
+            }
+        }
     }
 
-    fun updateCurrentTarget(earth: Earth) {
-        val geoPose = earth.cameraGeospatialPose
-        val currentLat = geoPose.latitude
-        val currentLon = geoPose.longitude
-
-        val notVisitedPoints = geoPoints.filter { it.third !in visitedPoints }
-
-        val closestPoint = notVisitedPoints.minByOrNull { point ->
-            Utils.haversineDistance(currentLat, currentLon, point.first, point.second)
+    fun updateTarget(currentLat: Double, currentLon: Double) {
+        val target = tourManager.getNextTarget(currentLat, currentLon)
+        if (tourManager.isAllVisited()) {
+            uiStateMutable.value = TourUIState.Completed
+        } else if (target != null) {
+            uiStateMutable.value = TourUIState.InProgress(target)
         }
+    }
 
-        currentTargetMutable.value = closestPoint
+    fun markCurrentTargetVisited() {
+        viewModelScope.launch {
+            when (val state = uiStateMutable.value) {
+                is TourUIState.InProgress -> {
+                    tourManager.markPointAsVisited(state.target.name)
+                    val nextTarget = tourManager.getNextTarget(state.target.latitude, state.target.longitude)
+                    if (tourManager.isAllVisited()) {
+                        uiStateMutable.value = TourUIState.Completed
+                    } else if (nextTarget != null) {
+                        uiStateMutable.value = TourUIState.InProgress(nextTarget)
+                    }
+                }
+                else -> {}
+            }
+        }
     }
 
     fun updateSession(
@@ -62,6 +94,8 @@ class ARViewModel : ViewModel() {
         materialLoader: MaterialLoader
     ) {
         if (frame == null || earth == null) return
+        val currentTarget = currentTargetMutable.value
+        if (currentTarget == null) return
         try {
             if (earth.trackingState == TrackingState.TRACKING) {
                 val geoPose = earth.cameraGeospatialPose
@@ -69,16 +103,16 @@ class ARViewModel : ViewModel() {
                 val distance = Utils.haversineDistance(
                     geoPose.latitude,
                     geoPose.longitude,
-                    targetLatLng.first,
-                    targetLatLng.second
+                    currentTarget.latitude,
+                    currentTarget.longitude
                 )
 
                 distanceTextMutable.value = "${"%.2f".format(distance)} m"
 
                 if (distance <= visibleRange && !isPinCreated.value) {
                     val anchor = earth.createAnchor(
-                        targetLatLng.first,
-                        targetLatLng.second,
+                        currentTarget.latitude,
+                        currentTarget.longitude,
                         geoPose.altitude,
                         floatArrayOf(0f, 0f, 0f, 1f)
                     )
@@ -124,7 +158,6 @@ class ARViewModel : ViewModel() {
         arrowNode: ModelNode,
         frame: Frame?,
         pinNode: AnchorNode?,
-        targetLatLng: Pair<Double, Double>,
         earth: Earth?,
     ) {
         frame?.camera?.pose?.let { pose ->
@@ -141,12 +174,14 @@ class ARViewModel : ViewModel() {
             } else {
                 val earth = earth ?: return
                 val geoPose = earth.cameraGeospatialPose
+                val currentTarget = currentTargetMutable.value
+                if (currentTarget == null) return
 
                 val offset = Utils.geoDistanceToLocal(
                     currentLat = geoPose.latitude,
                     currentLon = geoPose.longitude,
-                    targetLat = targetLatLng.first,
-                    targetLon = targetLatLng.second
+                    targetLat = currentTarget.latitude,
+                    targetLon = currentTarget.longitude
                 )
 
                 KotlinFloat3(
