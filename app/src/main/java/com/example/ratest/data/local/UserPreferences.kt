@@ -25,4 +25,11 @@ object UserPreferences {
             preferences[VISITED_POINTS_KEY] = current + pointName
         }
     }
+
+    suspend fun clearAllVisitedPoints(context: Context) {
+        context.dataStore.edit { preferences ->
+            preferences[VISITED_POINTS_KEY] = emptySet()
+        }
+    }
+
 }

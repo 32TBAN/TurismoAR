@@ -36,7 +36,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import com.example.ratest.Utils.GeoPoint
 import com.example.ratest.Utils.Utils
+import com.example.ratest.presentation.Components.models.CustomButton
 import com.example.ratest.presentation.viewmodels.TourUIState
+import com.example.ratest.ui.theme.DarkGreen
+import com.example.ratest.ui.theme.Green
+import com.example.ratest.ui.theme.LightGreen
 import io.github.sceneview.ar.node.AnchorNode
 
 @Composable
@@ -45,15 +49,15 @@ fun ARScreen(
     geoPoints: List<GeoPoint>
 ) {
     val viewModel: ARViewModel = viewModel()
+    val uiState by viewModel.uiState.collectAsState()
+    val distanceText by viewModel.distanceText.collectAsState()
+
     val context = LocalContext.current
     LaunchedEffect(Unit) {
+        // Se Inicializa el ViewModel con los geoPoints
         var validGeoPoints = geoPoints.filter { it.name != "" }
         viewModel.initialize(context, validGeoPoints)
     }
-    val uiState by viewModel.uiState.collectAsState()
-
-    var showDialog by remember { mutableStateOf(false) }
-    val currentTarget by viewModel.currentTarget.collectAsState()
 
     when (uiState) {
         is TourUIState.Loading -> {
@@ -61,27 +65,19 @@ fun ARScreen(
         }
 
         is TourUIState.InProgress -> {
-            val distanceText by viewModel.distanceText.collectAsState()
-            val target = (uiState as TourUIState.InProgress).target
-
             val engine = rememberEngine()
             val modelLoader = rememberModelLoader(engine = engine)
             val materialLoader = rememberMaterialLoader(engine = engine)
             val cameraNode = rememberARCameraNode(engine = engine)
-
-            val arrowNode = remember {
-                ModelNode(
-                    modelInstance = modelLoader.createModelInstance(
-                        assetFileLocation = "models/arrow.glb"
-                    ),
-                    scaleToUnits = 0.2f
+            val view = rememberView(engine = engine)
+            val childNodes = rememberNodes {
+                add(
+                    ModelNode(
+                        modelInstance = modelLoader.createModelInstance("models/arrow.glb"),
+                        scaleToUnits = 0.2f
+                    )
                 )
             }
-
-            val childNodes = rememberNodes {
-                add(arrowNode)
-            }
-            val view = rememberView(engine = engine)
             val collisionSystem = rememberCollisionSystem(view = view)
             val planeRenderer = remember {
                 mutableStateOf(true)
@@ -113,45 +109,29 @@ fun ARScreen(
                     frame.value = updatedFrame
                     val earth = session.earth
 
-                    if (earth != null) {
-                        val geoPose = earth.cameraGeospatialPose
-
-                        viewModel.updateTarget(geoPose.latitude, geoPose.longitude)
-
-                        currentTarget?.let { target ->
-                            val distance = Utils.haversineDistance(
-                                geoPose.latitude,
-                                geoPose.longitude,
-                                target.latitude,
-                                target.longitude
-                            )
-
-                            if (distance <= 2 && !showDialog) {
-                                showDialog = true
-                            }
-                        }
-
-                        viewModel.updateSession(
-                            updatedFrame, earth,
-                            { anchorNode ->
-                                if (anchorNode != null) {
-                                    childNodes.add(anchorNode)
-                                } else {
-                                    if (childNodes.size > 1) {
-                                        childNodes.removeAt(1)
-                                    }
+                    viewModel.updateTarget(earth?.cameraGeospatialPose?.latitude, earth?.cameraGeospatialPose?.longitude)
+                        
+                    viewModel.updateSession(
+                        updatedFrame, earth,
+                        { anchorNode ->
+                            if (anchorNode != null) {
+                                childNodes.add(anchorNode)
+                            } else {
+                                if (childNodes.size > 1) {
+                                    childNodes.removeAt(1)
                                 }
-                            },
-                            modelInstance, engine, modelLoader, materialLoader
-                        )
+                            }
+                        },
+                        modelInstance, engine, modelLoader, materialLoader
+                    )
 
-                        viewModel.updateArrowNode(
-                            arrowNode = childNodes[0] as ModelNode,
-                            frame = updatedFrame,
-                            pinNode = if (childNodes.size > 1) childNodes[1] as? AnchorNode else null,
-                            earth = earth
-                        )
-                    }
+                    viewModel.updateArrowNode(
+                        arrowNode = childNodes[0] as ModelNode,
+                        frame = updatedFrame,
+                        pinNode = if (childNodes.size > 1) childNodes[1] as? AnchorNode else null,
+                        earth = earth
+                    )
+
                 },
                 sessionConfiguration = { session, config ->
                     config.geospatialMode = Config.GeospatialMode.ENABLED
@@ -165,8 +145,6 @@ fun ARScreen(
                     session.configure(config)
                 }
             )
-            Text("Se dirije a ${target.name}", color = Color.White)
-
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -184,16 +162,17 @@ fun ARScreen(
 
         is TourUIState.Arrived -> {
             val target = (uiState as TourUIState.Arrived).target
-            Log.d("ARScreen", "Llegaste a ${target.name}")
+            Log.d("GeoAR", "Arrived at: $target")
             AlertDialog(
-                onDismissRequest = { showDialog = false },
-                title = { Text(text = "¡Llegaste a ${currentTarget?.name}!") },
+                onDismissRequest = {
+                    uiState !is TourUIState.Arrived
+                },
+                title = { Text(text = "¡Llegaste a ${target.name}!") },
                 text = { Text("¿Quieres marcar este lugar como visitado?") },
                 confirmButton = {
                     TextButton(
                         onClick = {
                             viewModel.markCurrentTargetVisited()
-                            showDialog = false
                         }
                     ) {
                         Text("Sí")
@@ -213,14 +192,15 @@ fun ARScreen(
                     text = "🎉 ¡Felicidades!",
                     fontSize = 32.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF4CAF50)
+                    color = Green
                 )
                 Text(
                     text = "Completaste el tour turístico.",
                     fontSize = 20.sp,
                     modifier = Modifier.padding(top = 16.dp),
-                    color = Color.White
+                    color = DarkGreen
                 )
+                CustomButton("Comenzar de nuevo", onClick = { viewModel.restartTour() }, modifier = Modifier.padding(top = 32.dp))
             }
         }
 

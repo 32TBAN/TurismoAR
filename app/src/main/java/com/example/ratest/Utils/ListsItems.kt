@@ -83,7 +83,7 @@ fun getCards(): List<List<CardItem>> {
             rute = "transportes",
             geoPoints = listOf(
                 GeoPoint(-1.016265, -78.565139, "Punto 1"),
-                GeoPoint(-1.016179, -78.565177, "Punto 2"),
+                GeoPoint(-1.016227, -78.565158, "Punto 2"),
                 GeoPoint(-1.016179, -78.565177, ""),
                 GeoPoint(-1.016179, -78.565177, "")
 

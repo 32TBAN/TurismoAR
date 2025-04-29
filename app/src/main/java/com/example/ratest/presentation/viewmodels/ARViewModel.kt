@@ -31,39 +31,47 @@ class ARViewModel : ViewModel() {
     private val distanceTextMutable = MutableStateFlow("0.0 m")
     val distanceText: StateFlow<String> = distanceTextMutable
 
+    private val isPinCreated = MutableStateFlow(false)
+    private val uiStateMutable = MutableStateFlow<TourUIState>(TourUIState.Loading)
+    val uiState: StateFlow<TourUIState> = uiStateMutable
+
     private val currentTargetMutable = MutableStateFlow<GeoPoint?>(null)
     val currentTarget: StateFlow<GeoPoint?> get() = currentTargetMutable
 
     private val allVisitedMutable = mutableStateOf(false)
     val allVisited: State<Boolean> = allVisitedMutable
 
-    private val isPinCreated = MutableStateFlow(false)
-    val visibleRange = 5.0
-
-    private val uiStateMutable = MutableStateFlow<TourUIState>(TourUIState.Loading)
-    val uiState: StateFlow<TourUIState> = uiStateMutable
+    val visibleRange = 7.0
 
     fun initialize(context: Context, geoPoints: List<GeoPoint>) {
         tourManager = TourManager(context)
+        Log.d("GeoAR", "GeoAR: $geoPoints")
         tourManager.setGeoPoints(geoPoints)
 
         viewModelScope.launch {
             try {
                 tourManager.loadVisitedPoints()
                 uiStateMutable.value = TourUIState.InProgress(
-                    target = tourManager.getNextTarget(0.0, 0.0) ?: GeoPoint(0.0, 0.0, "Sin destino")
+                    target = tourManager.getNextTarget(0.0, 0.0) ?: GeoPoint(
+                        0.0,
+                        0.0,
+                        "Sin destino"
+                    )
                 )
+                Log.d("GeoAR", "Initialized with target: ${uiStateMutable.value}")
             } catch (e: Exception) {
                 uiStateMutable.value = TourUIState.Error(e.localizedMessage ?: "Error desconocido")
             }
         }
     }
 
-    fun updateTarget(currentLat: Double, currentLon: Double) {
+    fun updateTarget(currentLat: Double?, currentLon: Double?) {
+        if (currentLat == null || currentLon == null) return
         val target = tourManager.getNextTarget(currentLat, currentLon)
         if (tourManager.isAllVisited()) {
             uiStateMutable.value = TourUIState.Completed
         } else if (target != null) {
+//            Log.d("GeoAR", "Updating target to: $target")
             uiStateMutable.value = TourUIState.InProgress(target)
         }
     }
@@ -71,16 +79,40 @@ class ARViewModel : ViewModel() {
     fun markCurrentTargetVisited() {
         viewModelScope.launch {
             when (val state = uiStateMutable.value) {
-                is TourUIState.InProgress -> {
+
+                is TourUIState.Arrived -> {
                     tourManager.markPointAsVisited(state.target.name)
-                    val nextTarget = tourManager.getNextTarget(state.target.latitude, state.target.longitude)
+                    val nextTarget =
+                        tourManager.getNextTarget(state.target.latitude, state.target.longitude)
                     if (tourManager.isAllVisited()) {
                         uiStateMutable.value = TourUIState.Completed
                     } else if (nextTarget != null) {
                         uiStateMutable.value = TourUIState.InProgress(nextTarget)
                     }
                 }
+
                 else -> {}
+            }
+        }
+    }
+
+    fun restartTour() {
+        viewModelScope.launch {
+            try {
+                tourManager.clearVisitedPoints()
+
+                tourManager.resetTour()
+
+                val firstTarget = tourManager.getNextTarget(0.0, 0.0)
+                if (firstTarget != null) {
+                    uiStateMutable.value = TourUIState.InProgress(firstTarget)
+                } else {
+                    uiStateMutable.value = TourUIState.Error("No hay destinos disponibles.")
+                }
+
+                isPinCreated.value = false
+            } catch (e: Exception) {
+                uiStateMutable.value = TourUIState.Error(e.localizedMessage ?: "Error reiniciando tour")
             }
         }
     }
@@ -94,7 +126,7 @@ class ARViewModel : ViewModel() {
         materialLoader: MaterialLoader
     ) {
         if (frame == null || earth == null) return
-        val currentTarget = currentTargetMutable.value
+        val currentTarget = (uiStateMutable.value as? TourUIState.InProgress)?.target
         if (currentTarget == null) return
         try {
             if (earth.trackingState == TrackingState.TRACKING) {
@@ -108,6 +140,10 @@ class ARViewModel : ViewModel() {
                 )
 
                 distanceTextMutable.value = "${"%.2f".format(distance)} m"
+
+                if (distance <= 2) {
+                    uiStateMutable.value = TourUIState.Arrived(currentTarget)
+                }
 
                 if (distance <= visibleRange && !isPinCreated.value) {
                     val anchor = earth.createAnchor(

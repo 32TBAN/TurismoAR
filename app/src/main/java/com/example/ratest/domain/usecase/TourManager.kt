@@ -1,6 +1,7 @@
 package com.example.ratest.domain.usecase
 
 import android.content.Context
+import android.util.Log
 import com.example.ratest.Utils.GeoPoint
 import com.example.ratest.data.local.UserPreferences
 import kotlinx.coroutines.flow.first
@@ -8,7 +9,7 @@ import kotlinx.coroutines.flow.first
 class TourManager(private val context: Context) {
 
     private val geoPoints = mutableListOf<GeoPoint>()
-    private val visitedPoints = mutableSetOf<String>()
+    private var visitedPoints = mutableSetOf<String>()
 
     fun setGeoPoints(points: List<GeoPoint>) {
         geoPoints.clear()
@@ -19,6 +20,7 @@ class TourManager(private val context: Context) {
         val saved = UserPreferences.getVisitedPoints(context).first()
         visitedPoints.clear()
         visitedPoints.addAll(saved)
+        Log.d("GeoAR", "Loaded visited points: $visitedPoints")
     }
 
     suspend fun markPointAsVisited(pointName: String) {
@@ -33,6 +35,14 @@ class TourManager(private val context: Context) {
 
     fun isAllVisited(): Boolean {
         return geoPoints.all { it.name in visitedPoints }
+    }
+
+    suspend fun clearVisitedPoints() {
+        UserPreferences.clearAllVisitedPoints(context)
+    }
+
+    fun resetTour() {
+        visitedPoints = mutableSetOf()
     }
 
     fun haversineDistance(
