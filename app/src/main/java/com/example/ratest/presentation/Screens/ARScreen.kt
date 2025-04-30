@@ -2,6 +2,7 @@ package com.example.ratest.presentation.Screens
 
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -35,27 +36,25 @@ import com.example.ratest.presentation.viewmodels.ARViewModel
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import com.example.ratest.Utils.GeoPoint
-import com.example.ratest.Utils.Utils
-import com.example.ratest.presentation.Components.models.CustomButton
+import com.example.ratest.presentation.Components.models.BottomOverlay
 import com.example.ratest.presentation.viewmodels.TourUIState
-import com.example.ratest.ui.theme.DarkGreen
-import com.example.ratest.ui.theme.Green
-import com.example.ratest.ui.theme.LightGreen
 import io.github.sceneview.ar.node.AnchorNode
 
 @Composable
 fun ARScreen(
     navController: NavController,
-    geoPoints: List<GeoPoint>
+    geoPoints: List<GeoPoint>,
+    modelName: String = "pin"
 ) {
     val viewModel: ARViewModel = viewModel()
     val uiState by viewModel.uiState.collectAsState()
     val distanceText by viewModel.distanceText.collectAsState()
 
     val context = LocalContext.current
+    var validGeoPoints = geoPoints.filter { it.name != "" }
+
     LaunchedEffect(Unit) {
         // Se Inicializa el ViewModel con los geoPoints
-        var validGeoPoints = geoPoints.filter { it.name != "" }
         viewModel.initialize(context, validGeoPoints)
     }
 
@@ -74,7 +73,7 @@ fun ARScreen(
                 add(
                     ModelNode(
                         modelInstance = modelLoader.createModelInstance("models/arrow.glb"),
-                        scaleToUnits = 0.2f
+                        scaleToUnits = 0.05f
                     )
                 )
             }
@@ -92,71 +91,65 @@ fun ARScreen(
                 mutableStateOf<Frame?>(null)
             }
 
-            ARScene(
-                modifier = Modifier.fillMaxSize(),
-                childNodes = childNodes,
-                engine = engine,
-                view = view,
-                modelLoader = modelLoader,
-                collisionSystem = collisionSystem,
-                planeRenderer = planeRenderer.value,
-                cameraNode = cameraNode,
-                materialLoader = materialLoader,
-                onTrackingFailureChanged = {
-                    trackingFailureReason.value = it
-                },
-                onSessionUpdated = { session, updatedFrame ->
-                    frame.value = updatedFrame
-                    val earth = session.earth
+            Box(modifier = Modifier.fillMaxSize()) {
+                ARScene(
+                    modifier = Modifier.fillMaxSize(),
+                    childNodes = childNodes,
+                    engine = engine,
+                    view = view,
+                    modelLoader = modelLoader,
+                    collisionSystem = collisionSystem,
+                    planeRenderer = planeRenderer.value,
+                    cameraNode = cameraNode,
+                    materialLoader = materialLoader,
+                    onTrackingFailureChanged = {
+                        trackingFailureReason.value = it
+                    },
+                    onSessionUpdated = { session, updatedFrame ->
+                        frame.value = updatedFrame
+                        val earth = session.earth
 
-                    viewModel.updateTarget(earth?.cameraGeospatialPose?.latitude, earth?.cameraGeospatialPose?.longitude)
-                        
-                    viewModel.updateSession(
-                        updatedFrame, earth,
-                        { anchorNode ->
-                            if (anchorNode != null) {
-                                childNodes.add(anchorNode)
-                            } else {
-                                if (childNodes.size > 1) {
-                                    childNodes.removeAt(1)
+                        viewModel.updateTarget(
+                            earth?.cameraGeospatialPose?.latitude,
+                            earth?.cameraGeospatialPose?.longitude
+                        )
+
+                        viewModel.updateSession(
+                            updatedFrame, earth,
+                            { anchorNode ->
+                                if (anchorNode != null) {
+                                    childNodes.add(anchorNode)
+                                } else {
+                                    if (childNodes.size > 1) {
+                                        childNodes.removeAt(1)
+                                    }
                                 }
+                            },
+                            modelInstance, engine, modelLoader, materialLoader, modelName
+                        )
+
+                        viewModel.updateArrowNode(
+                            arrowNode = childNodes[0] as ModelNode,
+                            frame = updatedFrame,
+                            pinNode = if (childNodes.size > 1) childNodes[1] as? AnchorNode else null,
+                            earth = earth
+                        )
+
+                    },
+                    sessionConfiguration = { session, config ->
+                        config.geospatialMode = Config.GeospatialMode.ENABLED
+                        config.depthMode =
+                            when (session.isDepthModeSupported(Config.DepthMode.AUTOMATIC)) {
+                                true -> Config.DepthMode.AUTOMATIC
+                                else -> Config.DepthMode.DISABLED
                             }
-                        },
-                        modelInstance, engine, modelLoader, materialLoader
-                    )
-
-                    viewModel.updateArrowNode(
-                        arrowNode = childNodes[0] as ModelNode,
-                        frame = updatedFrame,
-                        pinNode = if (childNodes.size > 1) childNodes[1] as? AnchorNode else null,
-                        earth = earth
-                    )
-
-                },
-                sessionConfiguration = { session, config ->
-                    config.geospatialMode = Config.GeospatialMode.ENABLED
-                    config.depthMode =
-                        when (session.isDepthModeSupported(Config.DepthMode.AUTOMATIC)) {
-                            true -> Config.DepthMode.AUTOMATIC
-                            else -> Config.DepthMode.DISABLED
-                        }
-                    config.lightEstimationMode = Config.LightEstimationMode.ENVIRONMENTAL_HDR
-                    config.updateMode = Config.UpdateMode.LATEST_CAMERA_IMAGE
-                    session.configure(config)
-                }
-            )
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.Top
-            ) {
-                Text(
-                    text = distanceText,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
+                        config.lightEstimationMode = Config.LightEstimationMode.ENVIRONMENTAL_HDR
+                        config.updateMode = Config.UpdateMode.LATEST_CAMERA_IMAGE
+                        session.configure(config)
+                    }
                 )
+
+                BottomOverlay(distanceText = distanceText)
             }
         }
 
@@ -182,26 +175,12 @@ fun ARScreen(
         }
 
         is TourUIState.Completed -> {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(32.dp),
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = "🎉 ¡Felicidades!",
-                    fontSize = 32.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Green
-                )
-                Text(
-                    text = "Completaste el tour turístico.",
-                    fontSize = 20.sp,
-                    modifier = Modifier.padding(top = 16.dp),
-                    color = DarkGreen
-                )
-                CustomButton("Comenzar de nuevo", onClick = { viewModel.restartTour() }, modifier = Modifier.padding(top = 32.dp))
-            }
+            TourResultScreen(
+                navController,
+                validGeoPoints.size,
+                viewModel.getZisedVisitedPoints(),
+                viewModel
+            )
         }
 
         is TourUIState.Error -> {

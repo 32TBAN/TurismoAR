@@ -168,7 +168,7 @@ fun MainScreen() {
                     if (isPermissionGranted) {
                         isTopBarVisible = false
                         isBottomBarVisible = false
-                        ARScreen(navController, geoPoints)
+                        ARScreen(navController, geoPoints, model)
                     } else {
                         Text("Se requiere permiso de ubicación para continuar")
                     }

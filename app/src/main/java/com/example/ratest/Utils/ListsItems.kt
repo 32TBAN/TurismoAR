@@ -29,7 +29,7 @@ fun getCards(): List<List<CardItem>> {
             title = stringResource(id = R.string.cart_title_tourist_routes1),
             description = stringResource(id = R.string.cart_description_tourist_routes1),
             imageRes = R.drawable.comidas,
-            rute = "comidas",
+            rute = "pin",
             geoPoints = listOf(
                 GeoPoint(-1.0440176, -78.5907475, "Helados"),
                 GeoPoint(-1.0440112, -78.5904399, ""),
@@ -43,7 +43,7 @@ fun getCards(): List<List<CardItem>> {
             title = stringResource(id = R.string.cart_title_tourist_routes2),
             description = stringResource(id = R.string.cart_description_tourist_routes2),
             imageRes = R.drawable.monumentos,
-            rute = "monumentos",
+            rute = "pin",
             geoPoints = listOf(
                 GeoPoint(
                     -1.043688,
@@ -62,7 +62,7 @@ fun getCards(): List<List<CardItem>> {
             title = stringResource(id = R.string.cart_title_tourist_routes3),
             description = stringResource(id = R.string.cart_description_tourist_routes3),
             imageRes = R.drawable.plazas,
-            rute = "plazas",
+            rute = "pin",
             geoPoints = listOf(
                 GeoPoint(-1.046304, -78.593458, "Plaza Agusto Dávalos"),
                 GeoPoint(-1.045852, -78.593208, ""),
@@ -76,6 +76,7 @@ fun getCards(): List<List<CardItem>> {
                 GeoPoint(-1.047127, -78.588209, "Plaza San Antonío")
             )
         ),
+        //no solo prueba
         CardItem(
             title = stringResource(id = R.string.cart_title_tourist_routes4),
             description = stringResource(id = R.string.cart_description_tourist_routes4),
@@ -85,8 +86,10 @@ fun getCards(): List<List<CardItem>> {
                 GeoPoint(-1.016265, -78.565139, "Punto 1"),
                 GeoPoint(-1.016227, -78.565158, "Punto 2"),
                 GeoPoint(-1.016179, -78.565177, ""),
-                GeoPoint(-1.016179, -78.565177, "")
-
+                GeoPoint(-1.016179, -78.565177, ""),
+                //pruebas U
+//                GeoPoint(-1.267947,-78.624075, "Punto 1"),
+//                GeoPoint(-1.267857, -78.624126, "Punto 2")
             )
         )
     )
@@ -137,7 +140,10 @@ fun getCards(): List<List<CardItem>> {
             rute = "iglesia",
             type = "marcador",
             geoPoints = listOf(
-                GeoPoint(-1.044253, -78.593392, stringResource(id = R.string.cart_title_places_of_interest4))
+//                GeoPoint(-1.044253, -78.593392, stringResource(id = R.string.cart_title_places_of_interest4))
+                //Pruebas
+                        GeoPoint(-1.016265, -78.565139, stringResource(id = R.string.cart_title_places_of_interest4))
+
             )
         ),
         CardItem(

@@ -35,13 +35,7 @@ class ARViewModel : ViewModel() {
     private val uiStateMutable = MutableStateFlow<TourUIState>(TourUIState.Loading)
     val uiState: StateFlow<TourUIState> = uiStateMutable
 
-    private val currentTargetMutable = MutableStateFlow<GeoPoint?>(null)
-    val currentTarget: StateFlow<GeoPoint?> get() = currentTargetMutable
-
-    private val allVisitedMutable = mutableStateOf(false)
-    val allVisited: State<Boolean> = allVisitedMutable
-
-    val visibleRange = 7.0
+    val visibleRange = 4.9
 
     fun initialize(context: Context, geoPoints: List<GeoPoint>) {
         tourManager = TourManager(context)
@@ -117,13 +111,18 @@ class ARViewModel : ViewModel() {
         }
     }
 
+    fun getZisedVisitedPoints(): Int {
+        return tourManager.visitedPoints.size
+    }
+
     fun updateSession(
         frame: Frame?, earth: Earth?,
         onAnchorCreated: (AnchorNode?) -> Unit,
         modelInstanceList: MutableList<ModelInstance>,
         engine: Engine,
         modelLoader: ModelLoader,
-        materialLoader: MaterialLoader
+        materialLoader: MaterialLoader,
+        nameModel: String = "pin"
     ) {
         if (frame == null || earth == null) return
         val currentTarget = (uiStateMutable.value as? TourUIState.InProgress)?.target
@@ -141,7 +140,7 @@ class ARViewModel : ViewModel() {
 
                 distanceTextMutable.value = "${"%.2f".format(distance)} m"
 
-                if (distance <= 2) {
+                if (nameModel == "pin" && distance <= 2) {
                     uiStateMutable.value = TourUIState.Arrived(currentTarget)
                 }
 
@@ -171,7 +170,7 @@ class ARViewModel : ViewModel() {
                         materialLoader = materialLoader,
                         modelInstance = modelInstanceList,
                         anchor = anchor,
-                        model = Utils.getModel("pin"),
+                        model = Utils.getModel(nameModel),
                         scaleToUnits = 0.8f
                     )
 
@@ -198,20 +197,22 @@ class ARViewModel : ViewModel() {
     ) {
         frame?.camera?.pose?.let { pose ->
             val forwardDirection = Utils.quaternionToForward(pose.rotationQuaternion)
-            val distance = -0.3f
+            val hudDistance = -0.2f
+            val hudYOffset = 0.2f
             arrowNode.position = KotlinFloat3(
-                pose.tx() + forwardDirection.x * distance,
-                pose.ty() - 0.2f,
-                pose.tz() + forwardDirection.z * distance
+                pose.tx() + forwardDirection.x * hudDistance,
+                pose.ty() - hudYOffset,
+                pose.tz() + forwardDirection.z * hudDistance
             )
 
             val pinPosition = if (pinNode != null) {
                 pinNode.worldPosition
             } else {
+                val currentTarget = (uiStateMutable.value as? TourUIState.InProgress)?.target
+                if (currentTarget == null) return
+
                 val earth = earth ?: return
                 val geoPose = earth.cameraGeospatialPose
-                val currentTarget = currentTargetMutable.value
-                if (currentTarget == null) return
 
                 val offset = Utils.geoDistanceToLocal(
                     currentLat = geoPose.latitude,

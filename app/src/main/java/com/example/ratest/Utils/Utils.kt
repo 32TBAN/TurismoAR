@@ -23,7 +23,7 @@ object Utils {
     fun getModel(modelname: String): String {
         Log.e("GeoAR", modelname)
         return when (modelname) {
-            "comidas" -> "models/frostmourne_with_animations.glb"
+            "iglesia" -> "models/Iglesia.glb"
             "monumentos" -> "models/helm_of_domination.glb"
             "plazas" -> "models/anime_fox_girl.glb"
             "transportes" -> "models/warcraft_draenei_fanart.glb"

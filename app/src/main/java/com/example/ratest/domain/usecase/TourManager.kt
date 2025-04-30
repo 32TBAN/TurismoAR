@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.first
 class TourManager(private val context: Context) {
 
     private val geoPoints = mutableListOf<GeoPoint>()
-    private var visitedPoints = mutableSetOf<String>()
+    var visitedPoints = mutableSetOf<String>()
 
     fun setGeoPoints(points: List<GeoPoint>) {
         geoPoints.clear()
