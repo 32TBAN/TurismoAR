@@ -44,7 +44,8 @@ import io.github.sceneview.ar.node.AnchorNode
 fun ARScreen(
     navController: NavController,
     geoPoints: List<GeoPoint>,
-    modelName: String = "pin"
+    modelName: String = "pin",
+    type: String = "route"
 ) {
     val viewModel: ARViewModel = viewModel()
     val uiState by viewModel.uiState.collectAsState()
@@ -72,7 +73,7 @@ fun ARScreen(
             val childNodes = rememberNodes {
                 add(
                     ModelNode(
-                        modelInstance = modelLoader.createModelInstance("models/arrow.glb"),
+                        modelInstance = modelLoader.createModelInstance("models/flecha.glb"),
                         scaleToUnits = 0.05f
                     )
                 )
@@ -125,7 +126,7 @@ fun ARScreen(
                                     }
                                 }
                             },
-                            modelInstance, engine, modelLoader, materialLoader, modelName
+                            modelInstance, engine, modelLoader, materialLoader, modelName, type
                         )
 
                         viewModel.updateArrowNode(

@@ -24,12 +24,7 @@ object Utils {
         Log.e("GeoAR", modelname)
         return when (modelname) {
             "iglesia" -> "models/Iglesia.glb"
-            "monumentos" -> "models/helm_of_domination.glb"
-            "plazas" -> "models/anime_fox_girl.glb"
-            "transportes" -> "models/warcraft_draenei_fanart.glb"
-            "arrow" -> "models/arrow.glb"
-            "pin" -> "models/navigation_pin.glb"
-            else -> "models/warcraft_draenei_fanart.glb"
+            else -> "models/navigation_pin.glb"
         }
     }
 

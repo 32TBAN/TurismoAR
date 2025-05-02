@@ -122,7 +122,8 @@ class ARViewModel : ViewModel() {
         engine: Engine,
         modelLoader: ModelLoader,
         materialLoader: MaterialLoader,
-        nameModel: String = "pin"
+        nameModel: String = "pin",
+        type: String = "ruta"
     ) {
         if (frame == null || earth == null) return
         val currentTarget = (uiStateMutable.value as? TourUIState.InProgress)?.target
@@ -140,7 +141,8 @@ class ARViewModel : ViewModel() {
 
                 distanceTextMutable.value = "${"%.2f".format(distance)} m"
 
-                if (nameModel == "pin" && distance <= 2) {
+                Log.d("GeoAR", type)
+                if (type == "ruta" && distance <= 2) {
                     uiStateMutable.value = TourUIState.Arrived(currentTarget)
                 }
 

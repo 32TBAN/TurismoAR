@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 object InicioScreen
 
 @Serializable
-data class RARScreen(val model: String)
+data class RARScreen(val model: String, val type: String)
 
 @Serializable
 object RoutesScreen

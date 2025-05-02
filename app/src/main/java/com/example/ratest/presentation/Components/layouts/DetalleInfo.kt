@@ -110,7 +110,7 @@ fun DetalleInfo(
 
                                 ArCoreApk.Availability.SUPPORTED_INSTALLED -> {
                                     // Dispositivo compatible con AR
-                                    navController.navigate(RARScreen(it.rute))
+                                    navController.navigate(RARScreen(it.rute, it.type))
                                 }
 
                                 else -> {
