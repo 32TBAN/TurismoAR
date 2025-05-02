@@ -59,7 +59,7 @@ fun SectionCards(
                     cards.forEachIndexed {index, item ->
                         SmallCard(title = item.title, onClick = {
                             navController.navigate(DetalleScreen(item.title))
-                        })
+                        }, icon = item.icon)
                     }
                 }
             }

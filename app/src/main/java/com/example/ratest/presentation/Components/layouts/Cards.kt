@@ -79,7 +79,8 @@ fun SmallCard(
     title: String,
     description: String = "",
     onClick: () -> Unit = {},
-    color: Color = DarkGreen
+    color: Color = DarkGreen,
+    icon: ImageVector = Icons.Default.Place
 ) {
     Card(
         modifier = Modifier
@@ -98,7 +99,7 @@ fun SmallCard(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Icon(
-                Icons.Default.Place,
+                icon,
                 contentDescription = null,
                 modifier = Modifier.size(48.dp),
                 LightGreen
@@ -137,7 +138,9 @@ fun CardBackgroundImage(
         shape = RoundedCornerShape(12.dp)
     ) {
         Box(
-            modifier = Modifier.fillMaxWidth().background(DarkGreen)
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(DarkGreen)
         ) {
 
             Image(

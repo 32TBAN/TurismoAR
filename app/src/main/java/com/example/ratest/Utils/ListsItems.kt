@@ -1,9 +1,22 @@
 package com.example.ratest.Utils
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBalance
+import androidx.compose.material.icons.filled.Church
+import androidx.compose.material.icons.filled.Diversity3
+import androidx.compose.material.icons.filled.Gavel
+import androidx.compose.material.icons.filled.HistoryEdu
+import androidx.compose.material.icons.filled.LocationCity
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import com.example.ratest.R
 import kotlinx.serialization.Serializable
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Restaurant
+import androidx.compose.material.icons.filled.Stadium
+import androidx.compose.material.icons.filled.Storefront
 
 @Serializable
 data class GeoPoint(
@@ -18,8 +31,8 @@ data class CardItem(
     val imageRes: Int = R.drawable.monumento,
     val rute: String = "",
     val type: String = "ruta",
-    var geoPoints: List<GeoPoint> = emptyList()
-    //todo agregar icono, nose si es necesario aqui.
+    var geoPoints: List<GeoPoint> = emptyList(),
+    val icon: ImageVector = Icons.Default.Place
 )
 
 @Composable
@@ -37,7 +50,8 @@ fun getCards(): List<List<CardItem>> {
                 GeoPoint(-1.0432587, -78.5899706, "Hornado"),
                 GeoPoint(-1.043082, -78.588926, ""),
                 GeoPoint(-1.043201, -78.588422, "Confiteria (Humas, Quimbolitos)")
-            )
+            ),
+            icon = Icons.Default.Restaurant
         ),
         CardItem(
             title = stringResource(id = R.string.cart_title_tourist_routes2),
@@ -56,7 +70,8 @@ fun getCards(): List<List<CardItem>> {
                     -78.590215,
                     stringResource(id = R.string.cart_title_places_of_interest1)
                 )
-            )
+            ),
+            icon = Icons.Default.AccountBalance
         ),
         CardItem(
             title = stringResource(id = R.string.cart_title_tourist_routes3),
@@ -74,7 +89,8 @@ fun getCards(): List<List<CardItem>> {
                 GeoPoint(-1.043098, -78.588930, "Mercado Central"),
                 GeoPoint(-1.047000, -78.588446, ""),
                 GeoPoint(-1.047127, -78.588209, "Plaza San Antonío")
-            )
+            ),
+            icon = Icons.Default.LocationCity
         ),
         //no solo prueba
         CardItem(
@@ -90,7 +106,8 @@ fun getCards(): List<List<CardItem>> {
                 //pruebas U
 //                GeoPoint(-1.267947,-78.624075, "Punto 1"),
 //                GeoPoint(-1.267857, -78.624126, "Punto 2")
-            )
+            ),
+            icon = Icons.Default.LocationOn
         )
     )
 
@@ -107,7 +124,8 @@ fun getCards(): List<List<CardItem>> {
                     -78.590215,
                     stringResource(id = R.string.cart_title_places_of_interest1)
                 )
-            )
+            ),
+            icon = Icons.Default.Diversity3
         ),
         CardItem(
             title = stringResource(id = R.string.cart_title_places_of_interest2),
@@ -121,7 +139,8 @@ fun getCards(): List<List<CardItem>> {
                     -78.591043,
                     stringResource(id = R.string.cart_title_places_of_interest2)
                 )
-            )
+            ),
+            icon = Icons.Default.HistoryEdu
         ),
         CardItem(
             title = stringResource(id = R.string.cart_title_places_of_interest3),
@@ -131,7 +150,8 @@ fun getCards(): List<List<CardItem>> {
             type = "marcador",
             geoPoints = listOf(
                 GeoPoint(-1.0440112, -78.5904399, stringResource(id = R.string.cart_title_places_of_interest3))
-            )
+            ),
+            icon = Icons.Default.Gavel
         ),
         CardItem(
             title = stringResource(id = R.string.cart_title_places_of_interest4),
@@ -144,7 +164,8 @@ fun getCards(): List<List<CardItem>> {
                 //Pruebas
                         GeoPoint(-1.016230, -78.565194, stringResource(id = R.string.cart_title_places_of_interest4))
 
-            )
+            ),
+            icon = Icons.Filled.Church
         ),
         CardItem(
             title = stringResource(id = R.string.cart_title_places_of_interest5),
@@ -154,7 +175,8 @@ fun getCards(): List<List<CardItem>> {
             type = "marcador",
             geoPoints = listOf(
                 GeoPoint(-1.047000, -78.588446, stringResource(id = R.string.cart_title_places_of_interest5))
-            )
+            ),
+            icon = Icons.Default.Stadium
         ),
         CardItem(
             title = stringResource(id = R.string.cart_title_places_of_interest6),
@@ -164,7 +186,8 @@ fun getCards(): List<List<CardItem>> {
             type = "marcador",
             geoPoints = listOf(
                 GeoPoint(-1.043098, -78.588930, stringResource(id = R.string.cart_title_places_of_interest6))
-            )
+            ),
+            icon = Icons.Default.Storefront
         )
     )
 

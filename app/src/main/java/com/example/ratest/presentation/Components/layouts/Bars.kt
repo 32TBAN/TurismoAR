@@ -21,6 +21,7 @@ import com.example.ratest.Utils.BottomBarIcon
 import androidx.compose.material3.Icon
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import com.example.ratest.presentation.Navigation.lables
 import com.example.ratest.presentation.Navigation.screens
 import com.example.ratest.presentation.Navigation.titlesTopBar
@@ -94,7 +95,7 @@ fun CustomTopBar(navController: NavController) {
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            Icon(painterResource(id = R.drawable.app_logo), contentDescription = "Logo")
+            Icon(painterResource(id = R.drawable.app_logo), contentDescription = "Logo", tint = Color.Unspecified)
 
             Spacer(modifier = Modifier.width(8.dp))
 
