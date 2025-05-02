@@ -142,7 +142,7 @@ fun getCards(): List<List<CardItem>> {
             geoPoints = listOf(
 //                GeoPoint(-1.044253, -78.593392, stringResource(id = R.string.cart_title_places_of_interest4))
                 //Pruebas
-                        GeoPoint(-1.016265, -78.565139, stringResource(id = R.string.cart_title_places_of_interest4))
+                        GeoPoint(-1.016230, -78.565194, stringResource(id = R.string.cart_title_places_of_interest4))
 
             )
         ),

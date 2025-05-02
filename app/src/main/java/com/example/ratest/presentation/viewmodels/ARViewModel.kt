@@ -141,7 +141,7 @@ class ARViewModel : ViewModel() {
 
                 distanceTextMutable.value = "${"%.2f".format(distance)} m"
 
-                Log.d("GeoAR", type)
+//                Log.d("GeoAR", type)
                 if (type == "ruta" && distance <= 2) {
                     uiStateMutable.value = TourUIState.Arrived(currentTarget)
                 }
@@ -161,9 +161,10 @@ class ARViewModel : ViewModel() {
                         Triple(lat, lng, alt)
                     }
 
+                    Log.d("GeoAR", "Anchor created at: $anchorLatLng")
                     val adjustedTargetPosition = KotlinFloat3(
                         anchorLatLng.first.toFloat(),
-                        anchorLatLng.second.toFloat(),
+                        geoPose.longitude.toFloat(),
                         geoPose.altitude.toFloat()
                     )
                     val pinNode = Utils.createAnchorNode(
@@ -173,10 +174,15 @@ class ARViewModel : ViewModel() {
                         modelInstance = modelInstanceList,
                         anchor = anchor,
                         model = Utils.getModel(nameModel),
-                        scaleToUnits = 0.8f
+                        scaleToUnits = 2.6f
                     )
 
                     pinNode.position = adjustedTargetPosition
+                    pinNode.position = KotlinFloat3(
+                        pinNode.position.x,
+                        0f,
+                        pinNode.position.z
+                    )
                     onAnchorCreated(pinNode)
                     isPinCreated.value = true
                 } else if (distance > visibleRange && isPinCreated.value) {
