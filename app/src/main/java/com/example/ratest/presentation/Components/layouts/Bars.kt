@@ -12,6 +12,7 @@ import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,7 +45,7 @@ fun CustomBottomBar(
     val icons = listOf(
         BottomBarIcon.Vector(Icons.Default.Home),
         BottomBarIcon.Vector(Icons.Default.Place),
-        BottomBarIcon.Drawable(R.drawable.ic_history)
+        BottomBarIcon.Vector(Icons.Default.MenuBook)
     )
 
     BottomNavigation(

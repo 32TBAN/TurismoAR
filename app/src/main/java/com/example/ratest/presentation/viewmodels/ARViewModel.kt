@@ -3,7 +3,6 @@ package com.example.ratest.presentation.viewmodels
 
 import android.content.Context
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.ratest.Utils.GeoPoint
 import com.example.ratest.Utils.Utils
@@ -20,7 +19,6 @@ import io.github.sceneview.node.ModelNode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import dev.romainguy.kotlin.math.Float3 as KotlinFloat3
-import androidx.compose.runtime.State
 import androidx.lifecycle.viewModelScope
 import com.example.ratest.domain.usecase.TourManager
 import kotlinx.coroutines.launch
@@ -35,11 +33,11 @@ class ARViewModel : ViewModel() {
     private val uiStateMutable = MutableStateFlow<TourUIState>(TourUIState.Loading)
     val uiState: StateFlow<TourUIState> = uiStateMutable
 
-    val visibleRange = 4.9
+    val visibleRange = 4.99
 
     fun initialize(context: Context, geoPoints: List<GeoPoint>) {
         tourManager = TourManager(context)
-        Log.d("GeoAR", "GeoAR: $geoPoints")
+//        Log.d("GeoAR", "GeoAR: $geoPoints")
         tourManager.setGeoPoints(geoPoints)
 
         viewModelScope.launch {
@@ -52,7 +50,7 @@ class ARViewModel : ViewModel() {
                         "Sin destino"
                     )
                 )
-                Log.d("GeoAR", "Initialized with target: ${uiStateMutable.value}")
+//                Log.d("GeoAR", "Initialized with target: ${uiStateMutable.value}")
             } catch (e: Exception) {
                 uiStateMutable.value = TourUIState.Error(e.localizedMessage ?: "Error desconocido")
             }

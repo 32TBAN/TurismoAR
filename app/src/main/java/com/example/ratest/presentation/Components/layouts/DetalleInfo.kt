@@ -44,18 +44,27 @@ import com.example.ratest.ui.theme.Green
 import com.example.ratest.ui.theme.White
 import com.google.ar.core.ArCoreApk
 import android.widget.Toast
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import com.example.ratest.presentation.viewmodels.RouteViewModel
 import com.example.ratest.ui.theme.Blue
 
 @Composable
 fun DetalleInfo(
-    routeId: String,
+    routeId: Int,
     navController: NavController,
     listState: LazyListState = rememberLazyListState()
 ) {
-    val place = getCards().flatMap { it }.find { it.title == routeId }
-
     val context = LocalContext.current
+    val viewModel = remember { RouteViewModel().apply { initialize(context) } }
+
+    LaunchedEffect(routeId) {
+        viewModel.loadGeoPoints(routeId)
+    }
+
+    val place = viewModel.
 
     place?.let {
         LazyColumn(state = listState) {

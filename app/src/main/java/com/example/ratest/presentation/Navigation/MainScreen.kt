@@ -20,8 +20,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
@@ -42,6 +44,7 @@ import com.example.ratest.presentation.Screens.ARScreen
 import com.example.ratest.presentation.Screens.HistoryScreen
 import com.example.ratest.presentation.Screens.InicioScreen
 import com.example.ratest.presentation.Screens.RoutesScreen
+import com.example.ratest.presentation.viewmodels.RouteViewModel
 
 import com.example.ratest.ui.theme.White
 
@@ -119,6 +122,7 @@ fun MainScreen() {
                 .padding(innerPadding)
                 .border(width = .2.dp, color = Color.White)
                 .background( White.copy(alpha = 0.9f)
+                    // Para el gradiente
 //                    Brush.linearGradient(
 //                        colors = listOf(
 //                            Blue.copy(alpha = 0.2f),
@@ -152,10 +156,19 @@ fun MainScreen() {
                     HistoryScreen(navController, listState)
                 }
                 composable<RARScreen> {
-                    val model = it.toRoute<RARScreen>().model
+                    val context = LocalContext.current
+                    val viewModel = remember { RouteViewModel().apply { initialize(context) } }
+
+                    val routeId = it.toRoute<RARScreen>().routeId
                     val type = it.toRoute<RARScreen>().type
-                    val geoPoints = getGeoPointsForRoute(model)
+                    val geoPoints by viewModel.geoPoints.collectAsState()
+
                     var isPermissionGranted by remember { mutableStateOf(false) }
+
+                    LaunchedEffect(routeId) {
+                        viewModel.initialize(context)
+                        viewModel.loadGeoPoints(routeId)
+                    }
 
                     CheckLocationPermission(
                         onGranted = {
@@ -169,7 +182,7 @@ fun MainScreen() {
                     if (isPermissionGranted) {
                         isTopBarVisible = false
                         isBottomBarVisible = false
-                        ARScreen(navController, geoPoints, model, type)
+                        ARScreen(navController, geoPoints, "", type)
                     } else {
                         Text("Se requiere permiso de ubicación para continuar")
                     }

@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 object InicioScreen
 
 @Serializable
-data class RARScreen(val model: String, val type: String)
+data class RARScreen(val routeId: Int, val type: String)
 
 @Serializable
 object RoutesScreen
@@ -16,7 +16,7 @@ object RoutesScreen
 object HistoryScreen
 
 @Serializable
-data class DetalleScreen(val routeId: String)
+data class DetalleScreen(val routeId: Int)
 
 val screens = listOf(
     InicioScreen,
