@@ -1,0 +1,180 @@
+[
+  {
+    "id": 1,
+    "title": "cart_title_tourist_routes1",
+    "description": "cart_description_tourist_routes1",
+    "imageRes": "comidas",
+    "type": "ruta",
+    "geoPoints": [
+      { "latitude": -1.0440176, "longitude": -78.5907475, "name": "Helados", "model": "" },
+      { "latitude": -1.0440112, "longitude": -78.5904399, "name": "", "model": "" },
+      { "latitude": -1.043231, "longitude": -78.590489, "name": "", "model": "" },
+      { "latitude": -1.0432587, "longitude": -78.5899706, "name": "Hornado", "model": "" },
+      { "latitude": -1.043082, "longitude": -78.588926, "name": "", "model": "" },
+      { "latitude": -1.043201, "longitude": -78.588422, "name": "Confiteria (Humas, Quimbolitos)", "model": "" }
+    ]
+  },
+  {
+    "id": 2,
+    "title": "cart_title_tourist_routes2",
+    "description": "cart_description_tourist_routes2",
+    "imageRes": "monumentos",
+    "type": "ruta",
+    "geoPoints": [
+      { "latitude": -1.043688, "longitude": -78.591043, "name": "Fray", "model": "" },
+      { "latitude": -1.0440112, "longitude": -78.5904399, "name": "", "model": "" },
+      { "latitude": -1.045560, "longitude": -78.590215, "name": "Madre", "model": "" }
+    ]
+  },
+  {
+    "id": 3,
+    "title": "cart_title_tourist_routes3",
+    "description": "cart_description_tourist_routes3",
+    "imageRes": "plazas",
+    "type": "ruta",
+    "geoPoints": [
+      { "latitude": -1.046304, "longitude": -78.593458, "name": "Plaza Agusto Dávalos", "model": "" },
+      { "latitude": -1.045852, "longitude": -78.593208, "name": "", "model": "" },
+      { "latitude": -1.044253, "longitude": -78.593392, "name": "", "model": "" },
+      { "latitude": -1.044032, "longitude": -78.591116, "name": "", "model": "" },
+      { "latitude": -1.043684, "longitude": -78.590821, "name": "Parque Central", "model": "" },
+      { "latitude": -1.043231, "longitude": -78.590489, "name": "", "model": "" },
+      { "latitude": -1.043082, "longitude": -78.588926, "name": "", "model": "" },
+      { "latitude": -1.043098, "longitude": -78.588930, "name": "Mercado Central", "model": "" },
+      { "latitude": -1.047000, "longitude": -78.588446, "name": "", "model": "" },
+      { "latitude": -1.047127, "longitude": -78.588209, "name": "Plaza San Antonío", "model": "" }
+    ]
+  },
+  {
+    "id": 4,
+    "title": "cart_title_places_of_interest1",
+    "description": "cart_description_places_of_interest1",
+    "imageRes": "monumento_madre_ai",
+    "type": "marca",
+    "geoPoints": [
+      { "latitude": -1.045560, "longitude": -78.590215, "name": "Monumento a la Madre", "model": "" }
+    ]
+  },
+  {
+    "id": 5,
+    "title": "cart_title_places_of_interest2",
+    "description": "cart_description_places_of_interest2",
+    "imageRes": "monumento_fray_ia",
+    "type": "marca",
+    "geoPoints": [
+      { "latitude": -1.043688, "longitude": -78.591043, "name": "Fray José María", "model": "" }
+    ]
+  },
+  {
+    "id": 6,
+    "title": "cart_title_places_of_interest3",
+    "description": "cart_description_places_of_interest3",
+    "imageRes": "palacio_municipal",
+    "type": "marca",
+    "geoPoints": [
+      { "latitude": -1.0440112, "longitude": -78.5904399, "name": "Palacio Municipal", "model": "" }
+    ]
+  },
+  {
+    "id": 7,
+    "title": "cart_title_places_of_interest4",
+    "description": "cart_description_places_of_interest4",
+    "imageRes": "iglesia_ai",
+    "type": "marca",
+    "geoPoints": [
+      { "latitude": -1.044253, "longitude": -78.593392, "name": "Iglesia Central", "model": "" }
+    ]
+  },
+  {
+    "id": 8,
+    "title": "cart_title_places_of_interest5",
+    "description": "cart_description_places_of_interest5",
+    "imageRes": "coliseo_ai",
+    "type": "marca",
+    "geoPoints": [
+      { "latitude": -1.045173, "longitude": -78.590923, "name": "Coliseo Municipal", "model": "" }
+    ]
+  },
+  {
+    "id": 9,
+    "title": "cart_title_places_of_interest6",
+    "description": "cart_description_places_of_interest6",
+    "imageRes": "mercado_ai",
+    "type": "marca",
+    "geoPoints": [
+      { "latitude": -1.043197, "longitude": -78.588561, "name": "Mercado Central", "model": "" }
+    ]
+  },
+  {
+    "id": 10,
+    "title": "cart_title_events1",
+    "description": "cart_description_events1",
+    "imageRes": "mercado_ai",
+    "type": "evento",
+    "geoPoints": []
+  },
+  {
+    "id": 11,
+    "title": "cart_title_events2",
+    "description": "cart_description_events2",
+    "imageRes": "mercado_ai",
+    "type": "evento",
+    "geoPoints": []
+  },
+  {
+    "id": 12,
+    "title": "cart_title_events3",
+    "description": "cart_description_events3",
+    "imageRes": "mercado_ai",
+    "type": "evento",
+    "geoPoints": []
+  },
+  {
+    "id": 13,
+    "title": "cart_title_tourist_routes4",
+    "description": "cart_description_tourist_routes4",
+    "imageRes": "transporte",
+    "type": "ruta",
+    "geoPoints": [
+      {  "latitude": -1.016265, "longitude": -78.565139, "name": "Punto 1", "model": ""},
+      {  "latitude": -1.016227, "longitude": -78.565158, "name": "Punto 2", "model": ""},
+      {  "latitude": -1.016179, "longitude": -78.565177, "name": "", "model": ""},
+      {  "latitude": -1.016179, "longitude": -78.565177, "name": "", "model": ""}
+    ]
+  },
+  {
+    "id": 14,
+    "title": "cart_title_tourist_routes4",
+    "description": "cart_description_tourist_routes4",
+    "imageRes": "transporte",
+    "type": "ruta",
+    "geoPoints": [
+      {  "latitude": -1.267947, "longitude": -78.624075, "name": "Punto 1", "model": ""},
+      {  "latitude": -1.267857, "longitude": -78.624126, "name": "Punto 2", "model": ""},
+      {  "latitude": -1.016179, "longitude": -78.565177, "name": "", "model": ""},
+      {  "latitude": -1.016179, "longitude": -78.565177, "name": "", "model": ""}
+    ]
+  },
+  {
+    "id": 15,
+    "title": "cart_title_tourist_routes4",
+    "description": "cart_description_tourist_routes4",
+    "imageRes": "transporte",
+    "type": "ruta",
+    "geoPoints": [
+      {  "latitude": -1.043437, "longitude": -78.591789, "name": "Punto 1", "model": ""},
+      {  "latitude": -1.043460, "longitude": -78.591787, "name": "Punto 2", "model": ""},
+      {  "latitude": -1.043558, "longitude": -78.591684, "name": "", "model": ""}
+    ]
+  },
+  {
+    "id": 16,
+    "title": "cart_title_places_of_interest4",
+    "description": "cart_description_places_of_interest4",
+    "imageRes": "iglesia_ai",
+    "type": "marca",
+    "geoPoints": [
+      { "latitude": -1.016230, "longitude": -78.565194, "name": "Iglesia Central", "model": "" }
+    ]
+  }
+]
