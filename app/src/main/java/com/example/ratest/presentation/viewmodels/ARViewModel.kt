@@ -3,6 +3,10 @@ package com.example.ratest.presentation.viewmodels
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.ratest.domain.models.GeoPoint
 import com.example.ratest.utils.Utils
@@ -115,6 +119,7 @@ class ARViewModel : ViewModel() {
         return tourManager.visitedPoints.size
     }
 
+
     fun updateSession(
         frame: Frame?, earth: Earth?,
         onAnchorCreated: (AnchorNode?) -> Unit,
@@ -128,6 +133,10 @@ class ARViewModel : ViewModel() {
         val currentTarget = (uiStateMutable.value as? TourUIState.InProgress)?.target
         if (currentTarget == null) return
         try {
+            if (earth.trackingState != TrackingState.TRACKING) {
+                uiStateMutable.value = TourUIState.Loading
+            }
+
             if (earth.trackingState == TrackingState.TRACKING) {
                 val geoPose = earth.cameraGeospatialPose
 
