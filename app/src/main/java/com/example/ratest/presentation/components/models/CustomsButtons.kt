@@ -1,4 +1,4 @@
-package com.example.ratest.presentation.Components.models
+package com.example.ratest.presentation.components.models
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.runtime.Composable

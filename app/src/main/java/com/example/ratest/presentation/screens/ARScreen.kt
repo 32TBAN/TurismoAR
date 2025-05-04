@@ -1,4 +1,4 @@
-package com.example.ratest.presentation.Screens
+package com.example.ratest.presentation.screens
 
 import android.util.Log
 import androidx.compose.foundation.layout.Box
@@ -30,7 +30,7 @@ import com.example.ratest.presentation.viewmodels.ARViewModel
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import com.example.ratest.domain.models.GeoPoint
-import com.example.ratest.presentation.Components.models.BottomOverlay
+import com.example.ratest.presentation.components.models.BottomOverlay
 import com.example.ratest.presentation.viewmodels.TourUIState
 import io.github.sceneview.ar.node.AnchorNode
 
@@ -38,7 +38,6 @@ import io.github.sceneview.ar.node.AnchorNode
 fun ARScreen(
     navController: NavController,
     geoPoints: List<GeoPoint>,
-    modelName: String = "pin",
     type: String = "route"
 ) {
     val viewModel: ARViewModel = viewModel()
@@ -120,7 +119,7 @@ fun ARScreen(
                                     }
                                 }
                             },
-                            modelInstance, engine, modelLoader, materialLoader, modelName, type
+                            modelInstance, engine, modelLoader, materialLoader, type
                         )
 
                         viewModel.updateArrowNode(

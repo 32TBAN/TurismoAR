@@ -1,6 +1,5 @@
-package com.example.ratest.presentation.Navigation
+package com.example.ratest.presentation.navigation
 
-import com.example.ratest.Utils.GeoPoint
 import kotlinx.serialization.Serializable
 
 @Serializable

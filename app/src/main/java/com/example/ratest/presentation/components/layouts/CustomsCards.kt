@@ -1,4 +1,4 @@
-package com.example.ratest.presentation.Components.layouts
+package com.example.ratest.presentation.components.layouts
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.horizontalScroll
@@ -17,18 +17,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.ratest.Utils.CardItem
-import com.example.ratest.presentation.Navigation.DetalleScreen
-import com.example.ratest.presentation.Navigation.RARScreen
+import com.example.ratest.presentation.navigation.DetalleScreen
+import com.example.ratest.presentation.mappers.UiRoute
+import com.example.ratest.presentation.viewmodels.RouteViewModel
 
 @Composable
 fun SectionCards(
     title: String = "",
-    cards: List<CardItem>,
-    tipe: String = "Small",
-    modifierT: Modifier = Modifier,
+    routes: List<UiRoute>,
+    type: String = "Small",
     scrollDirection: String = "horizontal",
-    navController: NavController
+    navController: NavController,
+    viewModel: RouteViewModel
 ) {
     Column(modifier = Modifier.padding(horizontal = 8.dp)) {
         if (title != "") {
@@ -44,41 +44,45 @@ fun SectionCards(
         }
         if (scrollDirection == "horizontal") {
             Row(
-                modifier = modifierT
+                modifier = Modifier
                     .horizontalScroll(rememberScrollState()),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                if (tipe == "Info") {
-                    cards.forEachIndexed { index, item ->
+                if (type == "Info") {
+                    routes.forEachIndexed { index, item ->
                         InfoCard(title = item.title, description = item.description,
                             onClick = {
-                                navController.navigate(DetalleScreen(item.title))
+                                viewModel.selectRouteById(item.id)
+                                navController.navigate(DetalleScreen(item.id))
                             })
                     }
                 } else {
-                    cards.forEachIndexed {index, item ->
+                    routes.forEachIndexed {index, item ->
                         SmallCard(title = item.title, onClick = {
-                            navController.navigate(DetalleScreen(item.title))
+                            viewModel.selectRouteById(item.id)
+                            navController.navigate(DetalleScreen(item.id))
                         }, icon = item.icon)
                     }
                 }
             }
         } else {
             Column(
-                modifier = modifierT
+                modifier = Modifier
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                if (tipe == "Info") {
-                    cards.forEachIndexed { index, item ->
+                if (type == "Info") {
+                    routes.forEachIndexed { index, item ->
                         InfoCard(title = item.title, description = item.description, onClick = {
-                            navController.navigate(DetalleScreen(item.title))
+                            viewModel.selectRouteById(item.id)
+                            navController.navigate(DetalleScreen(item.id))
                         })
                     }
                 } else {
-                    cards.forEachIndexed { index, item ->
+                    routes.forEachIndexed { index, item ->
                         SmallCard(title = item.title, onClick = {
-                            navController.navigate(DetalleScreen(item.title))
+                            viewModel.selectRouteById(item.id)
+                            navController.navigate(DetalleScreen(item.id))
                         })
                     }
                 }

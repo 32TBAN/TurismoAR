@@ -1,2 +1,2 @@
-package com.example.ratest.presentation.Components.layouts.Rutes
+package com.example.ratest.presentation.components.layouts.rutes
 

@@ -1,4 +1,4 @@
-package com.example.ratest.presentation.Components.layouts
+package com.example.ratest.presentation.components.layouts
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

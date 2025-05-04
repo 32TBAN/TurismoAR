@@ -1,4 +1,4 @@
-package com.example.ratest.presentation.screens
+package com.example.ratest.presentation.navigation
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
@@ -26,42 +26,26 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.toRoute
 import com.example.ratest.R
-import com.example.ratest.Utils.Utils
-import com.example.ratest.Utils.getGeoPointsForRoute
-import com.example.ratest.presentation.Components.layouts.CheckLocationPermission
-import com.example.ratest.presentation.Components.layouts.CustomBottomBar
-import com.example.ratest.presentation.Components.layouts.CustomTopBar
-import com.example.ratest.presentation.Components.layouts.DetalleInfo
-import com.example.ratest.presentation.Navigation.DetalleScreen
-import com.example.ratest.presentation.Navigation.HistoryScreen
-import com.example.ratest.presentation.Navigation.InicioScreen
-import com.example.ratest.presentation.Navigation.RARScreen
-import com.example.ratest.presentation.Navigation.RoutesScreen
-import com.example.ratest.presentation.Navigation.screens
-import com.example.ratest.presentation.Screens.ARScreen
-import com.example.ratest.presentation.Screens.HistoryScreen
-import com.example.ratest.presentation.Screens.InicioScreen
-import com.example.ratest.presentation.Screens.RoutesScreen
+import com.example.ratest.presentation.components.layouts.CheckLocationPermission
+import com.example.ratest.presentation.components.layouts.CustomBottomBar
+import com.example.ratest.presentation.components.layouts.CustomTopBar
+import com.example.ratest.presentation.components.layouts.DetalleInfo
+import com.example.ratest.presentation.screens.ARScreen
 import com.example.ratest.presentation.viewmodels.RouteViewModel
-
 import com.example.ratest.ui.theme.White
 
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
-
     var selectedIndex by remember { mutableStateOf(0) }
-
     var isTopBarVisible by remember { mutableStateOf(true) }
     var isBottomBarVisible by remember { mutableStateOf(true) }
 
     // LazyListState para detectar el desplazamiento
     val listState = rememberLazyListState()
-
     // Detectar el scroll y actualizar las barras
-    LaunchedEffect(listState.firstVisibleItemIndex) {
+    LaunchedEffect(remember { derivedStateOf { listState.firstVisibleItemIndex } }) {
         // Si el primer ítem visible tiene un índice mayor a 0, eso significa que estamos haciendo scroll hacia abajo
         if (listState.firstVisibleItemIndex > 0) {
             // Si la dirección es hacia abajo, ocultar las barras
@@ -73,6 +57,13 @@ fun MainScreen() {
             isBottomBarVisible = true
         }
     }
+
+    val context = LocalContext.current
+    val viewModel: RouteViewModel = viewModel()
+    LaunchedEffect(Unit) {
+        viewModel.initialize(context)
+    }
+
 
     Scaffold(
         topBar = {
@@ -147,28 +138,30 @@ fun MainScreen() {
                 startDestination = InicioScreen
             ) {
                 composable<InicioScreen> {
-                    InicioScreen(navController, listState)
+                    com.example.ratest.presentation.screens.InicioScreen(
+                        navController,
+                        listState,
+                        viewModel
+                    )
                 }
                 composable<RoutesScreen> {
-                    RoutesScreen(navController, listState)
+                    com.example.ratest.presentation.screens.RoutesScreen(
+                        navController,
+                        listState,
+                        viewModel
+                    )
                 }
                 composable<HistoryScreen> {
-                    HistoryScreen(navController, listState)
+                    com.example.ratest.presentation.screens.HistoryScreen(
+                        navController,
+                        listState,
+                        viewModel
+                    )
                 }
                 composable<RARScreen> {
-                    val context = LocalContext.current
-                    val viewModel = remember { RouteViewModel().apply { initialize(context) } }
-
-                    val routeId = it.toRoute<RARScreen>().routeId
-                    val type = it.toRoute<RARScreen>().type
-                    val geoPoints by viewModel.geoPoints.collectAsState()
+                    val route = viewModel.selectedRoute.value
 
                     var isPermissionGranted by remember { mutableStateOf(false) }
-
-                    LaunchedEffect(routeId) {
-                        viewModel.initialize(context)
-                        viewModel.loadGeoPoints(routeId)
-                    }
 
                     CheckLocationPermission(
                         onGranted = {
@@ -179,17 +172,16 @@ fun MainScreen() {
                         }
                     )
 
-                    if (isPermissionGranted) {
+                    if (isPermissionGranted && route != null) {
                         isTopBarVisible = false
                         isBottomBarVisible = false
-                        ARScreen(navController, geoPoints, "", type)
+                        ARScreen(navController, route.geoPoints, route.type)
                     } else {
                         Text("Se requiere permiso de ubicación para continuar")
                     }
                 }
                 composable<DetalleScreen> {
-                    val routeId = it.toRoute<DetalleScreen>().routeId
-                    DetalleInfo(routeId, navController, listState)
+                    DetalleInfo(navController, listState,viewModel)
                 }
             }
         }

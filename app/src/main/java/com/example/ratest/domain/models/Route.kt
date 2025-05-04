@@ -1,5 +1,8 @@
 package com.example.ratest.domain.models
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Route(
     val id: Int,
     val title: String,

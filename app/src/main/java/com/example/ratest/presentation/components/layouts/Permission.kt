@@ -1,4 +1,4 @@
-package com.example.ratest.presentation.Components.layouts
+package com.example.ratest.presentation.components.layouts
 
 import android.Manifest
 import android.content.pm.PackageManager

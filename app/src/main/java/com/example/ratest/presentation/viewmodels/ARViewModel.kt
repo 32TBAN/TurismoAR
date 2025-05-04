@@ -4,8 +4,8 @@ package com.example.ratest.presentation.viewmodels
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.example.ratest.Utils.GeoPoint
-import com.example.ratest.Utils.Utils
+import com.example.ratest.domain.models.GeoPoint
+import com.example.ratest.utils.Utils
 import com.google.android.filament.Engine
 import com.google.ar.core.Earth
 import com.google.ar.core.Frame
@@ -47,7 +47,8 @@ class ARViewModel : ViewModel() {
                     target = tourManager.getNextTarget(0.0, 0.0) ?: GeoPoint(
                         0.0,
                         0.0,
-                        "Sin destino"
+                        "Sin destino",
+                        ""
                     )
                 )
 //                Log.d("GeoAR", "Initialized with target: ${uiStateMutable.value}")
@@ -104,7 +105,8 @@ class ARViewModel : ViewModel() {
 
                 isPinCreated.value = false
             } catch (e: Exception) {
-                uiStateMutable.value = TourUIState.Error(e.localizedMessage ?: "Error reiniciando tour")
+                uiStateMutable.value =
+                    TourUIState.Error(e.localizedMessage ?: "Error reiniciando tour")
             }
         }
     }
@@ -120,7 +122,6 @@ class ARViewModel : ViewModel() {
         engine: Engine,
         modelLoader: ModelLoader,
         materialLoader: MaterialLoader,
-        nameModel: String = "pin",
         type: String = "ruta"
     ) {
         if (frame == null || earth == null) return
@@ -130,7 +131,7 @@ class ARViewModel : ViewModel() {
             if (earth.trackingState == TrackingState.TRACKING) {
                 val geoPose = earth.cameraGeospatialPose
 
-                val distance = Utils.haversineDistance(
+                val distance = tourManager.haversineDistance(
                     geoPose.latitude,
                     geoPose.longitude,
                     currentTarget.latitude,
@@ -165,13 +166,13 @@ class ARViewModel : ViewModel() {
                         geoPose.longitude.toFloat(),
                         geoPose.altitude.toFloat()
                     )
-                    val pinNode = Utils.createAnchorNode(
+                    val pinNode = tourManager.createAnchorNode(
                         engine = engine,
                         modelLoader = modelLoader,
                         materialLoader = materialLoader,
                         modelInstance = modelInstanceList,
                         anchor = anchor,
-                        model = Utils.getModel(nameModel),
+                        model = currentTarget.model,
                         scaleToUnits = 2.6f
                     )
 

@@ -1,4 +1,4 @@
-package com.example.ratest.presentation.Components.models
+package com.example.ratest.presentation.components.models
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box

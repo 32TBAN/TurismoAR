@@ -1,7 +1,6 @@
-package com.example.ratest.presentation.Components.layouts
+package com.example.ratest.presentation.components.layouts
 
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -18,11 +17,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,36 +35,31 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.ratest.Utils.getCards
-import com.example.ratest.presentation.Navigation.RARScreen
+import com.example.ratest.presentation.navigation.RARScreen
 import com.example.ratest.ui.theme.DarkGreen
 import com.example.ratest.ui.theme.Green
 import com.example.ratest.ui.theme.White
 import com.google.ar.core.ArCoreApk
 import android.widget.Toast
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import com.example.ratest.presentation.viewmodels.RouteViewModel
 import com.example.ratest.ui.theme.Blue
+import androidx.core.net.toUri
+import com.example.ratest.presentation.mappers.toUiRoute
 
 @Composable
 fun DetalleInfo(
-    routeId: Int,
     navController: NavController,
-    listState: LazyListState = rememberLazyListState()
+    listState: LazyListState = rememberLazyListState(),
+    viewModel: RouteViewModel
 ) {
     val context = LocalContext.current
-    val viewModel = remember { RouteViewModel().apply { initialize(context) } }
+    val route = viewModel.selectedRoute.collectAsState().value?.toUiRoute(context) ?: return
 
-    LaunchedEffect(routeId) {
-        viewModel.loadGeoPoints(routeId)
-    }
-
-    val place = viewModel.
-
-    place?.let {
+    route.let {
         LazyColumn(state = listState) {
             item {
                 Box(
@@ -98,7 +91,7 @@ fun DetalleInfo(
                             )
                     ) {
                         Icon(
-                            imageVector = Icons.Default.KeyboardArrowLeft,
+                            imageVector = Icons.Default.ArrowBackIosNew,
                             contentDescription = "Regresar",
                             tint = White,
                             modifier = Modifier.size(38.dp)
@@ -119,7 +112,7 @@ fun DetalleInfo(
 
                                 ArCoreApk.Availability.SUPPORTED_INSTALLED -> {
                                     // Dispositivo compatible con AR
-                                    navController.navigate(RARScreen(it.rute, it.type))
+                                    navController.navigate(RARScreen(it.id, it.type))
                                 }
 
                                 else -> {
@@ -130,7 +123,7 @@ fun DetalleInfo(
                                     ).show()
                                     val intent = Intent(
                                         Intent.ACTION_VIEW,
-                                        Uri.parse("https://play.google.com/store/apps/details?id=com.google.ar.core")
+                                        "https://play.google.com/store/apps/details?id=com.google.ar.core".toUri()
                                     )
 
                                     if (intent.resolveActivity(context.packageManager) != null) {
@@ -140,6 +133,7 @@ fun DetalleInfo(
                             }
                         },
                         modifier = Modifier
+                            .width(230.dp)
                             .align(Alignment.BottomEnd)
                             .align(Alignment.BottomEnd)
                             .offset(y = 30.dp)  // Desplazar el botón hacia abajo para que se vea parcialmente fuera de la imagen

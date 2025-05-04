@@ -1,4 +1,4 @@
-package com.example.ratest.presentation.Screens
+package com.example.ratest.presentation.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
@@ -9,7 +9,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.ratest.presentation.Components.models.CustomButton
+import com.example.ratest.presentation.components.models.CustomButton
 import com.example.ratest.presentation.viewmodels.ARViewModel
 import com.example.ratest.ui.theme.DarkGreen
 import com.example.ratest.ui.theme.Green

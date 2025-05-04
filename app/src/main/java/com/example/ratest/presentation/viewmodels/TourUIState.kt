@@ -1,6 +1,6 @@
 package com.example.ratest.presentation.viewmodels
 
-import com.example.ratest.Utils.GeoPoint
+import com.example.ratest.domain.models.GeoPoint
 
 sealed class TourUIState {
     object Loading : TourUIState()

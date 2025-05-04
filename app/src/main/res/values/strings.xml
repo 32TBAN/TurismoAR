@@ -26,7 +26,7 @@
     <string name="cart_title_places_of_interest4">Iglesia de Salcedo</string>
     <string name="cart_description_places_of_interest4">Un importante lugar de culto que ha sido testigo de muchas tradiciones religiosas a lo largo de los años.</string>
 
-    <string name="cart_title_places_of_interest5">Coliseo de Salcedo.</string>
+    <string name="cart_title_places_of_interest5">Coliseo de Salcedo</string>
     <string name="cart_description_places_of_interest5">Un espacio dedicado a los eventos deportivos y culturales, especialmente durante las festividades locales.</string>
 
     <string name="cart_title_places_of_interest6">Mercado Central</string>
@@ -44,5 +44,4 @@
     <string name="text_title_section_home">¡Embárcate en un viaje único por los lugares turísticos de Salcedo!</string>
     <string name="text_subtitle_home">Tus lugares favoritos, listos para explorar desde tu móvil.</string>
     <string name="button_text_home1">Comienza tu aventura</string>
-
 </resources>

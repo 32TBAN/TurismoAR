@@ -1,4 +1,4 @@
-package com.example.ratest.presentation.Components.layouts
+package com.example.ratest.presentation.components.layouts
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -19,7 +19,9 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
-import com.example.ratest.Utils.GeoPoint as GeoPointCustom
+import com.example.ratest.domain.models.GeoPoint as GeoPointCustom
+
+
 @Composable
 fun MapSection(
     title: String = "Mapa de Salcedo",
@@ -76,7 +78,7 @@ fun MapSection(
                     }
 
                     val polyline = Polyline()
-                    geoPoints.forEach { (lat, lon, nombre) ->
+                    geoPoints.forEach { (lat, lon) ->
                         polyline.addPoint(GeoPoint(lat, lon))
                     }
 
@@ -85,12 +87,12 @@ fun MapSection(
 
                     mapview.overlays.add(polyline)
 
-                    geoPoints.forEach { (lat, lon, nombre) ->
-                        if (!nombre.isEmpty()) {
+                    geoPoints.forEach { (lat, lon, name) ->
+                        if (!name.isEmpty()) {
                             val marker = Marker(mapview)
 
                             marker.position = GeoPoint(lat, lon)
-                            marker.title = nombre
+                            marker.title = name
                             mapview.overlays.add(marker)
                         }
                     }

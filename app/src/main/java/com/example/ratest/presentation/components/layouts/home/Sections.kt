@@ -1,4 +1,4 @@
-package com.example.ratest.presentation.Components.layouts.Home
+package com.example.ratest.presentation.components.layouts.home
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,16 +15,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.ratest.R
-import com.example.ratest.Utils.getList
-import com.example.ratest.presentation.Components.models.CustomButton
-import com.example.ratest.presentation.Components.models.ImageSlider
-import com.example.ratest.presentation.Components.models.SectionTitle
-import com.example.ratest.presentation.Navigation.RoutesScreen
+import com.example.ratest.presentation.components.models.CustomButton
+import com.example.ratest.presentation.components.models.ImageSlider
+import com.example.ratest.presentation.components.models.SectionTitle
+import com.example.ratest.presentation.navigation.RoutesScreen
 import com.example.ratest.ui.theme.DarkGreen
+import com.example.ratest.utils.Utils
 
 @Composable
 fun TopSection(navController: NavController) {
-    val images = getList()
+    val images = Utils.getList()
     Column(
         modifier = Modifier
             .fillMaxWidth()
