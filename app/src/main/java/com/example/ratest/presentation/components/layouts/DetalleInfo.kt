@@ -193,10 +193,17 @@ fun DetalleInfo(
 
             item {
                 MapSection(
-                    title = "Ruta",
+                    title = {
+                        Text(
+                            "Ruta",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 20.sp,
+                            color = DarkGreen
+                        )
+                    },
                     geoPoints = it.geoPoints,
                     zoomLevel = 17.0,
-                    tipe = it.type
+                    type = it.type
                 )
                 Spacer(modifier = Modifier.height(16.dp))
 

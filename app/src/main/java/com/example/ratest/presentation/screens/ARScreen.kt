@@ -23,10 +23,13 @@ import com.example.ratest.presentation.viewmodels.ARViewModel
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.ratest.domain.models.GeoPoint
 import com.example.ratest.presentation.components.layouts.ar.ARSceneContent
 import com.example.ratest.presentation.components.layouts.LoadingScreen
+import com.example.ratest.presentation.components.layouts.MapSection
 import com.example.ratest.presentation.components.layouts.ar.CompassOverlay
 import com.example.ratest.presentation.components.layouts.ar.ConfettiAnimation
 import com.example.ratest.presentation.components.layouts.ar.MapIntroAnimation
@@ -35,6 +38,7 @@ import com.example.ratest.presentation.components.layouts.ar.PlayTourSound
 import com.example.ratest.presentation.components.layouts.ar.ProgressOverlay
 import com.example.ratest.presentation.components.models.BottomOverlay
 import com.example.ratest.presentation.viewmodels.TourUIState
+import com.example.ratest.ui.theme.Green
 
 @Composable
 fun ARScreen(
@@ -50,12 +54,19 @@ fun ARScreen(
     var validGeoPoints = geoPoints.filter { it.name != "" }
 
     val engine = rememberEngine()
-    var isMapVisible = false
-    var showMapIntro = false
-
+    var isMapVisible by remember { mutableStateOf(false) }
+    var showMapIntro by remember { mutableStateOf(true) }
     LaunchedEffect(Unit) {
         // Se Inicializa el ViewModel con los geoPoints
         viewModel.initialize(context, validGeoPoints)
+    }
+
+    if (showMapIntro) {
+        MapIntroAnimation(
+            geoPoints = geoPoints,
+            onFinish = { showMapIntro = false }
+        )
+        return
     }
 
     ARSceneContent(engine, viewModel, type)
@@ -66,42 +77,68 @@ fun ARScreen(
         }
 
         is TourUIState.InProgress -> {
-            Box(modifier = Modifier.fillMaxSize()) {
+            Column(modifier = Modifier.fillMaxSize()) {
                 ProgressOverlay(
                     current = viewModel.getZisedVisitedPoints(),
                     total = validGeoPoints.size
                 )
-                Spacer(modifier = Modifier.height(16.dp))
-                CompassOverlay(
-                    Modifier.align(Alignment.TopEnd)
-                )
-                BottomOverlay(distanceText = distanceText)
 
-//
-//                // 4. Botón para ver el mapa
-//                MapToggleButton(
-//                    isMapVisible = isMapVisible,
-//                    onToggle = { isMapVisible = !isMapVisible }
-//                )
-//
-//                // 5. Mapa inicial al iniciar escena RA
-//                if (showMapIntro) {
-//                    MapIntroAnimation(
-//                        onFinish = { showMapIntro = false }
-//                    )
-//                }
-//
-//                // 6. Reproductor de sonido
-//                val shouldPlaySound = false
-//                if (shouldPlaySound) {
-//                    PlayTourSound()
-//                }
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = 8.dp)
+                        .fillMaxWidth()
+                ) {
+                    CompassOverlay(
+                        Modifier.align(Alignment.TopEnd)
+                    )
+                }
+
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = 8.dp)
+                        .fillMaxWidth()
+                ) {
+                    MapToggleButton(
+                        isMapVisible = isMapVisible,
+                        onToggle = { isMapVisible = !isMapVisible },
+                        Modifier.align(Alignment.TopEnd)
+                    )
+                }
+
+                Box(modifier = Modifier.weight(7f)) {
+                    BottomOverlay(
+                        distanceText = distanceText,
+                        Modifier.align(Alignment.BottomCenter)
+                    )
+                }
+
+                if (isMapVisible) {
+                    Box(modifier = Modifier.weight(5f)) {
+                        MapSection(
+                            title = {
+                                Text(
+                                    "Mapa de recorrido",
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 20.sp,
+                                    color = Green
+                                )
+                            },
+                            geoPoints = geoPoints,
+                            type = "ruta",
+                            zoomLevel = 20.0
+                        )
+                    }
+
+                }
             }
         }
 
         is TourUIState.Arrived -> {
             val target = (uiState as TourUIState.Arrived).target
 //            Log.d("GeoAR", "Arrived at: $target")
+            PlayTourSound()
             AlertDialog(
                 onDismissRequest = {
                     uiState !is TourUIState.Arrived
@@ -121,6 +158,7 @@ fun ARScreen(
         }
 
         is TourUIState.Completed -> {
+            PlayTourSound()
             TourResultScreen(
                 navController,
                 validGeoPoints.size,

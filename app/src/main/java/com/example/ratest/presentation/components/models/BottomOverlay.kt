@@ -18,10 +18,9 @@ import androidx.compose.material3.Text
 import com.example.ratest.ui.theme.LightGreen
 
 @Composable
-fun BottomOverlay(distanceText: String) {
+fun BottomOverlay(distanceText: String, modifier: Modifier = Modifier) {
     Box(
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = modifier,
         contentAlignment = Alignment.BottomCenter
     ) {
         val semiCircleShape = GenericShape { size, _ ->

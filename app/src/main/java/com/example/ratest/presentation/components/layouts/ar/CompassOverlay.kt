@@ -26,6 +26,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import com.example.ratest.R
+import com.example.ratest.ui.theme.Green
+import com.example.ratest.ui.theme.White
 
 @Composable
 fun CompassOverlay(modifier: Modifier = Modifier) {
@@ -80,7 +82,7 @@ fun CompassOverlay(modifier: Modifier = Modifier) {
         tonalElevation = 6.dp,
         shape = CircleShape,
         shadowElevation = 8.dp,
-        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f)
+        color = White.copy(alpha = 0.8f)
     ) {
         Box(
             modifier = Modifier

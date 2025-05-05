@@ -24,18 +24,20 @@ import com.example.ratest.domain.models.GeoPoint as GeoPointCustom
 
 @Composable
 fun MapSection(
-    title: String = "Mapa de Salcedo",
-    geoPoints: List<GeoPointCustom> = emptyList(),
-    zoomLevel: Double = 12.7,
-    controls: Boolean = true,
-    tipe: String = "ruta"
-) {
-    Column(modifier = Modifier.padding(horizontal = 8.dp)) {
+    title: @Composable () -> Unit = {
         Text(
-            text = title,
+            "Mapa de Salcedo",
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,
         )
+    },
+    geoPoints: List<GeoPointCustom> = emptyList(),
+    zoomLevel: Double = 12.7,
+    controls: Boolean = true,
+    type: String = "ruta"
+) {
+    Column(modifier = Modifier.padding(horizontal = 8.dp)) {
+        title()
         Spacer(modifier = Modifier.height(96.dp))
         //todo: arreglar bug visuald del mapa
         AndroidView(
@@ -65,7 +67,7 @@ fun MapSection(
                         )
                     )
 
-                    if (tipe == "marcador") {
+                    if (type == "marcador") {
                         geoPoints.forEach { geoPoint ->
                             if (geoPoint.name.isNotEmpty()) {
                                 val marker = Marker(mapview)
@@ -106,6 +108,20 @@ fun MapSection(
                     mapview.overlays.add(marker)
                 }
                 mapview
-            })
+            },
+            update = { mapView ->
+                if (!geoPoints.isEmpty()) {
+                val controls = mapView.controller
+                controls.setZoom(zoomLevel)
+                    controls.setCenter(
+                        GeoPoint(
+                            geoPoints[0].latitude,
+                            geoPoints[0].longitude
+                        )
+                    )
+                }
+
+            }
+        )
     }
 }
