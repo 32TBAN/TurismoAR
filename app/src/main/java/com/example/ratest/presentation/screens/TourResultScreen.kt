@@ -15,6 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.ratest.presentation.components.layouts.ar.ConfettiAnimation
 import com.example.ratest.presentation.components.models.CustomButton
 import com.example.ratest.presentation.viewmodels.ARViewModel
 import com.example.ratest.presentation.viewmodels.TourUIState
@@ -29,6 +30,7 @@ fun TourResultScreen(
     visitedPlaces: Int,
     viewModel: ARViewModel
 ) {
+    ConfettiAnimation()
     AlertDialog(
         onDismissRequest = { /* No se puede cerrar tocando fuera */ },
         title = {

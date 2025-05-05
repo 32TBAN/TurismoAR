@@ -1,14 +1,15 @@
 package com.example.ratest.presentation.screens
 
-import android.R.attr.delay
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -20,11 +21,18 @@ import androidx.navigation.NavController
 import io.github.sceneview.rememberEngine
 import com.example.ratest.presentation.viewmodels.ARViewModel
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.ratest.domain.models.GeoPoint
 import com.example.ratest.presentation.components.layouts.ar.ARSceneContent
 import com.example.ratest.presentation.components.layouts.LoadingScreen
+import com.example.ratest.presentation.components.layouts.ar.CompassOverlay
+import com.example.ratest.presentation.components.layouts.ar.ConfettiAnimation
+import com.example.ratest.presentation.components.layouts.ar.MapIntroAnimation
+import com.example.ratest.presentation.components.layouts.ar.MapToggleButton
+import com.example.ratest.presentation.components.layouts.ar.PlayTourSound
+import com.example.ratest.presentation.components.layouts.ar.ProgressOverlay
 import com.example.ratest.presentation.components.models.BottomOverlay
 import com.example.ratest.presentation.viewmodels.TourUIState
 
@@ -42,23 +50,16 @@ fun ARScreen(
     var validGeoPoints = geoPoints.filter { it.name != "" }
 
     val engine = rememberEngine()
-    var showARScene by remember { mutableStateOf(true) }
-    BackHandler(enabled = true) {
-        showARScene = false
-    }
-    DisposableEffect(showARScene) {
-        onDispose {
-            if (!showARScene) {
-                engine.destroy()
-            }
-        }
-    }
+    var isMapVisible = false
+    var showMapIntro = false
 
     LaunchedEffect(Unit) {
         // Se Inicializa el ViewModel con los geoPoints
         viewModel.initialize(context, validGeoPoints)
     }
-    ARSceneContent(engine, viewModel, type, onExitScene = { showARScene = false })
+
+    ARSceneContent(engine, viewModel, type)
+
     when (uiState) {
         is TourUIState.Loading -> {
             LoadingScreen(text = "Cargando destino...")
@@ -66,7 +67,35 @@ fun ARScreen(
 
         is TourUIState.InProgress -> {
             Box(modifier = Modifier.fillMaxSize()) {
+                ProgressOverlay(
+                    current = viewModel.getZisedVisitedPoints(),
+                    total = validGeoPoints.size
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                CompassOverlay(
+                    Modifier.align(Alignment.TopEnd)
+                )
                 BottomOverlay(distanceText = distanceText)
+
+//
+//                // 4. Botón para ver el mapa
+//                MapToggleButton(
+//                    isMapVisible = isMapVisible,
+//                    onToggle = { isMapVisible = !isMapVisible }
+//                )
+//
+//                // 5. Mapa inicial al iniciar escena RA
+//                if (showMapIntro) {
+//                    MapIntroAnimation(
+//                        onFinish = { showMapIntro = false }
+//                    )
+//                }
+//
+//                // 6. Reproductor de sonido
+//                val shouldPlaySound = false
+//                if (shouldPlaySound) {
+//                    PlayTourSound()
+//                }
             }
         }
 

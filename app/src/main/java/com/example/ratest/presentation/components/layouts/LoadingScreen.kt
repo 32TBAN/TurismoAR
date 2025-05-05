@@ -9,7 +9,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.ratest.ui.theme.DarkGreen
-import com.example.ratest.ui.theme.Green
 
 @Composable
 fun LoadingScreen(text: String = "Cargando...") {

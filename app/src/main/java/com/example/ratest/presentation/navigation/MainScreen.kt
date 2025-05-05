@@ -45,18 +45,18 @@ fun MainScreen() {
     // LazyListState para detectar el desplazamiento
     val listState = rememberLazyListState()
     // Detectar el scroll y actualizar las barras
-    LaunchedEffect(remember { derivedStateOf { listState.firstVisibleItemIndex } }) {
-        // Si el primer ítem visible tiene un índice mayor a 0, eso significa que estamos haciendo scroll hacia abajo
-        if (listState.firstVisibleItemIndex > 0) {
-            // Si la dirección es hacia abajo, ocultar las barras
-            isTopBarVisible = false
-            isBottomBarVisible = false
-        } else {
-            // Si no, mantener las barras visibles
-            isTopBarVisible = true
-            isBottomBarVisible = true
-        }
-    }
+//    LaunchedEffect(remember { derivedStateOf { listState.firstVisibleItemIndex } }) {
+//        // Si el primer ítem visible tiene un índice mayor a 0, eso significa que estamos haciendo scroll hacia abajo
+//        if (listState.firstVisibleItemIndex > 0) {
+//            // Si la dirección es hacia abajo, ocultar las barras
+//            isTopBarVisible = false
+//            isBottomBarVisible = false
+//        } else {
+//            // Si no, mantener las barras visibles
+//            isTopBarVisible = true
+//            isBottomBarVisible = true
+//        }
+//    }
 
     val context = LocalContext.current
     val viewModel: RouteViewModel = viewModel()

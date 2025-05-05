@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -34,8 +33,7 @@ import io.github.sceneview.rememberView
 fun ARSceneContent(
     engine: Engine,
     viewModel: ARViewModel,
-    type: String,
-    onExitScene: () -> Unit
+    type: String
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         val modelLoader = rememberModelLoader(engine = engine)
@@ -123,16 +121,5 @@ fun ARSceneContent(
                 session.configure(config)
             }
         )
-        FloatingActionButton(
-            onClick = { onExitScene() },
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(16.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Close,
-                contentDescription = "Cerrar RA"
-            )
-        }
     }
 }
