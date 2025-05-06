@@ -1,14 +1,16 @@
 package com.example.ratest.presentation.screens
 
-import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.border
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts.GetContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -22,16 +24,19 @@ import io.github.sceneview.rememberEngine
 import com.example.ratest.presentation.viewmodels.ARViewModel
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
 import com.example.ratest.domain.models.GeoPoint
+import com.example.ratest.presentation.components.layouts.CustomDialog
 import com.example.ratest.presentation.components.layouts.ar.ARSceneContent
 import com.example.ratest.presentation.components.layouts.LoadingScreen
 import com.example.ratest.presentation.components.layouts.MapSection
 import com.example.ratest.presentation.components.layouts.ar.CompassOverlay
-import com.example.ratest.presentation.components.layouts.ar.ConfettiAnimation
 import com.example.ratest.presentation.components.layouts.ar.MapIntroAnimation
 import com.example.ratest.presentation.components.layouts.ar.MapToggleButton
 import com.example.ratest.presentation.components.layouts.ar.PlayTourSound
@@ -49,8 +54,41 @@ fun ARScreen(
     val viewModel: ARViewModel = viewModel()
     val uiState by viewModel.uiState.collectAsState()
     val distanceText by viewModel.distanceText.collectAsState()
-
     val context = LocalContext.current
+
+    val selectedImageUri = remember { mutableStateOf<Uri?>(null) }
+    val pickGalleryLauncher = rememberLauncherForActivityResult(
+        contract = GetContent()
+    ) { uri ->
+        uri?.let {
+            selectedImageUri.value = it
+        }
+    }
+
+    fun onOpenGallery() {
+        pickGalleryLauncher.launch("image/*")
+    }
+
+    selectedImageUri.value?.let { uri ->
+        CustomDialog(
+            title = "Imagen seleccionada",
+            onDismissRequest = { selectedImageUri.value = null },
+            confirmButtonText = "Cerrar",
+            content = {
+                Image(
+                    painter = rememberAsyncImagePainter(uri),
+                    contentDescription = "Imagen seleccionada",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(300.dp)
+                        .clip(RoundedCornerShape(12.dp)),
+                    contentScale = ContentScale.Crop
+                )
+            }
+        )
+    }
+
+
     var validGeoPoints = geoPoints.filter { it.name != "" }
 
     val engine = rememberEngine()
@@ -79,7 +117,7 @@ fun ARScreen(
         is TourUIState.InProgress -> {
             Column(modifier = Modifier.fillMaxSize()) {
                 ProgressOverlay(
-                    current = viewModel.getZisedVisitedPoints(),
+                    current = (viewModel.getZisedVisitedPoints()-1),
                     total = validGeoPoints.size
                 )
 
@@ -110,7 +148,8 @@ fun ARScreen(
                 Box(modifier = Modifier.weight(7f)) {
                     BottomOverlay(
                         distanceText = distanceText,
-                        Modifier.align(Alignment.BottomCenter)
+                        Modifier.align(Alignment.BottomCenter),
+                        onOpenGallery = { onOpenGallery() },
                     )
                 }
 
@@ -127,7 +166,8 @@ fun ARScreen(
                             },
                             geoPoints = geoPoints,
                             type = "ruta",
-                            zoomLevel = 20.0
+                            zoomLevel = 20.0,
+                            modifier = Modifier.fillMaxSize()
                         )
                     }
 
@@ -155,6 +195,18 @@ fun ARScreen(
                     }
                 }
             )
+
+//            CustomDialog(
+//                title = "¡Llegaste a ${target.name}!",
+//                onDismissRequest = { /* no dismiss automático */ },
+//                confirmButtonText = "Marcar como visitado",
+//                onConfirm = {
+//                    viewModel.markCurrentTargetVisited()
+//                }
+//            ) {
+//                Text("¿Quieres marcar este lugar como visitado?", color = Color.DarkGray)
+//            }
+
         }
 
         is TourUIState.Completed -> {

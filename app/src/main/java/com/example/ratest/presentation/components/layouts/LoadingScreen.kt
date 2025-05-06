@@ -8,7 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.ratest.ui.theme.DarkGreen
+import com.example.ratest.ui.theme.White
 
 @Composable
 fun LoadingScreen(text: String = "Cargando...") {
@@ -27,7 +27,7 @@ fun LoadingScreen(text: String = "Cargando...") {
             Text(
                 text = text,
                 style = MaterialTheme.typography.bodyMedium,
-                color = DarkGreen
+                color = White
             )
         }
     }

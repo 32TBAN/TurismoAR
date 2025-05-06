@@ -2,7 +2,6 @@ package com.example.ratest.presentation.components.layouts
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
@@ -34,16 +33,16 @@ fun MapSection(
     geoPoints: List<GeoPointCustom> = emptyList(),
     zoomLevel: Double = 12.7,
     controls: Boolean = true,
-    type: String = "ruta"
+    type: String = "ruta",
+    modifier: Modifier
 ) {
+    title()
+    Spacer(modifier = Modifier.height(60.dp))
     Column(modifier = Modifier.padding(horizontal = 8.dp)) {
-        title()
-        Spacer(modifier = Modifier.height(96.dp))
+//        Spacer(modifier = Modifier.height(96.dp))
         //todo: arreglar bug visuald del mapa
         AndroidView(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(250.dp),
+            modifier = modifier,
             factory = { context ->
                 val userAgent = "com.example.ratest/1.0"
                 Configuration.getInstance().userAgentValue = userAgent
@@ -51,14 +50,10 @@ fun MapSection(
                 mapview.setTileSource(TileSourceFactory.MAPNIK)
                 mapview.setBuiltInZoomControls(controls)
                 mapview.setMultiTouchControls(controls)
-
                 mapview.controller.setZoom(zoomLevel)
-
 //                mapview.maxZoomLevel = 19.0
 //                mapview.minZoomLevel = zoomLevel
-
 //                mapview.setTilesScaledToDpi(true)
-
                 if (!geoPoints.isEmpty()) {
                     mapview.controller.setCenter(
                         GeoPoint(
@@ -111,8 +106,8 @@ fun MapSection(
             },
             update = { mapView ->
                 if (!geoPoints.isEmpty()) {
-                val controls = mapView.controller
-                controls.setZoom(zoomLevel)
+                    val controls = mapView.controller
+                    controls.setZoom(zoomLevel)
                     controls.setCenter(
                         GeoPoint(
                             geoPoints[0].latitude,

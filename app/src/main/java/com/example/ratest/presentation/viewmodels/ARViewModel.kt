@@ -37,7 +37,7 @@ class ARViewModel : ViewModel() {
     private val uiStateMutable = MutableStateFlow<TourUIState>(TourUIState.Loading)
     val uiState: StateFlow<TourUIState> = uiStateMutable
 
-    val visibleRange = 4.99
+    val visibleRange = 5.99
 
     fun initialize(context: Context, geoPoints: List<GeoPoint>) {
         tourManager = TourManager(context)
@@ -214,7 +214,7 @@ class ARViewModel : ViewModel() {
         frame?.camera?.pose?.let { pose ->
             val forwardDirection = Utils.quaternionToForward(pose.rotationQuaternion)
             val hudDistance = -0.2f
-            val hudYOffset = 0.2f
+            val hudYOffset = 0.1f
             arrowNode.position = KotlinFloat3(
                 pose.tx() + forwardDirection.x * hudDistance,
                 pose.ty() - hudYOffset,
@@ -236,6 +236,7 @@ class ARViewModel : ViewModel() {
                     targetLat = currentTarget.latitude,
                     targetLon = currentTarget.longitude
                 )
+//                val rotatedOffset = Utils.rotateVectorByQuaternion(offset, geoPose.eastUpSouthQuaternion)
 
                 KotlinFloat3(
                     pose.tx() + offset.x,

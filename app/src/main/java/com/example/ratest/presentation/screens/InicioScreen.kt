@@ -60,7 +60,7 @@ fun InicioScreen(
         }
 
         item {
-            MapSection()
+            MapSection(modifier = Modifier.height(200.dp), geoPoints = uiRoutes.flatMap { it.geoPoints }, type = "ruta")
         }
     }
 

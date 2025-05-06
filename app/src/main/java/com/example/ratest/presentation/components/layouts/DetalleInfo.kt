@@ -203,7 +203,10 @@ fun DetalleInfo(
                     },
                     geoPoints = it.geoPoints,
                     zoomLevel = 17.0,
-                    type = it.type
+                    type = it.type,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
                 )
                 Spacer(modifier = Modifier.height(16.dp))
 

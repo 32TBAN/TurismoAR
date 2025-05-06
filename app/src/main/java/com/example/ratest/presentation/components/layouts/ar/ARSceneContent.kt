@@ -3,16 +3,10 @@ package com.example.ratest.presentation.components.layouts.ar
 import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.example.ratest.presentation.viewmodels.ARViewModel
 import com.google.android.filament.Engine
 import com.google.ar.core.Config
@@ -50,7 +44,7 @@ fun ARSceneContent(
         }
         val collisionSystem = rememberCollisionSystem(view = view)
         val planeRenderer = remember {
-            mutableStateOf(true)
+            mutableStateOf(false)
         }
         val modelInstance = remember {
             mutableListOf<ModelInstance>()

@@ -52,7 +52,8 @@ fun MapIntroAnimation(geoPoints: List<GeoPoint>, onFinish: () -> Unit) {
                 },
                 geoPoints = geoPoints,
                 zoomLevel = animatedZoom.toDouble(),
-                controls = false
+                controls = false,
+                modifier = Modifier.fillMaxSize()
             )
         }
     }
