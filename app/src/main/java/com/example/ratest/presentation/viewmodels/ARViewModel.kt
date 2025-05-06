@@ -3,6 +3,10 @@ package com.example.ratest.presentation.viewmodels
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.ratest.domain.models.GeoPoint
 import com.example.ratest.utils.Utils
@@ -33,7 +37,7 @@ class ARViewModel : ViewModel() {
     private val uiStateMutable = MutableStateFlow<TourUIState>(TourUIState.Loading)
     val uiState: StateFlow<TourUIState> = uiStateMutable
 
-    val visibleRange = 4.99
+    val visibleRange = 5.99
 
     fun initialize(context: Context, geoPoints: List<GeoPoint>) {
         tourManager = TourManager(context)
@@ -115,6 +119,7 @@ class ARViewModel : ViewModel() {
         return tourManager.visitedPoints.size
     }
 
+
     fun updateSession(
         frame: Frame?, earth: Earth?,
         onAnchorCreated: (AnchorNode?) -> Unit,
@@ -128,6 +133,10 @@ class ARViewModel : ViewModel() {
         val currentTarget = (uiStateMutable.value as? TourUIState.InProgress)?.target
         if (currentTarget == null) return
         try {
+            if (earth.trackingState != TrackingState.TRACKING) {
+                uiStateMutable.value = TourUIState.Loading
+            }
+
             if (earth.trackingState == TrackingState.TRACKING) {
                 val geoPose = earth.cameraGeospatialPose
 
@@ -205,7 +214,7 @@ class ARViewModel : ViewModel() {
         frame?.camera?.pose?.let { pose ->
             val forwardDirection = Utils.quaternionToForward(pose.rotationQuaternion)
             val hudDistance = -0.2f
-            val hudYOffset = 0.2f
+            val hudYOffset = 0.1f
             arrowNode.position = KotlinFloat3(
                 pose.tx() + forwardDirection.x * hudDistance,
                 pose.ty() - hudYOffset,
@@ -227,6 +236,7 @@ class ARViewModel : ViewModel() {
                     targetLat = currentTarget.latitude,
                     targetLon = currentTarget.longitude
                 )
+//                val rotatedOffset = Utils.rotateVectorByQuaternion(offset, geoPose.eastUpSouthQuaternion)
 
                 KotlinFloat3(
                     pose.tx() + offset.x,

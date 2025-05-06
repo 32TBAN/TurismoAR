@@ -2,7 +2,6 @@ package com.example.ratest.presentation.components.layouts
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
@@ -24,24 +23,26 @@ import com.example.ratest.domain.models.GeoPoint as GeoPointCustom
 
 @Composable
 fun MapSection(
-    title: String = "Mapa de Salcedo",
-    geoPoints: List<GeoPointCustom> = emptyList(),
-    zoomLevel: Double = 12.7,
-    controls: Boolean = true,
-    tipe: String = "ruta"
-) {
-    Column(modifier = Modifier.padding(horizontal = 8.dp)) {
+    title: @Composable () -> Unit = {
         Text(
-            text = title,
+            "Mapa de Salcedo",
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,
         )
-        Spacer(modifier = Modifier.height(96.dp))
+    },
+    geoPoints: List<GeoPointCustom> = emptyList(),
+    zoomLevel: Double = 12.7,
+    controls: Boolean = true,
+    type: String = "ruta",
+    modifier: Modifier
+) {
+    title()
+    Spacer(modifier = Modifier.height(60.dp))
+    Column(modifier = Modifier.padding(horizontal = 8.dp)) {
+//        Spacer(modifier = Modifier.height(96.dp))
         //todo: arreglar bug visuald del mapa
         AndroidView(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(250.dp),
+            modifier = modifier,
             factory = { context ->
                 val userAgent = "com.example.ratest/1.0"
                 Configuration.getInstance().userAgentValue = userAgent
@@ -49,14 +50,10 @@ fun MapSection(
                 mapview.setTileSource(TileSourceFactory.MAPNIK)
                 mapview.setBuiltInZoomControls(controls)
                 mapview.setMultiTouchControls(controls)
-
                 mapview.controller.setZoom(zoomLevel)
-
 //                mapview.maxZoomLevel = 19.0
 //                mapview.minZoomLevel = zoomLevel
-
 //                mapview.setTilesScaledToDpi(true)
-
                 if (!geoPoints.isEmpty()) {
                     mapview.controller.setCenter(
                         GeoPoint(
@@ -65,7 +62,7 @@ fun MapSection(
                         )
                     )
 
-                    if (tipe == "marcador") {
+                    if (type == "marcador") {
                         geoPoints.forEach { geoPoint ->
                             if (geoPoint.name.isNotEmpty()) {
                                 val marker = Marker(mapview)
@@ -106,6 +103,20 @@ fun MapSection(
                     mapview.overlays.add(marker)
                 }
                 mapview
-            })
+            },
+            update = { mapView ->
+                if (!geoPoints.isEmpty()) {
+                    val controls = mapView.controller
+                    controls.setZoom(zoomLevel)
+                    controls.setCenter(
+                        GeoPoint(
+                            geoPoints[0].latitude,
+                            geoPoints[0].longitude
+                        )
+                    )
+                }
+
+            }
+        )
     }
 }

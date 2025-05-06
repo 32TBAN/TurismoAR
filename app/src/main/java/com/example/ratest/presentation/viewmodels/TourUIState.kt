@@ -8,4 +8,5 @@ sealed class TourUIState {
     data class Arrived(val target: GeoPoint) : TourUIState()
     object Completed : TourUIState()
     data class Error(val message: String) : TourUIState()
+
 }

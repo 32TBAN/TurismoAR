@@ -32,6 +32,9 @@ import com.example.ratest.presentation.components.layouts.CustomBottomBar
 import com.example.ratest.presentation.components.layouts.CustomTopBar
 import com.example.ratest.presentation.components.layouts.DetalleInfo
 import com.example.ratest.presentation.screens.ARScreen
+import com.example.ratest.presentation.screens.HistoryScreen
+import com.example.ratest.presentation.screens.InicioScreen
+import com.example.ratest.presentation.screens.RoutesScreen
 import com.example.ratest.presentation.viewmodels.RouteViewModel
 import com.example.ratest.ui.theme.White
 
@@ -39,24 +42,24 @@ import com.example.ratest.ui.theme.White
 fun MainScreen() {
     val navController = rememberNavController()
     var selectedIndex by remember { mutableStateOf(0) }
-    var isTopBarVisible by remember { mutableStateOf(true) }
-    var isBottomBarVisible by remember { mutableStateOf(true) }
+    var isBarsVisible by remember { mutableStateOf(true) }
+//    var isBottomBarVisible by remember { mutableStateOf(true) }
 
     // LazyListState para detectar el desplazamiento
     val listState = rememberLazyListState()
     // Detectar el scroll y actualizar las barras
-    LaunchedEffect(remember { derivedStateOf { listState.firstVisibleItemIndex } }) {
-        // Si el primer ítem visible tiene un índice mayor a 0, eso significa que estamos haciendo scroll hacia abajo
-        if (listState.firstVisibleItemIndex > 0) {
-            // Si la dirección es hacia abajo, ocultar las barras
-            isTopBarVisible = false
-            isBottomBarVisible = false
-        } else {
-            // Si no, mantener las barras visibles
-            isTopBarVisible = true
-            isBottomBarVisible = true
-        }
-    }
+//    LaunchedEffect(remember { derivedStateOf { listState.firstVisibleItemIndex } }) {
+//        // Si el primer ítem visible tiene un índice mayor a 0, eso significa que estamos haciendo scroll hacia abajo
+//        if (listState.firstVisibleItemIndex > 0) {
+//            // Si la dirección es hacia abajo, ocultar las barras
+//            isTopBarVisible = false
+//            isBottomBarVisible = false
+//        } else {
+//            // Si no, mantener las barras visibles
+//            isTopBarVisible = true
+//            isBottomBarVisible = true
+//        }
+//    }
 
     val context = LocalContext.current
     val viewModel: RouteViewModel = viewModel()
@@ -74,7 +77,7 @@ fun MainScreen() {
                         easing = LinearEasing
                     )
                 ),
-                visible = isTopBarVisible,
+                visible = isBarsVisible,
                 exit = fadeOut(
                     animationSpec = tween(
                         durationMillis = 11,
@@ -87,7 +90,7 @@ fun MainScreen() {
         },
         bottomBar = {
             AnimatedVisibility(
-                visible = isBottomBarVisible,
+                visible = isBarsVisible,
                 enter = fadeIn(
                     animationSpec = tween(
                         durationMillis = 700,
@@ -138,21 +141,26 @@ fun MainScreen() {
                 startDestination = InicioScreen
             ) {
                 composable<InicioScreen> {
-                    com.example.ratest.presentation.screens.InicioScreen(
+                    isBarsVisible = true
+                    InicioScreen(
                         navController,
                         listState,
                         viewModel
                     )
                 }
                 composable<RoutesScreen> {
-                    com.example.ratest.presentation.screens.RoutesScreen(
+                    isBarsVisible = true
+
+                    RoutesScreen(
                         navController,
                         listState,
                         viewModel
                     )
                 }
                 composable<HistoryScreen> {
-                    com.example.ratest.presentation.screens.HistoryScreen(
+                    isBarsVisible = true
+
+                    HistoryScreen(
                         navController,
                         listState,
                         viewModel
@@ -173,8 +181,7 @@ fun MainScreen() {
                     )
 
                     if (isPermissionGranted && route != null) {
-                        isTopBarVisible = false
-                        isBottomBarVisible = false
+                        isBarsVisible = false
                         ARScreen(navController, route.geoPoints, route.type)
                     } else {
                         Text("Se requiere permiso de ubicación para continuar")
@@ -182,6 +189,7 @@ fun MainScreen() {
                 }
                 composable<DetalleScreen> {
                     DetalleInfo(navController, listState,viewModel)
+                    isBarsVisible = true
                 }
             }
         }

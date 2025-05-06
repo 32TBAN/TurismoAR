@@ -1,18 +1,27 @@
 package com.example.ratest.presentation.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.ratest.presentation.components.layouts.ar.ConfettiAnimation
 import com.example.ratest.presentation.components.models.CustomButton
 import com.example.ratest.presentation.viewmodels.ARViewModel
+import com.example.ratest.presentation.viewmodels.TourUIState
 import com.example.ratest.ui.theme.DarkGreen
 import com.example.ratest.ui.theme.Green
+import com.example.ratest.ui.theme.White
 
 @Composable
 fun TourResultScreen(
@@ -21,30 +30,65 @@ fun TourResultScreen(
     visitedPlaces: Int,
     viewModel: ARViewModel
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(32.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = "🎉 ¡Tour Completado!",
-            fontSize = 32.sp,
-            fontWeight = FontWeight.Bold,
-            color = Green
-        )
+    ConfettiAnimation()
+    AlertDialog(
+        onDismissRequest = { /* No se puede cerrar tocando fuera */ },
+        title = {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                // Imagen superior decorativa
+//                Image(
+//                    painter = painterResource(id = R.drawable.tour_completed),
+//                    contentDescription = "Tour completado",
+//                    modifier = Modifier
+//                        .height(150.dp)
+//                        .fillMaxWidth()
+//                        .padding(bottom = 16.dp),
+//                    contentScale = ContentScale.Fit
+//                )
 
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Text(
-            text = "Visitaste $visitedPlaces de $totalPlaces lugares turísticos.",
-            fontSize = 20.sp,
-            color = DarkGreen
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-        CustomButton("Comenzar de nuevo", onClick = { viewModel.restartTour() }, modifier = Modifier.padding(top = 32.dp))
-        CustomButton("Volver al inicio", onClick = { navController.popBackStack() }, modifier = Modifier.padding(top = 10.dp))
-    }
+                Text(
+                    text = "🎉 ¡Tour Completado!",
+                    style = MaterialTheme.typography.headlineSmall.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
+                    ),
+                    textAlign = TextAlign.Center
+                )
+            }
+        },
+        text = {
+            Text(
+                text = "Visitaste $visitedPlaces de $totalPlaces lugares turísticos.",
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    color = MaterialTheme.colorScheme.onSurface
+                ),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+        },
+        confirmButton = {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 24.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                CustomButton(
+                    text = "Reiniciar",
+                    onClick = { viewModel.restartTour() },
+                    modifier = Modifier.weight(1f)
+                )
+                CustomButton(
+                    text = "Inicio",
+                    onClick = { navController.popBackStack() },
+                    modifier = Modifier.weight(1f)
+                )
+            }
+        },
+        shape = RoundedCornerShape(16.dp),
+        tonalElevation = 8.dp,
+        containerColor = MaterialTheme.colorScheme.surface,
+        iconContentColor = MaterialTheme.colorScheme.primary
+    )
 }
+

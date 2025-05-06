@@ -1,38 +1,49 @@
 package com.example.ratest.presentation.screens
 
-import android.util.Log
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts.GetContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.google.ar.core.Config
-import com.google.ar.core.Frame
-import com.google.ar.core.TrackingFailureReason
-import io.github.sceneview.ar.ARScene
-import io.github.sceneview.ar.rememberARCameraNode
-import io.github.sceneview.model.ModelInstance
-import io.github.sceneview.node.ModelNode
-import io.github.sceneview.rememberCollisionSystem
 import io.github.sceneview.rememberEngine
-import io.github.sceneview.rememberMaterialLoader
-import io.github.sceneview.rememberModelLoader
-import io.github.sceneview.rememberNodes
-import io.github.sceneview.rememberView
 import com.example.ratest.presentation.viewmodels.ARViewModel
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
 import com.example.ratest.domain.models.GeoPoint
+import com.example.ratest.presentation.components.layouts.CustomDialog
+import com.example.ratest.presentation.components.layouts.ar.ARSceneContent
+import com.example.ratest.presentation.components.layouts.LoadingScreen
+import com.example.ratest.presentation.components.layouts.MapSection
+import com.example.ratest.presentation.components.layouts.ar.CompassOverlay
+import com.example.ratest.presentation.components.layouts.ar.MapIntroAnimation
+import com.example.ratest.presentation.components.layouts.ar.MapToggleButton
+import com.example.ratest.presentation.components.layouts.ar.PlayTourSound
+import com.example.ratest.presentation.components.layouts.ar.ProgressOverlay
 import com.example.ratest.presentation.components.models.BottomOverlay
 import com.example.ratest.presentation.viewmodels.TourUIState
-import io.github.sceneview.ar.node.AnchorNode
+import com.example.ratest.ui.theme.Green
 
 @Composable
 fun ARScreen(
@@ -43,113 +54,131 @@ fun ARScreen(
     val viewModel: ARViewModel = viewModel()
     val uiState by viewModel.uiState.collectAsState()
     val distanceText by viewModel.distanceText.collectAsState()
-
     val context = LocalContext.current
+
+    val selectedImageUri = remember { mutableStateOf<Uri?>(null) }
+    val pickGalleryLauncher = rememberLauncherForActivityResult(
+        contract = GetContent()
+    ) { uri ->
+        uri?.let {
+            selectedImageUri.value = it
+        }
+    }
+
+    fun onOpenGallery() {
+        pickGalleryLauncher.launch("image/*")
+    }
+
+    selectedImageUri.value?.let { uri ->
+        CustomDialog(
+            title = "Imagen seleccionada",
+            onDismissRequest = { selectedImageUri.value = null },
+            confirmButtonText = "Cerrar",
+            content = {
+                Image(
+                    painter = rememberAsyncImagePainter(uri),
+                    contentDescription = "Imagen seleccionada",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(300.dp)
+                        .clip(RoundedCornerShape(12.dp)),
+                    contentScale = ContentScale.Crop
+                )
+            }
+        )
+    }
+
+
     var validGeoPoints = geoPoints.filter { it.name != "" }
 
+    val engine = rememberEngine()
+    var isMapVisible by remember { mutableStateOf(false) }
+    var showMapIntro by remember { mutableStateOf(true) }
     LaunchedEffect(Unit) {
         // Se Inicializa el ViewModel con los geoPoints
         viewModel.initialize(context, validGeoPoints)
     }
 
+    if (showMapIntro) {
+        MapIntroAnimation(
+            geoPoints = geoPoints,
+            onFinish = { showMapIntro = false }
+        )
+        return
+    }
+
+    ARSceneContent(engine, viewModel, type)
+
     when (uiState) {
         is TourUIState.Loading -> {
-            Text("Cargando tour...", color = Color.White)
+            LoadingScreen(text = "Cargando destino...")
         }
 
         is TourUIState.InProgress -> {
-            val engine = rememberEngine()
-            val modelLoader = rememberModelLoader(engine = engine)
-            val materialLoader = rememberMaterialLoader(engine = engine)
-            val cameraNode = rememberARCameraNode(engine = engine)
-            val view = rememberView(engine = engine)
-            val childNodes = rememberNodes {
-                add(
-                    ModelNode(
-                        modelInstance = modelLoader.createModelInstance("models/flecha.glb"),
-                        scaleToUnits = 0.05f
+            Column(modifier = Modifier.fillMaxSize()) {
+                ProgressOverlay(
+                    current = (viewModel.getZisedVisitedPoints()-1),
+                    total = validGeoPoints.size
+                )
+
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = 8.dp)
+                        .fillMaxWidth()
+                ) {
+                    CompassOverlay(
+                        Modifier.align(Alignment.TopEnd)
                     )
-                )
-            }
-            val collisionSystem = rememberCollisionSystem(view = view)
-            val planeRenderer = remember {
-                mutableStateOf(true)
-            }
-            val modelInstance = remember {
-                mutableListOf<ModelInstance>()
-            }
-            val trackingFailureReason = remember {
-                mutableStateOf<TrackingFailureReason?>(null)
-            }
-            val frame = remember {
-                mutableStateOf<Frame?>(null)
-            }
+                }
 
-            Box(modifier = Modifier.fillMaxSize()) {
-                ARScene(
-                    modifier = Modifier.fillMaxSize(),
-                    childNodes = childNodes,
-                    engine = engine,
-                    view = view,
-                    modelLoader = modelLoader,
-                    collisionSystem = collisionSystem,
-                    planeRenderer = planeRenderer.value,
-                    cameraNode = cameraNode,
-                    materialLoader = materialLoader,
-                    onTrackingFailureChanged = {
-                        trackingFailureReason.value = it
-                    },
-                    onSessionUpdated = { session, updatedFrame ->
-                        frame.value = updatedFrame
-                        val earth = session.earth
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = 8.dp)
+                        .fillMaxWidth()
+                ) {
+                    MapToggleButton(
+                        isMapVisible = isMapVisible,
+                        onToggle = { isMapVisible = !isMapVisible },
+                        Modifier.align(Alignment.TopEnd)
+                    )
+                }
 
-                        viewModel.updateTarget(
-                            earth?.cameraGeospatialPose?.latitude,
-                            earth?.cameraGeospatialPose?.longitude
-                        )
+                Box(modifier = Modifier.weight(7f)) {
+                    BottomOverlay(
+                        distanceText = distanceText,
+                        Modifier.align(Alignment.BottomCenter),
+                        onOpenGallery = { onOpenGallery() },
+                    )
+                }
 
-                        viewModel.updateSession(
-                            updatedFrame, earth,
-                            { anchorNode ->
-                                if (anchorNode != null) {
-                                    childNodes.add(anchorNode)
-                                } else {
-                                    if (childNodes.size > 1) {
-                                        childNodes.removeAt(1)
-                                    }
-                                }
+                if (isMapVisible) {
+                    Box(modifier = Modifier.weight(5f)) {
+                        MapSection(
+                            title = {
+                                Text(
+                                    "Mapa de recorrido",
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 20.sp,
+                                    color = Green
+                                )
                             },
-                            modelInstance, engine, modelLoader, materialLoader, type
+                            geoPoints = geoPoints,
+                            type = "ruta",
+                            zoomLevel = 20.0,
+                            modifier = Modifier.fillMaxSize()
                         )
-
-                        viewModel.updateArrowNode(
-                            arrowNode = childNodes[0] as ModelNode,
-                            frame = updatedFrame,
-                            pinNode = if (childNodes.size > 1) childNodes[1] as? AnchorNode else null,
-                            earth = earth
-                        )
-
-                    },
-                    sessionConfiguration = { session, config ->
-                        config.geospatialMode = Config.GeospatialMode.ENABLED
-                        config.depthMode =
-                            when (session.isDepthModeSupported(Config.DepthMode.AUTOMATIC)) {
-                                true -> Config.DepthMode.AUTOMATIC
-                                else -> Config.DepthMode.DISABLED
-                            }
-                        config.lightEstimationMode = Config.LightEstimationMode.ENVIRONMENTAL_HDR
-                        config.updateMode = Config.UpdateMode.LATEST_CAMERA_IMAGE
-                        session.configure(config)
                     }
-                )
 
-                BottomOverlay(distanceText = distanceText)
+                }
             }
         }
 
         is TourUIState.Arrived -> {
             val target = (uiState as TourUIState.Arrived).target
-            Log.d("GeoAR", "Arrived at: $target")
+//            Log.d("GeoAR", "Arrived at: $target")
+            PlayTourSound()
             AlertDialog(
                 onDismissRequest = {
                     uiState !is TourUIState.Arrived
@@ -166,9 +195,22 @@ fun ARScreen(
                     }
                 }
             )
+
+//            CustomDialog(
+//                title = "¡Llegaste a ${target.name}!",
+//                onDismissRequest = { /* no dismiss automático */ },
+//                confirmButtonText = "Marcar como visitado",
+//                onConfirm = {
+//                    viewModel.markCurrentTargetVisited()
+//                }
+//            ) {
+//                Text("¿Quieres marcar este lugar como visitado?", color = Color.DarkGray)
+//            }
+
         }
 
         is TourUIState.Completed -> {
+            PlayTourSound()
             TourResultScreen(
                 navController,
                 validGeoPoints.size,
