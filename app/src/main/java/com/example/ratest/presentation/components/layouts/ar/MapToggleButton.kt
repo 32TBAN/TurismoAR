@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.material3.Icon
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.ui.unit.dp
+import com.example.ratest.ui.theme.Green
 import com.example.ratest.ui.theme.White
 
 @Composable
@@ -20,7 +21,8 @@ fun MapToggleButton(
 ) {
     FloatingActionButton(
         onClick = onToggle,
-        modifier = modifier.size(40.dp)
+        modifier = modifier.size(40.dp),
+        containerColor = Green
     ) {
         Icon(
             imageVector = if (isMapVisible) Icons.Default.Close else Icons.Default.Map,

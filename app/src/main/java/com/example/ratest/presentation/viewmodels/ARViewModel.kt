@@ -1,12 +1,26 @@
 package com.example.ratest.presentation.viewmodels
 
 
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.ContentValues
 import android.content.Context
+import android.graphics.Bitmap
+import android.net.Uri
 import android.util.Log
-import androidx.compose.runtime.getValue
+import android.view.ViewTreeObserver
+import androidx.compose.runtime.MutableState
+import android.graphics.Canvas
+import android.os.Environment
+import android.os.Handler
+import android.os.Looper
+import android.provider.MediaStore
+import android.view.PixelCopy
+import android.widget.Toast
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModel
 import com.example.ratest.domain.models.GeoPoint
 import com.example.ratest.utils.Utils
@@ -26,7 +40,13 @@ import dev.romainguy.kotlin.math.Float3 as KotlinFloat3
 import androidx.lifecycle.viewModelScope
 import com.example.ratest.domain.usecase.TourManager
 import kotlinx.coroutines.launch
+import io.github.sceneview.ar.ARSceneView
+import androidx.core.graphics.createBitmap
+import io.github.sceneview.node.Node
+import java.io.File
+import kotlin.math.abs
 
+@SuppressLint("StaticFieldLeak")
 class ARViewModel : ViewModel() {
     private lateinit var tourManager: TourManager
 
@@ -38,6 +58,90 @@ class ARViewModel : ViewModel() {
     val uiState: StateFlow<TourUIState> = uiStateMutable
 
     val visibleRange = 5.99
+
+    val arNodes = mutableStateListOf<Node>()
+    var arSceneView: ARSceneView? = null
+    val modelInstanceList = mutableListOf<ModelInstance>()
+    var imageUriState = mutableStateOf<Uri?>(null)
+
+    private var stableTrackingFrames = 0
+    private val requiredStableFrames = 10
+    private var lastLat: Double? = null
+    private var lastLon: Double? = null
+    var isTrackingStable = mutableStateOf(false)
+
+    fun captureARView(arView: ARSceneView, context: Context, onCaptured: (Bitmap?) -> Unit) {
+        val bitmap = createBitmap(arView.width, arView.height)
+
+        PixelCopy.request(arView, bitmap, { result ->
+            if (result == PixelCopy.SUCCESS) {
+                onCaptured(bitmap)
+            } else {
+                Log.e("GeoAR", "PixelCopy failed with result code: $result")
+                onCaptured(null)
+            }
+        }, Handler(Looper.getMainLooper()))
+    }
+
+    fun saveBitmapToCache(context: Context, bitmap: Bitmap): Uri {
+        val file = File(context.cacheDir, "screenshot_${System.currentTimeMillis()}.png")
+        file.outputStream().use {
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)
+        }
+        Log.e("GeoAR", "Se tom")
+        return FileProvider.getUriForFile(
+            context,
+            "${context.packageName}.provider",
+            file
+        )
+    }
+
+    fun onTakeScreenshot(context: Context) {
+        arSceneView?.let {
+            captureARView(it, context) { bitmap ->
+                if (bitmap != null) {
+                    val uri = saveBitmapToCache(context, bitmap)
+                    imageUriState.value = uri
+                    Log.d("GeoAR", "Captura guardada: $uri")
+                } else {
+                    Log.e("GeoAR", "La captura falló")
+                }
+            }
+        }
+
+    }
+
+    fun saveImageToGallery(context: Context, sourceUri: Uri) {
+        val contentResolver = context.contentResolver
+        val inputStream = contentResolver.openInputStream(sourceUri) ?: return
+
+        val filename = "AR_${System.currentTimeMillis()}.png"
+        val contentValues = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
+            put(MediaStore.MediaColumns.MIME_TYPE, "image/png")
+            put(
+                MediaStore.MediaColumns.RELATIVE_PATH,
+                Environment.DIRECTORY_PICTURES + "/ARCaptures"
+            )
+            put(MediaStore.MediaColumns.IS_PENDING, 1)
+        }
+
+        val imageUri =
+            contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+        if (imageUri != null) {
+            contentResolver.openOutputStream(imageUri).use { outputStream ->
+                inputStream.copyTo(outputStream!!)
+            }
+
+            contentValues.clear()
+            contentValues.put(MediaStore.MediaColumns.IS_PENDING, 0)
+            contentResolver.update(imageUri, contentValues, null, null)
+
+            Toast.makeText(context, "Imagen guardada en galería", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(context, "Error al guardar imagen", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     fun initialize(context: Context, geoPoints: List<GeoPoint>) {
         tourManager = TourManager(context)
@@ -107,6 +211,8 @@ class ARViewModel : ViewModel() {
                     uiStateMutable.value = TourUIState.Error("No hay destinos disponibles.")
                 }
 
+                arSceneView?.removeChildNodes(arNodes)
+                arNodes.clear()
                 isPinCreated.value = false
             } catch (e: Exception) {
                 uiStateMutable.value =
@@ -121,9 +227,8 @@ class ARViewModel : ViewModel() {
 
 
     fun updateSession(
-        frame: Frame?, earth: Earth?,
-        onAnchorCreated: (AnchorNode?) -> Unit,
-        modelInstanceList: MutableList<ModelInstance>,
+        frame: Frame?,
+        earth: Earth?,
         engine: Engine,
         modelLoader: ModelLoader,
         materialLoader: MaterialLoader,
@@ -135,10 +240,32 @@ class ARViewModel : ViewModel() {
         try {
             if (earth.trackingState != TrackingState.TRACKING) {
                 uiStateMutable.value = TourUIState.Loading
+                isTrackingStable.value = false
+                stableTrackingFrames = 0
+                return
+            }
+            val geoPose = earth.cameraGeospatialPose
+
+            val deltaLat = abs((lastLat ?: geoPose.latitude) - geoPose.latitude)
+            val deltaLon = abs((lastLon ?: geoPose.longitude) - geoPose.longitude)
+
+            if (deltaLat < 0.00001 && deltaLon < 0.00001) {
+                stableTrackingFrames++
+            } else {
+                stableTrackingFrames = 0
+            }
+
+            lastLat = geoPose.latitude
+            lastLon = geoPose.longitude
+
+            if (stableTrackingFrames >= requiredStableFrames) {
+                isTrackingStable.value = true
+            } else {
+                uiStateMutable.value = TourUIState.Loading
+                return
             }
 
             if (earth.trackingState == TrackingState.TRACKING) {
-                val geoPose = earth.cameraGeospatialPose
 
                 val distance = tourManager.haversineDistance(
                     geoPose.latitude,
@@ -151,10 +278,12 @@ class ARViewModel : ViewModel() {
 
 //                Log.d("GeoAR", type)
                 if (type == "ruta" && distance <= 2) {
+                    arSceneView?.removeChildNodes(arNodes)
                     uiStateMutable.value = TourUIState.Arrived(currentTarget)
                 }
 
                 if (distance <= visibleRange && !isPinCreated.value) {
+//                    Log.d("GeoAR", "Creating anchor for: $currentTarget")
                     val anchor = earth.createAnchor(
                         currentTarget.latitude,
                         currentTarget.longitude,
@@ -169,7 +298,7 @@ class ARViewModel : ViewModel() {
                         Triple(lat, lng, alt)
                     }
 
-                    Log.d("GeoAR", "Anchor created at: $anchorLatLng")
+//                    Log.d("GeoAR", "Anchor created at: $anchorLatLng")
                     val adjustedTargetPosition = KotlinFloat3(
                         anchorLatLng.first.toFloat(),
                         geoPose.longitude.toFloat(),
@@ -191,11 +320,16 @@ class ARViewModel : ViewModel() {
                         0f,
                         pinNode.position.z
                     )
-                    onAnchorCreated(pinNode)
+
+                    arSceneView?.addChildNode(pinNode)
+                    arNodes.add(pinNode)
                     isPinCreated.value = true
                 } else if (distance > visibleRange && isPinCreated.value) {
-                    onAnchorCreated(null)
-                    isPinCreated.value = false
+                    arNodes.firstOrNull()?.let {
+                        arSceneView?.removeChildNode(it)
+                        arNodes.remove(it)
+                        isPinCreated.value = false
+                    }
                 }
             }
         } catch (e: NotTrackingException) {

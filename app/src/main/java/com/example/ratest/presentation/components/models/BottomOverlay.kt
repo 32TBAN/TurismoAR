@@ -36,12 +36,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.FileProvider
+import com.example.ratest.presentation.viewmodels.ARViewModel
 import com.example.ratest.ui.theme.LightGreen
 import java.io.File
 
 @Composable
-fun BottomOverlay(distanceText: String, modifier: Modifier = Modifier, onOpenGallery: () -> Unit) {
-//    val context = LocalContext.current
+fun BottomOverlay(distanceText: String, modifier: Modifier = Modifier, onOpenGallery: () -> Unit, viewModel: ARViewModel) {
+    val context = LocalContext.current
     val semiCircleShape = GenericShape { size, _ ->
         // semicírculo inferior
         moveTo(0f, size.height)
@@ -55,24 +56,6 @@ fun BottomOverlay(distanceText: String, modifier: Modifier = Modifier, onOpenGal
         )
         close()
     }
-//
-//    val photoUri = remember {
-//        mutableStateOf<Uri?>(null)
-//    }
-//
-//    fun onTakePhoto() {
-//        val file = File(
-//            context.cacheDir,
-//            "photo_${System.currentTimeMillis()}.jpg"
-//        )
-//        val uri = FileProvider.getUriForFile(
-//            context,
-//            "${context.packageName}.provider",
-//            file
-//        )
-//        photoUri.value = uri
-////        takePictureLauncher.launch(uri)
-//    }
 
     Box(
         modifier = modifier,
@@ -104,7 +87,7 @@ fun BottomOverlay(distanceText: String, modifier: Modifier = Modifier, onOpenGal
                 }
 
                 Button(
-                    onClick = {  },
+                    onClick = { viewModel.onTakeScreenshot(context) },
                     shape = CircleShape,
                     modifier = Modifier.weight(1f).size(64.dp).border(1.dp, White, CircleShape),
                     colors = ButtonDefaults.buttonColors(

@@ -82,7 +82,7 @@ fun CompassOverlay(modifier: Modifier = Modifier) {
         tonalElevation = 6.dp,
         shape = CircleShape,
         shadowElevation = 8.dp,
-        color = White.copy(alpha = 0.8f)
+        color = Green.copy(alpha = 2.9f)
     ) {
         Box(
             modifier = Modifier

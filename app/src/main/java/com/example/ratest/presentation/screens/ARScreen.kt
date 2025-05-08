@@ -1,6 +1,7 @@
 package com.example.ratest.presentation.screens
 
 import android.net.Uri
+import android.view.View
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts.GetContent
 import androidx.compose.foundation.Image
@@ -10,8 +11,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.automirrored.filled.QueueMusic
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.Map
+import androidx.compose.material.icons.filled.QuestionMark
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -20,7 +34,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import io.github.sceneview.rememberEngine
 import com.example.ratest.presentation.viewmodels.ARViewModel
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -41,9 +54,12 @@ import com.example.ratest.presentation.components.layouts.ar.MapIntroAnimation
 import com.example.ratest.presentation.components.layouts.ar.MapToggleButton
 import com.example.ratest.presentation.components.layouts.ar.PlayTourSound
 import com.example.ratest.presentation.components.layouts.ar.ProgressOverlay
+import com.example.ratest.presentation.components.layouts.ar.TutorialDialog
 import com.example.ratest.presentation.components.models.BottomOverlay
 import com.example.ratest.presentation.viewmodels.TourUIState
 import com.example.ratest.ui.theme.Green
+import com.example.ratest.ui.theme.White
+import io.github.sceneview.ar.ARSceneView
 
 @Composable
 fun ARScreen(
@@ -56,12 +72,11 @@ fun ARScreen(
     val distanceText by viewModel.distanceText.collectAsState()
     val context = LocalContext.current
 
-    val selectedImageUri = remember { mutableStateOf<Uri?>(null) }
     val pickGalleryLauncher = rememberLauncherForActivityResult(
         contract = GetContent()
     ) { uri ->
         uri?.let {
-            selectedImageUri.value = it
+            viewModel.imageUriState.value = it
         }
     }
 
@@ -69,11 +84,20 @@ fun ARScreen(
         pickGalleryLauncher.launch("image/*")
     }
 
-    selectedImageUri.value?.let { uri ->
+    viewModel.imageUriState.value?.let { uri ->
         CustomDialog(
-            title = "Imagen seleccionada",
-            onDismissRequest = { selectedImageUri.value = null },
+            onDismissRequest = { viewModel.imageUriState.value = null },
             confirmButtonText = "Cerrar",
+            secondButtonContent = {
+                Button(
+                    onClick = {
+                        viewModel.saveImageToGallery(context, uri)
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                ) {
+                    Text("Descargar", color = Color.White)
+                }
+            },
             content = {
                 Image(
                     painter = rememberAsyncImagePainter(uri),
@@ -88,12 +112,12 @@ fun ARScreen(
         )
     }
 
-
     var validGeoPoints = geoPoints.filter { it.name != "" }
 
-    val engine = rememberEngine()
     var isMapVisible by remember { mutableStateOf(false) }
     var showMapIntro by remember { mutableStateOf(true) }
+    val showTutorial = remember { mutableStateOf(false) }
+
     LaunchedEffect(Unit) {
         // Se Inicializa el ViewModel con los geoPoints
         viewModel.initialize(context, validGeoPoints)
@@ -106,8 +130,10 @@ fun ARScreen(
         )
         return
     }
-
-    ARSceneContent(engine, viewModel, type)
+    ARSceneContent(
+        viewModel,
+        type
+    )
 
     when (uiState) {
         is TourUIState.Loading -> {
@@ -117,7 +143,7 @@ fun ARScreen(
         is TourUIState.InProgress -> {
             Column(modifier = Modifier.fillMaxSize()) {
                 ProgressOverlay(
-                    current = (viewModel.getZisedVisitedPoints()-1),
+                    current = (viewModel.getZisedVisitedPoints()),
                     total = validGeoPoints.size
                 )
 
@@ -127,6 +153,19 @@ fun ARScreen(
                         .padding(horizontal = 8.dp)
                         .fillMaxWidth()
                 ) {
+                    Box(modifier = Modifier.align(Alignment.TopStart)) {
+                        FloatingActionButton(
+                            onClick = { navController.popBackStack() },
+                            modifier = Modifier.size(40.dp),
+                            containerColor = Green
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ExitToApp,
+                                contentDescription = "Volver",
+                                tint = White
+                            )
+                        }
+                    }
                     CompassOverlay(
                         Modifier.align(Alignment.TopEnd)
                     )
@@ -138,6 +177,19 @@ fun ARScreen(
                         .padding(horizontal = 8.dp)
                         .fillMaxWidth()
                 ) {
+                    Box(modifier = Modifier.align(Alignment.TopStart)) {
+                        FloatingActionButton(
+                            onClick = { showTutorial.value = true },
+                            modifier = Modifier.size(40.dp),
+                            containerColor = Green
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.QuestionMark,
+                                contentDescription = "Ayuda",
+                                tint = White
+                            )
+                        }
+                    }
                     MapToggleButton(
                         isMapVisible = isMapVisible,
                         onToggle = { isMapVisible = !isMapVisible },
@@ -150,6 +202,7 @@ fun ARScreen(
                         distanceText = distanceText,
                         Modifier.align(Alignment.BottomCenter),
                         onOpenGallery = { onOpenGallery() },
+                        viewModel = viewModel
                     )
                 }
 
@@ -172,6 +225,11 @@ fun ARScreen(
                     }
 
                 }
+
+                if (showTutorial.value) {
+                    TutorialDialog(onDismiss = { showTutorial.value = false })
+                }
+
             }
         }
 
