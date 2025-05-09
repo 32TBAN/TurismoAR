@@ -28,7 +28,8 @@ fun ARSceneContent(
 ) {
     val trackingFailureReason = remember { mutableStateOf<TrackingFailureReason?>(null) }
     val frame = remember { mutableStateOf<Frame?>(null) }
-    var planeRenderer = remember { mutableStateOf<Boolean>(viewModel.selectedModelPath.value != null) }
+    var planeRenderer =
+        remember { mutableStateOf<Boolean>(viewModel.selectedModelPath.value != null) }
 
     val gestureListener = rememberOnGestureListener(
         onSingleTapConfirmed = { motionEvent: MotionEvent, node: Node? ->
@@ -39,11 +40,20 @@ fun ARSceneContent(
                 val hitResult = currentFrame?.hitTest(motionEvent.x, motionEvent.y)
 
                 hitResult?.firstOrNull {
-                        it.isValid(depthPoint = false, point = false)
-                    }
+                    it.isValid(depthPoint = false, point = false)
+                }
                     ?.createAnchorOrNull()?.let {
                         viewModel.createModelNode(it)
                     }
+            } else {
+                viewModel.arSceneView?.let { scene ->
+                    val arrowNode = scene.childNodes.getOrNull(0)
+
+                    val nodesToRemove = scene.childNodes.filter { it != arrowNode }
+
+                    scene.removeChildNodes(nodesToRemove)
+                }
+
             }
         }
     )

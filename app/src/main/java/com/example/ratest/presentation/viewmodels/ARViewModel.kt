@@ -290,7 +290,9 @@ class ARViewModel : ViewModel() {
             val forwardDirection = Utils.quaternionToForward(pose.rotationQuaternion)
             val hudDistance = -0.2f
             val hudYOffset = 0.1f
+
             arrowNode.isVisible = selectedModelPath.value == null
+
             arrowNode.position = KotlinFloat3(
                 pose.tx() + forwardDirection.x * hudDistance,
                 pose.ty() - hudYOffset,

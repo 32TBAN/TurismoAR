@@ -154,8 +154,11 @@ fun ARScreen(
 
     if (showModelPicker) {
         CustomDialog(
-            onDismissRequest = { showModelPicker = false },
-            confirmButtonText = "OK",
+            onDismissRequest = {
+                showModelPicker = false
+                viewModel.selectedModelPath.value = null
+            },
+            confirmButtonText = "Limpiar pantalla",
             title = "Selecciona un modelo 3D",
             content = {
                 LazyRow {
@@ -184,10 +187,10 @@ fun ARScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
-            contentAlignment = Alignment.TopCenter
+            contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "Toca la pantalla para colocar el modelo",
+                text = "Coloca el modelo en una superficie plana tocando la pantalla",
                 color = Color.White,
                 fontSize = 16.sp,
                 modifier = Modifier
@@ -279,7 +282,11 @@ fun ARScreen(
                             modifier = Modifier.size(40.dp),
                             containerColor = Green
                         ) {
-                            Icon(imageVector = Icons.AutoMirrored.Filled.QueueMusic, contentDescription = "Elegir modelo", tint = White)
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.QueueMusic,
+                                contentDescription = "Elegir modelo",
+                                tint = White
+                            )
                         }
                     }
                 }
