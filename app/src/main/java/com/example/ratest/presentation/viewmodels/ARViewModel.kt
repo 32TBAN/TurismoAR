@@ -42,6 +42,7 @@ import com.example.ratest.domain.usecase.TourManager
 import kotlinx.coroutines.launch
 import io.github.sceneview.ar.ARSceneView
 import androidx.core.graphics.createBitmap
+import com.google.ar.core.Anchor
 import io.github.sceneview.node.Node
 import java.io.File
 import kotlin.math.abs
@@ -69,78 +70,19 @@ class ARViewModel : ViewModel() {
     private var lastLat: Double? = null
     private var lastLon: Double? = null
     var isTrackingStable = mutableStateOf(false)
+    val selectedModelPath = mutableStateOf<String?>(null)
 
-    fun captureARView(arView: ARSceneView, context: Context, onCaptured: (Bitmap?) -> Unit) {
-        val bitmap = createBitmap(arView.width, arView.height)
-
-        PixelCopy.request(arView, bitmap, { result ->
-            if (result == PixelCopy.SUCCESS) {
-                onCaptured(bitmap)
-            } else {
-                Log.e("GeoAR", "PixelCopy failed with result code: $result")
-                onCaptured(null)
-            }
-        }, Handler(Looper.getMainLooper()))
-    }
-
-    fun saveBitmapToCache(context: Context, bitmap: Bitmap): Uri {
-        val file = File(context.cacheDir, "screenshot_${System.currentTimeMillis()}.png")
-        file.outputStream().use {
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)
-        }
-        Log.e("GeoAR", "Se tom")
-        return FileProvider.getUriForFile(
-            context,
-            "${context.packageName}.provider",
-            file
+    fun createModelNode(anchor: Anchor) {
+        val nodeModel = tourManager.createAnchorNode(
+            engine = arSceneView!!.engine,
+            modelLoader = arSceneView!!.modelLoader,
+            materialLoader = arSceneView!!.materialLoader,
+            modelInstance = modelInstanceList,
+            anchor = anchor,
+            model = selectedModelPath.value!!,
+            scaleToUnits = 0.6f
         )
-    }
-
-    fun onTakeScreenshot(context: Context) {
-        arSceneView?.let {
-            captureARView(it, context) { bitmap ->
-                if (bitmap != null) {
-                    val uri = saveBitmapToCache(context, bitmap)
-                    imageUriState.value = uri
-                    Log.d("GeoAR", "Captura guardada: $uri")
-                } else {
-                    Log.e("GeoAR", "La captura falló")
-                }
-            }
-        }
-
-    }
-
-    fun saveImageToGallery(context: Context, sourceUri: Uri) {
-        val contentResolver = context.contentResolver
-        val inputStream = contentResolver.openInputStream(sourceUri) ?: return
-
-        val filename = "AR_${System.currentTimeMillis()}.png"
-        val contentValues = ContentValues().apply {
-            put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
-            put(MediaStore.MediaColumns.MIME_TYPE, "image/png")
-            put(
-                MediaStore.MediaColumns.RELATIVE_PATH,
-                Environment.DIRECTORY_PICTURES + "/ARCaptures"
-            )
-            put(MediaStore.MediaColumns.IS_PENDING, 1)
-        }
-
-        val imageUri =
-            contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
-        if (imageUri != null) {
-            contentResolver.openOutputStream(imageUri).use { outputStream ->
-                inputStream.copyTo(outputStream!!)
-            }
-
-            contentValues.clear()
-            contentValues.put(MediaStore.MediaColumns.IS_PENDING, 0)
-            contentResolver.update(imageUri, contentValues, null, null)
-
-            Toast.makeText(context, "Imagen guardada en galería", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(context, "Error al guardar imagen", Toast.LENGTH_SHORT).show()
-        }
+        arSceneView?.addChildNode(nodeModel)
     }
 
     fun initialize(context: Context, geoPoints: List<GeoPoint>) {
@@ -224,7 +166,6 @@ class ARViewModel : ViewModel() {
     fun getZisedVisitedPoints(): Int {
         return tourManager.visitedPoints.size
     }
-
 
     fun updateSession(
         frame: Frame?,
@@ -349,6 +290,7 @@ class ARViewModel : ViewModel() {
             val forwardDirection = Utils.quaternionToForward(pose.rotationQuaternion)
             val hudDistance = -0.2f
             val hudYOffset = 0.1f
+            arrowNode.isVisible = selectedModelPath.value == null
             arrowNode.position = KotlinFloat3(
                 pose.tx() + forwardDirection.x * hudDistance,
                 pose.ty() - hudYOffset,
@@ -380,6 +322,79 @@ class ARViewModel : ViewModel() {
             }
 
             arrowNode.lookAt(pinPosition, KotlinFloat3(0f, 1f, 0f))
+        }
+    }
+
+    fun captureARView(arView: ARSceneView, onCaptured: (Bitmap?) -> Unit) {
+        val bitmap = createBitmap(arView.width, arView.height)
+
+        PixelCopy.request(arView, bitmap, { result ->
+            if (result == PixelCopy.SUCCESS) {
+                onCaptured(bitmap)
+            } else {
+                Log.e("GeoAR", "PixelCopy failed with result code: $result")
+                onCaptured(null)
+            }
+        }, Handler(Looper.getMainLooper()))
+    }
+
+    fun saveBitmapToCache(context: Context, bitmap: Bitmap): Uri {
+        val file = File(context.cacheDir, "screenshot_${System.currentTimeMillis()}.png")
+        file.outputStream().use {
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)
+        }
+//        Log.e("GeoAR", "Se tom")
+        return FileProvider.getUriForFile(
+            context,
+            "${context.packageName}.provider",
+            file
+        )
+    }
+
+    fun onTakeScreenshot(context: Context) {
+        arSceneView?.let {
+            captureARView(it) { bitmap ->
+                if (bitmap != null) {
+                    val uri = saveBitmapToCache(context, bitmap)
+                    imageUriState.value = uri
+                    Log.d("GeoAR", "Captura guardada: $uri")
+                } else {
+                    Log.e("GeoAR", "La captura falló")
+                }
+            }
+        }
+
+    }
+
+    fun saveImageToGallery(context: Context, sourceUri: Uri) {
+        val contentResolver = context.contentResolver
+        val inputStream = contentResolver.openInputStream(sourceUri) ?: return
+
+        val filename = "AR_${System.currentTimeMillis()}.png"
+        val contentValues = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
+            put(MediaStore.MediaColumns.MIME_TYPE, "image/png")
+            put(
+                MediaStore.MediaColumns.RELATIVE_PATH,
+                Environment.DIRECTORY_PICTURES + "/ARCaptures"
+            )
+            put(MediaStore.MediaColumns.IS_PENDING, 1)
+        }
+
+        val imageUri =
+            contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+        if (imageUri != null) {
+            contentResolver.openOutputStream(imageUri).use { outputStream ->
+                inputStream.copyTo(outputStream!!)
+            }
+
+            contentValues.clear()
+            contentValues.put(MediaStore.MediaColumns.IS_PENDING, 0)
+            contentResolver.update(imageUri, contentValues, null, null)
+
+            Toast.makeText(context, "Imagen guardada en galería", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(context, "Error al guardar imagen", Toast.LENGTH_SHORT).show()
         }
     }
 }

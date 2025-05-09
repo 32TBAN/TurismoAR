@@ -32,11 +32,13 @@ import androidx.compose.ui.window.Dialog
 @Composable
 fun TutorialDialog(onDismiss: () -> Unit) {
     val pages = listOf(
-        "Explora tu entorno moviendo el teléfono lentamente",
-        "Apunta hacia el suelo para detectar superficies",
-        "Toca donde deseas colocar un objeto",
-        "Acércate para ver los detalles"
+        "Pulsa el botón del mapa para ver tu ubicación actual.",
+        "Explora tu entorno moviendo el teléfono. La flecha te guiará hasta el destino.",
+        "Al llegar, verás un objeto con información sobre el lugar. Se marcará como visitado.",
+        "Completa todos los puntos del recorrido para obtener tu logro.",
+        "Elige un personaje y toma una foto divertida en realidad aumentada."
     )
+
 
     val pagerState = rememberPagerState(
         initialPage = 0,
@@ -55,7 +57,7 @@ fun TutorialDialog(onDismiss: () -> Unit) {
                 modifier = Modifier.padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("¿Cómo usar el modo AR?", style = MaterialTheme.typography.titleMedium)
+                Text("¿Cómo usar el modo Realidad Aumentada?", style = MaterialTheme.typography.titleMedium)
 
                 Spacer(modifier = Modifier.height(16.dp))
 

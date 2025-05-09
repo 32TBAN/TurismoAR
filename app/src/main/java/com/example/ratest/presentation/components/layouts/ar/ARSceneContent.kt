@@ -1,29 +1,52 @@
 package com.example.ratest.presentation.components.layouts.ar
 
 import android.util.Log
+import android.view.MotionEvent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import com.example.ratest.presentation.viewmodels.ARViewModel
 import com.google.ar.core.Config
 import com.google.ar.core.Frame
 import com.google.ar.core.TrackingFailureReason
 import io.github.sceneview.ar.ARSceneView
+import io.github.sceneview.ar.arcore.createAnchorOrNull
+import io.github.sceneview.ar.arcore.isValid
 import io.github.sceneview.ar.node.AnchorNode
 import io.github.sceneview.node.ModelNode
 import io.github.sceneview.node.Node
+import io.github.sceneview.rememberOnGestureListener
 
 @Composable
 fun ARSceneContent(
     viewModel: ARViewModel,
     type: String
 ) {
-
     val trackingFailureReason = remember { mutableStateOf<TrackingFailureReason?>(null) }
     val frame = remember { mutableStateOf<Frame?>(null) }
+    var planeRenderer = remember { mutableStateOf<Boolean>(viewModel.selectedModelPath.value != null) }
+
+    val gestureListener = rememberOnGestureListener(
+        onSingleTapConfirmed = { motionEvent: MotionEvent, node: Node? ->
+//            Log.d("GeoAR", "Single tap confirmed on node: $node")
+            if (node == null && viewModel.selectedModelPath.value != null) {
+                val currentFrame = frame.value
+
+                val hitResult = currentFrame?.hitTest(motionEvent.x, motionEvent.y)
+
+                hitResult?.firstOrNull {
+                        it.isValid(depthPoint = false, point = false)
+                    }
+                    ?.createAnchorOrNull()?.let {
+                        viewModel.createModelNode(it)
+                    }
+            }
+        }
+    )
 
     AndroidView(
         modifier = Modifier.fillMaxSize(),
@@ -45,7 +68,7 @@ fun ARSceneContent(
 
                 this.addChildNodes(arrowNode)
 
-                this.planeRenderer.isVisible = false
+                this.planeRenderer.isVisible = planeRenderer.value
 
                 this.sessionConfiguration = { session, config ->
                     config.geospatialMode = Config.GeospatialMode.ENABLED
@@ -59,6 +82,8 @@ fun ARSceneContent(
                     config.updateMode = Config.UpdateMode.LATEST_CAMERA_IMAGE
                     session.configure(config)
                 }
+
+                this.onGestureListener = gestureListener
 
                 this.onSessionUpdated = { session, updatedFrame ->
                     try {
@@ -90,6 +115,8 @@ fun ARSceneContent(
                 this.onTrackingFailureChanged = {
                     trackingFailureReason.value = it
                 }
+
+
             }
         }
     )
