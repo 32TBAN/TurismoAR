@@ -30,7 +30,6 @@ fun ProgressOverlay(current: Int, total: Int) {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Texto de progreso
         Text(
             text = "Progreso: $current / $total",
             color = Color.White
@@ -38,7 +37,6 @@ fun ProgressOverlay(current: Int, total: Int) {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Línea de puntos con animación
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically

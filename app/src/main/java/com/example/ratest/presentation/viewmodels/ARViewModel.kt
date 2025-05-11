@@ -15,6 +15,7 @@ import android.os.Looper
 import android.provider.MediaStore
 import android.view.PixelCopy
 import android.widget.Toast
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.content.ContextCompat
@@ -67,10 +68,11 @@ class ARViewModel : ViewModel() {
 
     private var stableTrackingFrames = 0
     private val requiredStableFrames = 10
-    var  currentPosition = mutableStateOf<GeoPoint?>(GeoPoint(0.0, 0.0, "Posición actual", ""))
+    var currentPosition = mutableStateOf<GeoPoint?>(GeoPoint(0.0, 0.0, "Posición actual", ""))
     var isTrackingStable = mutableStateOf(false)
     val selectedModelPath = mutableStateOf<String?>(null)
-    val scaleModel = mutableStateOf<Float>(0.6f)
+    val scaleModel = mutableFloatStateOf(0.6f)
+    var modelPlaced = mutableStateOf(false)
 
     fun createModelNode(anchor: Anchor) {
         val nodeModel = tourManager.createAnchorNode(
@@ -80,7 +82,7 @@ class ARViewModel : ViewModel() {
             modelInstance = modelInstanceList,
             anchor = anchor,
             model = selectedModelPath.value!!,
-            scaleToUnits = scaleModel.value
+            scaleToUnits = scaleModel.floatValue
         )
         arSceneView?.addChildNode(nodeModel)
     }
@@ -298,7 +300,6 @@ class ARViewModel : ViewModel() {
     fun updateArrowNode(
         arrowNode: ModelNode,
         frame: Frame?,
-        pinNode: AnchorNode?,
         earth: Earth?,
     ) {
         frame?.camera?.pose?.let { pose ->
@@ -306,7 +307,7 @@ class ARViewModel : ViewModel() {
             val hudDistance = -0.2f
             val hudYOffset = 0.1f
 
-            arrowNode.isVisible = selectedModelPath.value == null
+            arrowNode.isVisible = selectedModelPath.value == null && !modelPlaced.value
 
             arrowNode.position = KotlinFloat3(
                 pose.tx() + forwardDirection.x * hudDistance,
@@ -314,8 +315,8 @@ class ARViewModel : ViewModel() {
                 pose.tz() + forwardDirection.z * hudDistance
             )
 
-            val pinPosition = if (pinNode != null) {
-                pinNode.worldPosition
+            val pinPosition = if (arNodes.isNotEmpty()) {
+                arNodes.first().worldPosition
             } else {
                 val currentTarget = (uiStateMutable.value as? TourUIState.InProgress)?.target
                 if (currentTarget == null) return

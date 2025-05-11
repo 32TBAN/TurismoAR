@@ -4,6 +4,7 @@ import android.util.Log
 import android.view.MotionEvent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -28,8 +29,6 @@ fun ARSceneContent(
 ) {
     val trackingFailureReason = remember { mutableStateOf<TrackingFailureReason?>(null) }
     val frame = remember { mutableStateOf<Frame?>(null) }
-    var planeRenderer =
-        remember { mutableStateOf<Boolean>(false) }
 
     val gestureListener = rememberOnGestureListener(
         onSingleTapConfirmed = { motionEvent: MotionEvent, node: Node? ->
@@ -41,19 +40,12 @@ fun ARSceneContent(
 
                 hitResult?.firstOrNull {
                     it.isValid(depthPoint = false, point = false)
+                }?.createAnchorOrNull()?.let {
+                    viewModel.createModelNode(it)
                 }
-                    ?.createAnchorOrNull()?.let {
-                        viewModel.createModelNode(it)
-                    }
-            } else {
-                viewModel.arSceneView?.let { scene ->
-                    val arrowNode = scene.childNodes.getOrNull(0)
-
-                    val nodesToRemove = scene.childNodes.filter { it != arrowNode }
-
-                    scene.removeChildNodes(nodesToRemove)
-                }
-
+                viewModel.modelPlaced.value = true
+                viewModel.selectedModelPath.value = null
+                viewModel.arSceneView?.planeRenderer?.isVisible = false
             }
         }
     )
@@ -78,7 +70,7 @@ fun ARSceneContent(
 
                 this.addChildNodes(arrowNode)
 
-                this.planeRenderer.isVisible = planeRenderer.value
+                this.planeRenderer.isVisible = false
 
                 this.sessionConfiguration = { session, config ->
                     config.geospatialMode = Config.GeospatialMode.ENABLED
@@ -113,7 +105,6 @@ fun ARSceneContent(
                         viewModel.updateArrowNode(
                             arrowNode = childNodes[0] as ModelNode,
                             frame = updatedFrame,
-                            pinNode = if (childNodes.size > 1) childNodes[1] as? AnchorNode else null,
                             earth = earth
                         )
 

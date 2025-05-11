@@ -1,13 +1,10 @@
 package com.example.ratest.presentation.screens
 
 import android.annotation.SuppressLint
-import android.net.Uri
-import android.view.View
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts.GetContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,16 +12,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.automirrored.filled.QueueMusic
 import androidx.compose.material.icons.automirrored.filled.Undo
 import androidx.compose.material.icons.filled.QuestionMark
-import androidx.compose.material.icons.filled.Undo
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -45,7 +37,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -65,7 +56,7 @@ import com.example.ratest.presentation.components.models.BottomOverlay
 import com.example.ratest.presentation.viewmodels.TourUIState
 import com.example.ratest.ui.theme.Green
 import com.example.ratest.ui.theme.White
-import com.example.ratest.R
+import com.example.ratest.presentation.components.layouts.ar.ModelPickerDialog
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
@@ -78,28 +69,17 @@ fun ARScreen(
     val uiState by viewModel.uiState.collectAsState()
     val distanceText by viewModel.distanceText.collectAsState()
     val context = LocalContext.current
-
     var validGeoPoints = geoPoints.filter { it.name != "" }
-
     var isMapVisible by remember { mutableStateOf(false) }
     var showMapIntro by remember { mutableStateOf(true) }
     val showTutorial = remember { mutableStateOf(false) }
     var showModelPicker by remember { mutableStateOf(false) }
-    val sampleImages = listOf(
-        R.drawable.parque,
-        R.drawable.monumento_fray_ia,
-        R.drawable.monumento_madre_ai,
-        R.drawable.palacio_municipal,
-        R.drawable.iglesia_ai,
-        R.drawable.coliseo_ai,
-    )
     var showTapMessage by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         // Se Inicializa el ViewModel con los geoPoints
         viewModel.initialize(context, validGeoPoints)
     }
-
 
     val pickGalleryLauncher = rememberLauncherForActivityResult(
         contract = GetContent()
@@ -109,14 +89,14 @@ fun ARScreen(
         }
     }
 
-    fun onOpenGallery() {
-        pickGalleryLauncher.launch("image/*")
-    }
-
     viewModel.imageUriState.value?.let { uri ->
         CustomDialog(
             onDismissRequest = { viewModel.imageUriState.value = null },
-            confirmButtonText = "Cerrar",
+            confirmButton = {
+                Button(onClick = { viewModel.imageUriState.value = null }) {
+                    Text("Cerrar", color = Color.White)
+                }
+            },
             secondButtonContent = {
                 Button(
                     onClick = {
@@ -155,35 +135,13 @@ fun ARScreen(
         type
     )
 
-    if (showModelPicker) {
-        CustomDialog(
-            onDismissRequest = {
-                showModelPicker = false
-                viewModel.selectedModelPath.value = null
-            },
-            confirmButtonText = "Limpiar pantalla",
-            title = "Selecciona un modelo 3D",
-            content = {
-                LazyRow {
-                    items(sampleImages) { modelPath ->
-                        Image(
-                            painter = rememberAsyncImagePainter(modelPath),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .size(80.dp)
-                                .padding(4.dp)
-                                .clip(RoundedCornerShape(8.dp))
-                                .clickable {
-                                    viewModel.selectedModelPath.value = "models/helado.glb"
-                                    showModelPicker = false
-                                    showTapMessage = true
-                                }
-                        )
-                    }
-                }
-            }
-        )
-    }
+    ModelPickerDialog(
+        showModelPicker, {
+            showModelPicker = false
+        },
+        viewModel,
+        showTapMessage = mutableStateOf(showTapMessage)
+    )
 
     if (showTapMessage) {
         Box(
@@ -206,7 +164,7 @@ fun ARScreen(
         }
 
         LaunchedEffect(Unit) {
-            kotlinx.coroutines.delay(5000)
+            kotlinx.coroutines.delay(4000)
             showTapMessage = false
         }
     }
@@ -299,7 +257,7 @@ fun ARScreen(
                     BottomOverlay(
                         distanceText = distanceText,
                         Modifier.align(Alignment.BottomCenter),
-                        onOpenGallery = { onOpenGallery() },
+                        onOpenGallery = { pickGalleryLauncher.launch("image/*") },
                         viewModel = viewModel
                     )
                 }

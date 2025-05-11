@@ -31,9 +31,8 @@ fun CustomDialog(
     onDismissRequest: () -> Unit,
     title: String? = null,
     content: @Composable ColumnScope.() -> Unit,
-    confirmButtonText: String = "Cerrar",
-    secondButtonContent: (@Composable RowScope.() -> Unit)? = null,
-    onConfirm: (() -> Unit)? = null
+    confirmButton: (@Composable RowScope.() -> Unit)? = null,
+    secondButtonContent: (@Composable RowScope.() -> Unit)? = null
 ) {
     Dialog(onDismissRequest = onDismissRequest) {
         Box(
@@ -69,16 +68,7 @@ fun CustomDialog(
                         .padding(top = 24.dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Button(
-                        onClick = {
-                            onConfirm?.invoke()
-                            onDismissRequest()
-                        },
-                        colors = ButtonDefaults.buttonColors(containerColor = Green)
-                    ) {
-                        Text(confirmButtonText, color = Color.White)
-                    }
-
+                    confirmButton?.invoke(this)
                     secondButtonContent?.invoke(this)
                 }
 
