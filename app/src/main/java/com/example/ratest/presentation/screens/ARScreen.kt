@@ -19,9 +19,12 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.automirrored.filled.QueueMusic
+import androidx.compose.material.icons.automirrored.filled.Undo
 import androidx.compose.material.icons.filled.QuestionMark
+import androidx.compose.material.icons.filled.Undo
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -171,7 +174,7 @@ fun ARScreen(
                                 .padding(4.dp)
                                 .clip(RoundedCornerShape(8.dp))
                                 .clickable {
-                                    viewModel.selectedModelPath.value = "models/Cartel_Coliseo.glb"
+                                    viewModel.selectedModelPath.value = "models/helado.glb"
                                     showModelPicker = false
                                     showTapMessage = true
                                 }
@@ -233,7 +236,7 @@ fun ARScreen(
                             containerColor = Green
                         ) {
                             Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ExitToApp,
+                                imageVector = Icons.AutoMirrored.Filled.Undo,
                                 contentDescription = "Volver",
                                 tint = White
                             )

@@ -2,15 +2,11 @@ package com.example.ratest.presentation.viewmodels
 
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Log
-import android.view.ViewTreeObserver
-import androidx.compose.runtime.MutableState
-import android.graphics.Canvas
 import android.os.Environment
 import android.os.Handler
 import android.os.Looper
@@ -19,7 +15,6 @@ import android.view.PixelCopy
 import android.widget.Toast
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModel
 import com.example.ratest.domain.models.GeoPoint
@@ -42,10 +37,12 @@ import com.example.ratest.domain.usecase.TourManager
 import kotlinx.coroutines.launch
 import io.github.sceneview.ar.ARSceneView
 import androidx.core.graphics.createBitmap
+import com.google.android.gms.location.LocationServices
 import com.google.ar.core.Anchor
 import io.github.sceneview.node.Node
 import java.io.File
 import kotlin.math.abs
+import kotlinx.coroutines.tasks.await
 
 @SuppressLint("StaticFieldLeak")
 class ARViewModel : ViewModel() {
@@ -67,10 +64,10 @@ class ARViewModel : ViewModel() {
 
     private var stableTrackingFrames = 0
     private val requiredStableFrames = 10
-    private var lastLat: Double? = null
-    private var lastLon: Double? = null
+    var  currentPosition = mutableStateOf<GeoPoint?>(GeoPoint(0.0, 0.0, "Posición actual", ""))
     var isTrackingStable = mutableStateOf(false)
     val selectedModelPath = mutableStateOf<String?>(null)
+    val scaleModel = mutableStateOf<Float>(0.6f)
 
     fun createModelNode(anchor: Anchor) {
         val nodeModel = tourManager.createAnchorNode(
@@ -80,7 +77,7 @@ class ARViewModel : ViewModel() {
             modelInstance = modelInstanceList,
             anchor = anchor,
             model = selectedModelPath.value!!,
-            scaleToUnits = 0.6f
+            scaleToUnits = scaleModel.value
         )
         arSceneView?.addChildNode(nodeModel)
     }
@@ -90,9 +87,18 @@ class ARViewModel : ViewModel() {
 //        Log.d("GeoAR", "GeoAR: $geoPoints")
         tourManager.setGeoPoints(geoPoints)
 
+        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+
         viewModelScope.launch {
             try {
+                val location = try {
+                    fusedLocationClient.lastLocation.await()
+                } catch (e: Exception) {
+                    null
+                }
+
                 tourManager.loadVisitedPoints()
+                //todo: poner la posicion inicial del usuario
                 uiStateMutable.value = TourUIState.InProgress(
                     target = tourManager.getNextTarget(0.0, 0.0) ?: GeoPoint(
                         0.0,
@@ -164,7 +170,7 @@ class ARViewModel : ViewModel() {
     }
 
     fun getZisedVisitedPoints(): Int {
-        return tourManager.visitedPoints.size
+        return tourManager.getVisited()
     }
 
     fun updateSession(
@@ -187,8 +193,8 @@ class ARViewModel : ViewModel() {
             }
             val geoPose = earth.cameraGeospatialPose
 
-            val deltaLat = abs((lastLat ?: geoPose.latitude) - geoPose.latitude)
-            val deltaLon = abs((lastLon ?: geoPose.longitude) - geoPose.longitude)
+            val deltaLat = abs((currentPosition.value?.latitude ?: geoPose.latitude) - geoPose.latitude)
+            val deltaLon = abs((currentPosition.value?.longitude ?: geoPose.longitude) - geoPose.longitude)
 
             if (deltaLat < 0.00001 && deltaLon < 0.00001) {
                 stableTrackingFrames++
@@ -196,8 +202,8 @@ class ARViewModel : ViewModel() {
                 stableTrackingFrames = 0
             }
 
-            lastLat = geoPose.latitude
-            lastLon = geoPose.longitude
+            currentPosition.value?.latitude  = geoPose.latitude
+            currentPosition.value?.longitude  = geoPose.longitude
 
             if (stableTrackingFrames >= requiredStableFrames) {
                 isTrackingStable.value = true

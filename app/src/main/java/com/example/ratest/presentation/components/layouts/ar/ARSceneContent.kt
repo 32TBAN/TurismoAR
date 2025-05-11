@@ -29,7 +29,7 @@ fun ARSceneContent(
     val trackingFailureReason = remember { mutableStateOf<TrackingFailureReason?>(null) }
     val frame = remember { mutableStateOf<Frame?>(null) }
     var planeRenderer =
-        remember { mutableStateOf<Boolean>(viewModel.selectedModelPath.value != null) }
+        remember { mutableStateOf<Boolean>(false) }
 
     val gestureListener = rememberOnGestureListener(
         onSingleTapConfirmed = { motionEvent: MotionEvent, node: Node? ->
