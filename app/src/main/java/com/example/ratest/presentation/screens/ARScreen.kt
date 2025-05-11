@@ -242,7 +242,9 @@ fun ARScreen(
                             )
                         }
                     }
-                    CompassOverlay(
+                    MapToggleButton(
+                        isMapVisible = isMapVisible,
+                        onToggle = { isMapVisible = !isMapVisible },
                         Modifier.align(Alignment.TopEnd)
                     )
                 }
@@ -266,19 +268,6 @@ fun ARScreen(
                             )
                         }
                     }
-                    MapToggleButton(
-                        isMapVisible = isMapVisible,
-                        onToggle = { isMapVisible = !isMapVisible },
-                        Modifier.align(Alignment.TopEnd)
-                    )
-                }
-
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(horizontal = 8.dp)
-                        .fillMaxWidth()
-                ) {
                     Box(modifier = Modifier.align(Alignment.TopEnd)) {
                         FloatingActionButton(
                             onClick = { showModelPicker = true },
@@ -291,7 +280,19 @@ fun ARScreen(
                                 tint = White
                             )
                         }
+
                     }
+                }
+
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = 8.dp)
+                        .fillMaxWidth()
+                ) {
+                    CompassOverlay(
+                        Modifier.align(Alignment.TopEnd)
+                    )
                 }
 
                 Box(modifier = Modifier.weight(7f)) {
@@ -314,7 +315,7 @@ fun ARScreen(
                                     color = Green
                                 )
                             },
-                            geoPoints = geoPoints,
+                            geoPoints = listOf(viewModel.currentPosition.value) as List<GeoPoint>,
                             type = "ruta",
                             zoomLevel = 20.0,
                             modifier = Modifier.fillMaxSize()

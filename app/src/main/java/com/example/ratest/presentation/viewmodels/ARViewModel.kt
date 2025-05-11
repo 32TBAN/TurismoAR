@@ -1,9 +1,11 @@
 package com.example.ratest.presentation.viewmodels
 
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Log
@@ -15,6 +17,7 @@ import android.view.PixelCopy
 import android.widget.Toast
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModel
 import com.example.ratest.domain.models.GeoPoint
@@ -88,19 +91,24 @@ class ARViewModel : ViewModel() {
         tourManager.setGeoPoints(geoPoints)
 
         val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
-
         viewModelScope.launch {
             try {
-                val location = try {
-                    fusedLocationClient.lastLocation.await()
-                } catch (e: Exception) {
+                val location = if (
+                    ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED
+                ) {
+                    try {
+                        fusedLocationClient.lastLocation.await()
+                    } catch (e: SecurityException) {
+                        null
+                    }
+                } else {
                     null
                 }
 
                 tourManager.loadVisitedPoints()
-                //todo: poner la posicion inicial del usuario
                 uiStateMutable.value = TourUIState.InProgress(
-                    target = tourManager.getNextTarget(0.0, 0.0) ?: GeoPoint(
+                    target = tourManager.getNextTarget(location?.latitude ?: 0.0, location?.longitude ?: 0.0) ?: GeoPoint(
                         0.0,
                         0.0,
                         "Sin destino",
@@ -152,7 +160,7 @@ class ARViewModel : ViewModel() {
 
                 tourManager.resetTour()
 
-                val firstTarget = tourManager.getNextTarget(0.0, 0.0)
+                val firstTarget = tourManager.getNextTarget(currentPosition.value?.latitude ?: 0.0, currentPosition.value?.longitude ?: 0.0) ?: tourManager.getNextTarget(0.0, 0.0)
                 if (firstTarget != null) {
                     uiStateMutable.value = TourUIState.InProgress(firstTarget)
                 } else {
@@ -213,7 +221,8 @@ class ARViewModel : ViewModel() {
             }
 
             if (earth.trackingState == TrackingState.TRACKING) {
-
+                currentPosition.value?.latitude = geoPose.latitude
+                currentPosition.value?.longitude = geoPose.longitude
                 val distance = tourManager.haversineDistance(
                     geoPose.latitude,
                     geoPose.longitude,
