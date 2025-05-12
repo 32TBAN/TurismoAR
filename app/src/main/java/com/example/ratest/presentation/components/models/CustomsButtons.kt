@@ -1,6 +1,7 @@
 package com.example.ratest.presentation.components.models
 
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -25,9 +26,8 @@ fun CustomButton(
         modifier = modifier,
         colors = ButtonDefaults.buttonColors(containerColor = DarkGreen)
     ) {
-        if (icon != null) {
-            Icon(imageVector = icon, contentDescription = null)
-            Spacer(modifier = Modifier.width(8.dp))
+        icon?.let {
+            Icon(imageVector = icon, contentDescription = null, tint = Color.White)
         }
         Text(text = text, color = Color.White)
     }

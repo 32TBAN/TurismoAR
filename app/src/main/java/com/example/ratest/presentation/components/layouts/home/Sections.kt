@@ -4,7 +4,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,8 +28,7 @@ fun TopSection(navController: NavController) {
     val images = Utils.getList()
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
+            .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ImageSlider(images = images)
@@ -46,7 +46,8 @@ fun TopSection(navController: NavController) {
 
         CustomButton(
             text = stringResource(R.string.button_text_home1),
-            onClick = { navController.navigate(RoutesScreen) }
+            onClick = { navController.navigate(RoutesScreen) },
+            icon = Icons.Default.PlayArrow
         )
     }
 }

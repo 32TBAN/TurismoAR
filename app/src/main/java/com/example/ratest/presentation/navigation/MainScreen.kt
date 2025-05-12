@@ -11,7 +11,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.*
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -30,7 +29,7 @@ import com.example.ratest.R
 import com.example.ratest.presentation.components.layouts.CheckLocationPermission
 import com.example.ratest.presentation.components.layouts.CustomBottomBar
 import com.example.ratest.presentation.components.layouts.CustomTopBar
-import com.example.ratest.presentation.components.layouts.DetalleInfo
+import com.example.ratest.presentation.components.layouts.DetailInfo
 import com.example.ratest.presentation.screens.ARScreen
 import com.example.ratest.presentation.screens.HistoryScreen
 import com.example.ratest.presentation.screens.InicioScreen
@@ -46,7 +45,7 @@ fun MainScreen() {
 //    var isBottomBarVisible by remember { mutableStateOf(true) }
 
     // LazyListState para detectar el desplazamiento
-    val listState = rememberLazyListState()
+//    val listState = rememberLazyListState()
     // Detectar el scroll y actualizar las barras
 //    LaunchedEffect(remember { derivedStateOf { listState.firstVisibleItemIndex } }) {
 //        // Si el primer ítem visible tiene un índice mayor a 0, eso significa que estamos haciendo scroll hacia abajo
@@ -66,7 +65,6 @@ fun MainScreen() {
     LaunchedEffect(Unit) {
         viewModel.initialize(context)
     }
-
 
     Scaffold(
         topBar = {
@@ -144,7 +142,6 @@ fun MainScreen() {
                     isBarsVisible = true
                     InicioScreen(
                         navController,
-                        listState,
                         viewModel
                     )
                 }
@@ -153,7 +150,6 @@ fun MainScreen() {
 
                     RoutesScreen(
                         navController,
-                        listState,
                         viewModel
                     )
                 }
@@ -162,7 +158,6 @@ fun MainScreen() {
 
                     HistoryScreen(
                         navController,
-                        listState,
                         viewModel
                     )
                 }
@@ -188,7 +183,7 @@ fun MainScreen() {
                     }
                 }
                 composable<DetalleScreen> {
-                    DetalleInfo(navController, listState,viewModel)
+                    DetailInfo(navController,viewModel)
                     isBarsVisible = true
                 }
             }

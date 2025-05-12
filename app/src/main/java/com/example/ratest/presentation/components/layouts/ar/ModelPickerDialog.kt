@@ -53,7 +53,6 @@ fun ModelPickerDialog(
             onDismissRequest = {
                 onDismissRequest()
                 selectedModelPath = null
-                viewModel.modelPlaced.value = false
             },
             title = "Selecciona un modelo 3D",
             content = {

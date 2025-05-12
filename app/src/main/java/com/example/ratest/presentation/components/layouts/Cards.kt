@@ -52,7 +52,7 @@ fun InfoCard(
     color: Color = DarkGreen
 ) {
     Card(
-        modifier = modifier.padding(8.dp),
+        modifier = modifier,
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         shape = RoundedCornerShape(12.dp)
     ) {
@@ -132,7 +132,7 @@ fun CardBackgroundImage(
     Card(
         modifier = Modifier
             .clickable(onClick = onClick)
-            .padding(8.dp)
+            .padding(vertical = 8.dp)
             .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         shape = RoundedCornerShape(12.dp)

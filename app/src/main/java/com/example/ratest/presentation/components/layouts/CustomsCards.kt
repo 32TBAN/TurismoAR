@@ -1,13 +1,18 @@
 package com.example.ratest.presentation.components.layouts
 
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
@@ -30,65 +35,74 @@ fun SectionCards(
     navController: NavController,
     viewModel: RouteViewModel
 ) {
-    Column(modifier = Modifier.padding(horizontal = 8.dp)) {
-        if (title != "") {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        if (title.isNotEmpty()) {
             Text(
                 text = title,
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp,
                 modifier = Modifier
-                    .padding(bottom = 8.dp)
+                    .padding(8.dp)
                     .animateContentSize()
             )
             Spacer(modifier = Modifier.height(8.dp))
         }
+
         if (scrollDirection == "horizontal") {
-            Row(
-                modifier = Modifier
-                    .horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            val listState = rememberLazyListState()
+            val flingBehavior = rememberSnapFlingBehavior(lazyListState = listState)
+
+            LazyRow(
+                state = listState,
+                flingBehavior = flingBehavior,
+                modifier = Modifier.fillMaxWidth(),
+                contentPadding = PaddingValues(horizontal = 2.dp),
+                horizontalArrangement = Arrangement.spacedBy(15.dp)
             ) {
-                if (type == "Info") {
-                    routes.forEachIndexed { index, item ->
-                        InfoCard(title = item.title, description = item.description,
-                            onClick = {
-                                viewModel.selectRouteById(item.id)
-                                navController.navigate(DetalleScreen(item.id))
-                            })
+                itemsIndexed(routes) { index, item ->
+                    val onClick = {
+                        viewModel.selectRouteById(item.id)
+                        navController.navigate(DetalleScreen(item.id))
                     }
-                } else {
-                    routes.forEachIndexed {index, item ->
-                        SmallCard(title = item.title, onClick = {
-                            viewModel.selectRouteById(item.id)
-                            navController.navigate(DetalleScreen(item.id))
-                        }, icon = item.icon)
+                    if (type == "Info") {
+                        InfoCard(
+                            title = item.title,
+                            description = item.description,
+                            onClick = onClick
+                        )
+                    } else {
+                        SmallCard(
+                            title = item.title,
+                            icon = item.icon,
+                            onClick = onClick
+                        )
                     }
                 }
             }
         } else {
             Column(
-                modifier = Modifier
-                    .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.verticalScroll(rememberScrollState())
             ) {
-                if (type == "Info") {
-                    routes.forEachIndexed { index, item ->
-                        InfoCard(title = item.title, description = item.description, onClick = {
-                            viewModel.selectRouteById(item.id)
-                            navController.navigate(DetalleScreen(item.id))
-                        })
+                routes.forEach { item ->
+                    val onClick = {
+                        viewModel.selectRouteById(item.id)
+                        navController.navigate(DetalleScreen(item.id))
                     }
-                } else {
-                    routes.forEachIndexed { index, item ->
-                        SmallCard(title = item.title, onClick = {
-                            viewModel.selectRouteById(item.id)
-                            navController.navigate(DetalleScreen(item.id))
-                        })
+                    if (type == "Info") {
+                        InfoCard(
+                            title = item.title,
+                            description = item.description,
+                            onClick = onClick
+                        )
+                    } else {
+                        SmallCard(title = item.title, icon = item.icon, onClick = onClick)
                     }
                 }
             }
         }
-
         Spacer(modifier = Modifier.height(16.dp))
     }
 }
+
+

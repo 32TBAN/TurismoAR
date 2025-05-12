@@ -72,7 +72,6 @@ class ARViewModel : ViewModel() {
     var isTrackingStable = mutableStateOf(false)
     val selectedModelPath = mutableStateOf<String?>(null)
     val scaleModel = mutableFloatStateOf(0.6f)
-    var modelPlaced = mutableStateOf(false)
 
     fun createModelNode(anchor: Anchor) {
         val nodeModel = tourManager.createAnchorNode(
@@ -307,7 +306,7 @@ class ARViewModel : ViewModel() {
             val hudDistance = -0.2f
             val hudYOffset = 0.1f
 
-            arrowNode.isVisible = selectedModelPath.value == null && !modelPlaced.value
+            arrowNode.isVisible = selectedModelPath.value == null
 
             arrowNode.position = KotlinFloat3(
                 pose.tx() + forwardDirection.x * hudDistance,
@@ -371,6 +370,7 @@ class ARViewModel : ViewModel() {
 
     fun onTakeScreenshot(context: Context) {
         arSceneView?.let {
+            it.childNodes[0].isVisible = false
             captureARView(it) { bitmap ->
                 if (bitmap != null) {
                     val uri = saveBitmapToCache(context, bitmap)
@@ -380,6 +380,7 @@ class ARViewModel : ViewModel() {
                     Log.e("GeoAR", "La captura falló")
                 }
             }
+            it.childNodes[0].isVisible = true
         }
 
     }

@@ -4,11 +4,9 @@ import android.util.Log
 import android.view.MotionEvent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import com.example.ratest.presentation.viewmodels.ARViewModel
 import com.google.ar.core.Config
@@ -17,7 +15,6 @@ import com.google.ar.core.TrackingFailureReason
 import io.github.sceneview.ar.ARSceneView
 import io.github.sceneview.ar.arcore.createAnchorOrNull
 import io.github.sceneview.ar.arcore.isValid
-import io.github.sceneview.ar.node.AnchorNode
 import io.github.sceneview.node.ModelNode
 import io.github.sceneview.node.Node
 import io.github.sceneview.rememberOnGestureListener
@@ -43,7 +40,6 @@ fun ARSceneContent(
                 }?.createAnchorOrNull()?.let {
                     viewModel.createModelNode(it)
                 }
-                viewModel.modelPlaced.value = true
                 viewModel.selectedModelPath.value = null
                 viewModel.arSceneView?.planeRenderer?.isVisible = false
             }

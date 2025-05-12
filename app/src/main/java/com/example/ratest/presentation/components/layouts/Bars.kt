@@ -1,6 +1,7 @@
 package com.example.ratest.presentation.components.layouts
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -30,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.ratest.presentation.navigation.InicioScreen
 import com.example.ratest.ui.theme.DarkGreen
 import com.example.ratest.ui.theme.White
 
@@ -90,7 +92,10 @@ fun CustomTopBar(navController: NavController) {
             Icon(
                 painterResource(id = R.drawable.app_logo),
                 contentDescription = "Logo",
-                tint = Color.Unspecified
+                tint = Color.Unspecified,
+                modifier = Modifier.clickable(
+                    onClick = { navController.navigate(InicioScreen) }
+                )
             )
 
             Spacer(modifier = Modifier.width(8.dp))
