@@ -15,25 +15,30 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.ratest.presentation.navigation.DetalleScreen
 import com.example.ratest.presentation.mappers.UiRoute
-import com.example.ratest.presentation.viewmodels.RouteViewModel
+
+enum class ScrollDirection { Horizontal, Vertical }
+
+enum class CardType { Small, Info }
 
 @Composable
 fun SectionCards(
     title: String = "",
     routes: List<UiRoute>,
-    type: String = "Small",
-    scrollDirection: String = "horizontal",
-    navController: NavController,
-    viewModel: RouteViewModel
+    cardType: CardType = CardType.Small,
+    scrollDirection: ScrollDirection = ScrollDirection.Horizontal,
+    onRouteClick: (UiRoute) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         if (title.isNotEmpty()) {
@@ -48,7 +53,7 @@ fun SectionCards(
             Spacer(modifier = Modifier.height(8.dp))
         }
 
-        if (scrollDirection == "horizontal") {
+        if (scrollDirection == ScrollDirection.Horizontal) {
             val listState = rememberLazyListState()
             val flingBehavior = rememberSnapFlingBehavior(lazyListState = listState)
 
@@ -59,22 +64,18 @@ fun SectionCards(
                 contentPadding = PaddingValues(horizontal = 2.dp),
                 horizontalArrangement = Arrangement.spacedBy(15.dp)
             ) {
-                itemsIndexed(routes) { index, item ->
-                    val onClick = {
-                        viewModel.selectRouteById(item.id)
-                        navController.navigate(DetalleScreen(item.id))
-                    }
-                    if (type == "Info") {
-                        InfoCard(
+                itemsIndexed(routes) { _, item ->
+                    when (cardType) {
+                        CardType.Info -> InfoCard(
                             title = item.title,
                             description = item.description,
-                            onClick = onClick
+                            onClick = { onRouteClick(item) }
                         )
-                    } else {
-                        SmallCard(
+
+                        CardType.Small -> SmallCard(
                             title = item.title,
                             icon = item.icon,
-                            onClick = onClick
+                            onClick = { onRouteClick(item) }
                         )
                     }
                 }
@@ -85,18 +86,18 @@ fun SectionCards(
                 modifier = Modifier.verticalScroll(rememberScrollState())
             ) {
                 routes.forEach { item ->
-                    val onClick = {
-                        viewModel.selectRouteById(item.id)
-                        navController.navigate(DetalleScreen(item.id))
-                    }
-                    if (type == "Info") {
-                        InfoCard(
+                    when (cardType) {
+                        CardType.Info -> InfoCard(
                             title = item.title,
                             description = item.description,
-                            onClick = onClick
+                            onClick = { onRouteClick(item) }
                         )
-                    } else {
-                        SmallCard(title = item.title, icon = item.icon, onClick = onClick)
+
+                        CardType.Small -> SmallCard(
+                            title = item.title,
+                            icon = item.icon,
+                            onClick = { onRouteClick(item) }
+                        )
                     }
                 }
             }
@@ -106,3 +107,19 @@ fun SectionCards(
 }
 
 
+@Preview(showBackground = true)
+@Composable
+fun PreviewSectionCards() {
+    val dummyRoutes = listOf(
+        UiRoute(1, "Ruta 1", "Desc", 0, "ruta", emptyList(), Icons.Default.LocationOn),
+        UiRoute(2, "Ruta 2", "Desc", 0, "ruta", emptyList(), Icons.Default.LocationOn)
+    )
+
+    SectionCards(
+        title = "Rutas Ejemplo",
+        routes = dummyRoutes,
+        cardType = CardType.Small,
+        scrollDirection = ScrollDirection.Horizontal,
+        onRouteClick = {}
+    )
+}

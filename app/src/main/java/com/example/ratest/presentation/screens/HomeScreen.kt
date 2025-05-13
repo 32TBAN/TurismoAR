@@ -4,9 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Map
@@ -30,12 +28,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import com.example.ratest.presentation.components.layouts.CardType
+import com.example.ratest.presentation.components.layouts.ScrollDirection
+import com.example.ratest.presentation.mappers.UiRoute
 import com.example.ratest.presentation.mappers.toUiRoutes
+import com.example.ratest.presentation.navigation.DetalleScreen
 import com.example.ratest.ui.theme.Green
 import com.example.ratest.ui.theme.White
 
 @Composable
-fun InicioScreen(
+fun HomeScreen(
     navController: NavController,
     viewModel: RouteViewModel
 ) {
@@ -43,18 +45,44 @@ fun InicioScreen(
     val allRoutes by viewModel.allRoutes.collectAsState()
     val uiRoutes = allRoutes.toUiRoutes(context)
 
-    val groupedRoutes = listOf(
-        "ruta" to uiRoutes.filter { it.type == "ruta" },
-        "marca" to uiRoutes.filter { it.type == "marca" },
-        "evento" to uiRoutes.filter { it.type == "evento" }
-    )
+    val groupedRoutes = remember(uiRoutes) {
+        listOf(
+            "ruta" to uiRoutes.filter { it.type == "ruta" },
+            "marca" to uiRoutes.filter { it.type == "marca" },
+            "evento" to uiRoutes.filter { it.type == "evento" }
+        )
+    }
+
     var showFullMap by remember { mutableStateOf(false) }
-    Box(modifier = Modifier.fillMaxSize().padding(horizontal =  17.dp)) {
+
+    HomeContent(
+        groupedRoutes = groupedRoutes,
+        navController = navController,
+        viewModel = viewModel,
+        onMapButtonClick = { showFullMap = true }
+    )
+
+    if (showFullMap) {
+        FullScreenMapOverlay(onClose = { showFullMap = false })
+    }
+}
+
+@Composable
+fun HomeContent(
+    groupedRoutes: List<Pair<String, List<UiRoute>>>,
+    navController: NavController,
+    viewModel: RouteViewModel,
+    onMapButtonClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 17.dp)
+    ) {
         LazyColumn {
-            item {
-                TopSection(navController)
-            }
-            itemsIndexed(groupedRoutes) { index, (type, routes) ->
+            item { TopSection(navController) }
+
+            itemsIndexed(groupedRoutes) { _, (type, routes) ->
                 val title = when (type) {
                     "ruta" -> stringResource(id = R.string.text_title_tourist_routes)
                     "marca" -> stringResource(id = R.string.text_title_places_of_interest)
@@ -62,60 +90,66 @@ fun InicioScreen(
                     else -> "Otros"
                 }
 
-                SectionCards(
+                GroupedRoutesSection(
                     title = title,
                     routes = routes,
                     navController = navController,
                     viewModel = viewModel
                 )
             }
-//            item {
-//                MapSection(
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .height(200.dp),
-//                    geoPoints = uiRoutes.flatMap { it.geoPoints },
-//                    type = "ruta"
-//                )
-//            }
         }
 
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
             contentAlignment = Alignment.BottomEnd
         ) {
-            MiniMapButton {
-                showFullMap = true
-            }
-        }
-
-        if (showFullMap) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(White)
-            ) {
-                MapSection(
-                    modifier = Modifier.fillMaxSize(),
-                    type = "ruta"
-                )
-                Box(modifier = Modifier
-                    .padding(16.dp)
-                    .align(Alignment.TopEnd)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = "Cerrar Mapa",
-                        modifier = Modifier
-                            .size(36.dp)
-                            .clickable { showFullMap = false }
-                    )
-                }
-            }
+            MiniMapButton(onClick = onMapButtonClick)
         }
     }
+}
 
+@Composable
+fun GroupedRoutesSection(
+    title: String,
+    routes: List<UiRoute>,
+    navController: NavController,
+    viewModel: RouteViewModel
+) {
+    SectionCards(
+        title = title,
+        routes = routes,
+        cardType = CardType.Small,
+        scrollDirection = ScrollDirection.Horizontal,
+        onRouteClick = { uiRoute ->
+            viewModel.selectRouteById(uiRoute.id)
+            navController.navigate(DetalleScreen(uiRoute.id))
+        }
+    )
+}
+
+@Composable
+fun FullScreenMapOverlay(onClose: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(White)
+    ) {
+        MapSection(
+            modifier = Modifier.fillMaxSize(),
+            type = "ruta"
+        )
+        Icon(
+            imageVector = Icons.Default.Close,
+            contentDescription = "Cerrar Mapa",
+            modifier = Modifier
+                .padding(16.dp)
+                .align(Alignment.TopEnd)
+                .size(36.dp)
+                .clickable { onClose() }
+        )
+    }
 }
 
 

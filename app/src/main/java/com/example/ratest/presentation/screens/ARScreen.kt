@@ -57,6 +57,9 @@ import com.example.ratest.presentation.viewmodels.TourUIState
 import com.example.ratest.ui.theme.Green
 import com.example.ratest.ui.theme.White
 import com.example.ratest.presentation.components.layouts.ar.ModelPickerDialog
+import com.example.ratest.R
+import com.example.ratest.presentation.components.ErrorHandler
+import org.koin.androidx.compose.koinViewModel
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
@@ -65,7 +68,8 @@ fun ARScreen(
     geoPoints: List<GeoPoint>,
     type: String = "route"
 ) {
-    val viewModel: ARViewModel = viewModel()
+    val viewModel: ARViewModel = koinViewModel()
+
     val uiState by viewModel.uiState.collectAsState()
     val distanceText by viewModel.distanceText.collectAsState()
     val context = LocalContext.current
@@ -75,6 +79,7 @@ fun ARScreen(
     val showTutorial = remember { mutableStateOf(false) }
     var showModelPicker by remember { mutableStateOf(false) }
     var showTapMessage by remember { mutableStateOf(false) }
+    var isShowingMessage by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         // Se Inicializa el ViewModel con los geoPoints
@@ -132,41 +137,28 @@ fun ARScreen(
 
     ARSceneContent(
         viewModel,
-        type
+        type,
+        navController
     )
 
     ModelPickerDialog(
         showModelPicker, {
             showModelPicker = false
+            showTapMessage = true
         },
         viewModel,
         showTapMessage = mutableStateOf(showTapMessage)
     )
 
-    if (showTapMessage) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = "Coloca el modelo en una superficie plana tocando la pantalla",
-                color = Color.White,
-                fontSize = 16.sp,
-                modifier = Modifier
-                    .background(
-                        color = Color.Black.copy(alpha = 0.7f),
-                        shape = RoundedCornerShape(8.dp)
-                    )
-                    .padding(horizontal = 12.dp, vertical = 18.dp)
-            )
-        }
-
-        LaunchedEffect(Unit) {
-            kotlinx.coroutines.delay(4000)
-            showTapMessage = false
-        }
+    if (showTapMessage && !isShowingMessage) {
+        TutorialDialog(
+            onDismiss = {
+                showTapMessage = false
+                isShowingMessage = true
+            },
+            pages = viewModel.pagesObjectTutorial,
+            title = "Coloca el objeto"
+        )
     }
 
     when (uiState) {
@@ -282,7 +274,11 @@ fun ARScreen(
                 }
 
                 if (showTutorial.value) {
-                    TutorialDialog(onDismiss = { showTutorial.value = false })
+                    TutorialDialog(
+                        onDismiss = { showTutorial.value = false },
+                        pages = viewModel.tutorialPages,
+                        title = "¿Cómo usar el modo Realidad Aumentada?"
+                    )
                 }
 
             }
@@ -291,7 +287,7 @@ fun ARScreen(
         is TourUIState.Arrived -> {
             val target = (uiState as TourUIState.Arrived).target
 //            Log.d("GeoAR", "Arrived at: $target")
-            PlayTourSound()
+            PlayTourSound(context)
             AlertDialog(
                 onDismissRequest = {
                     uiState !is TourUIState.Arrived
@@ -323,7 +319,7 @@ fun ARScreen(
         }
 
         is TourUIState.Completed -> {
-            PlayTourSound()
+            PlayTourSound(context, R.raw.complete)
             TourResultScreen(
                 navController,
                 validGeoPoints.size,
@@ -333,8 +329,7 @@ fun ARScreen(
         }
 
         is TourUIState.Error -> {
-            val message = (uiState as TourUIState.Error).message
-            Text("Error: $message", color = Color.Red)
+            ErrorHandler(errorState = viewModel.errorState, navController = navController)
         }
     }
 }

@@ -28,7 +28,6 @@ import com.google.ar.core.Earth
 import com.google.ar.core.Frame
 import com.google.ar.core.TrackingState
 import com.google.ar.core.exceptions.NotTrackingException
-import io.github.sceneview.ar.node.AnchorNode
 import io.github.sceneview.loaders.MaterialLoader
 import io.github.sceneview.loaders.ModelLoader
 import io.github.sceneview.model.ModelInstance
@@ -41,6 +40,8 @@ import com.example.ratest.domain.usecase.TourManager
 import kotlinx.coroutines.launch
 import io.github.sceneview.ar.ARSceneView
 import androidx.core.graphics.createBitmap
+import com.example.ratest.domain.usecase.ArNodeFactory
+import com.example.ratest.utils.ErrorState
 import com.google.android.gms.location.LocationServices
 import com.google.ar.core.Anchor
 import io.github.sceneview.node.Node
@@ -48,59 +49,53 @@ import java.io.File
 import kotlin.math.abs
 import kotlinx.coroutines.tasks.await
 
-@SuppressLint("StaticFieldLeak")
-class ARViewModel : ViewModel() {
-    private lateinit var tourManager: TourManager
+class ARViewModel(
+    private val tourManager: TourManager
+) : ViewModel() {
+    private val uiStateMutable = MutableStateFlow<TourUIState>(TourUIState.Loading)
+    val uiState: StateFlow<TourUIState> = uiStateMutable
 
     private val distanceTextMutable = MutableStateFlow("0.0 m")
     val distanceText: StateFlow<String> = distanceTextMutable
 
-    private val isPinCreated = MutableStateFlow(false)
-    private val uiStateMutable = MutableStateFlow<TourUIState>(TourUIState.Loading)
-    val uiState: StateFlow<TourUIState> = uiStateMutable
-
-    val visibleRange = 5.99
-
-    val arNodes = mutableStateListOf<Node>()
-    var arSceneView: ARSceneView? = null
-    val modelInstanceList = mutableListOf<ModelInstance>()
+    val selectedModelPath = mutableStateOf<String?>(null)
+    val scaleModel = mutableFloatStateOf(0.6f)
     var imageUriState = mutableStateOf<Uri?>(null)
 
+    val arNodes = mutableStateListOf<Node>()
+    @SuppressLint("StaticFieldLeak")
+    var arSceneView: ARSceneView? = null
+
+
+    private val isPinCreated = MutableStateFlow(false)
     private var stableTrackingFrames = 0
     private val requiredStableFrames = 10
     var currentPosition = mutableStateOf<GeoPoint?>(GeoPoint(0.0, 0.0, "Posición actual", ""))
     var isTrackingStable = mutableStateOf(false)
-    val selectedModelPath = mutableStateOf<String?>(null)
-    val scaleModel = mutableFloatStateOf(0.6f)
 
-    fun createModelNode(anchor: Anchor) {
-        val nodeModel = tourManager.createAnchorNode(
-            engine = arSceneView!!.engine,
-            modelLoader = arSceneView!!.modelLoader,
-            materialLoader = arSceneView!!.materialLoader,
-            modelInstance = modelInstanceList,
-            anchor = anchor,
-            model = selectedModelPath.value!!,
-            scaleToUnits = scaleModel.floatValue
-        )
-        arSceneView?.addChildNode(nodeModel)
-    }
+    val visibleRange = 5.99
+    val modelInstanceList = mutableListOf<ModelInstance>()
+    val errorState = ErrorState()
+
 
     fun initialize(context: Context, geoPoints: List<GeoPoint>) {
-        tourManager = TourManager(context)
-//        Log.d("GeoAR", "GeoAR: $geoPoints")
         tourManager.setGeoPoints(geoPoints)
 
         val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
         viewModelScope.launch {
             try {
                 val location = if (
-                    ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+                    ContextCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    )
                     == PackageManager.PERMISSION_GRANTED
                 ) {
                     try {
                         fusedLocationClient.lastLocation.await()
                     } catch (e: SecurityException) {
+                        uiStateMutable.value = TourUIState.Error(e.message ?: "Error desconocido")
+                        errorState.setError(e)
                         null
                     }
                 } else {
@@ -109,7 +104,10 @@ class ARViewModel : ViewModel() {
 
                 tourManager.loadVisitedPoints()
                 uiStateMutable.value = TourUIState.InProgress(
-                    target = tourManager.getNextTarget(location?.latitude ?: 0.0, location?.longitude ?: 0.0) ?: GeoPoint(
+                    target = tourManager.getNextTarget(
+                        location?.latitude ?: 0.0,
+                        location?.longitude ?: 0.0
+                    ) ?: GeoPoint(
                         0.0,
                         0.0,
                         "Sin destino",
@@ -119,6 +117,7 @@ class ARViewModel : ViewModel() {
 //                Log.d("GeoAR", "Initialized with target: ${uiStateMutable.value}")
             } catch (e: Exception) {
                 uiStateMutable.value = TourUIState.Error(e.localizedMessage ?: "Error desconocido")
+                errorState.setError(e)
             }
         }
     }
@@ -161,7 +160,10 @@ class ARViewModel : ViewModel() {
 
                 tourManager.resetTour()
 
-                val firstTarget = tourManager.getNextTarget(currentPosition.value?.latitude ?: 0.0, currentPosition.value?.longitude ?: 0.0) ?: tourManager.getNextTarget(0.0, 0.0)
+                val firstTarget = tourManager.getNextTarget(
+                    currentPosition.value?.latitude ?: 0.0,
+                    currentPosition.value?.longitude ?: 0.0
+                ) ?: tourManager.getNextTarget(0.0, 0.0)
                 if (firstTarget != null) {
                     uiStateMutable.value = TourUIState.InProgress(firstTarget)
                 } else {
@@ -172,14 +174,10 @@ class ARViewModel : ViewModel() {
                 arNodes.clear()
                 isPinCreated.value = false
             } catch (e: Exception) {
-                uiStateMutable.value =
-                    TourUIState.Error(e.localizedMessage ?: "Error reiniciando tour")
+                uiStateMutable.value = TourUIState.Error(e.message ?: "Error desconocido")
+                errorState.setError(e)
             }
         }
-    }
-
-    fun getZisedVisitedPoints(): Int {
-        return tourManager.getVisited()
     }
 
     fun updateSession(
@@ -202,8 +200,10 @@ class ARViewModel : ViewModel() {
             }
             val geoPose = earth.cameraGeospatialPose
 
-            val deltaLat = abs((currentPosition.value?.latitude ?: geoPose.latitude) - geoPose.latitude)
-            val deltaLon = abs((currentPosition.value?.longitude ?: geoPose.longitude) - geoPose.longitude)
+            val deltaLat =
+                abs((currentPosition.value?.latitude ?: geoPose.latitude) - geoPose.latitude)
+            val deltaLon =
+                abs((currentPosition.value?.longitude ?: geoPose.longitude) - geoPose.longitude)
 
             if (deltaLat < 0.00001 && deltaLon < 0.00001) {
                 stableTrackingFrames++
@@ -211,8 +211,8 @@ class ARViewModel : ViewModel() {
                 stableTrackingFrames = 0
             }
 
-            currentPosition.value?.latitude  = geoPose.latitude
-            currentPosition.value?.longitude  = geoPose.longitude
+            currentPosition.value?.latitude = geoPose.latitude
+            currentPosition.value?.longitude = geoPose.longitude
 
             if (stableTrackingFrames >= requiredStableFrames) {
                 isTrackingStable.value = true
@@ -261,7 +261,7 @@ class ARViewModel : ViewModel() {
                         geoPose.longitude.toFloat(),
                         geoPose.altitude.toFloat()
                     )
-                    val pinNode = tourManager.createAnchorNode(
+                    val pinNode = ArNodeFactory.createAnchorNode(
                         engine = engine,
                         modelLoader = modelLoader,
                         materialLoader = materialLoader,
@@ -290,9 +290,11 @@ class ARViewModel : ViewModel() {
                 }
             }
         } catch (e: NotTrackingException) {
-            Log.e("ARViewModel", "ARCore not tracking: ${e.message}")
+            uiStateMutable.value = TourUIState.Error(e.message ?: "Error desconocido")
+            errorState.setError(e)
         } catch (e: Exception) {
-            Log.e("ARViewModel", "Unexpected error: ${e.message}")
+            uiStateMutable.value = TourUIState.Error(e.message ?: "Error desconocido")
+            errorState.setError(e)
         }
     }
 
@@ -341,6 +343,22 @@ class ARViewModel : ViewModel() {
             arrowNode.lookAt(pinPosition, KotlinFloat3(0f, 1f, 0f))
         }
     }
+
+    fun getZisedVisitedPoints() = tourManager.getVisited()
+
+    fun createModelNode(anchor: Anchor) {
+        val nodeModel = ArNodeFactory.createAnchorNode(
+            engine = arSceneView!!.engine,
+            modelLoader = arSceneView!!.modelLoader,
+            materialLoader = arSceneView!!.materialLoader,
+            modelInstance = modelInstanceList,
+            anchor = anchor,
+            model = selectedModelPath.value!!,
+            scaleToUnits = scaleModel.floatValue
+        )
+        arSceneView?.addChildNode(nodeModel)
+    }
+
 
     fun captureARView(arView: ARSceneView, onCaptured: (Bitmap?) -> Unit) {
         val bitmap = createBitmap(arView.width, arView.height)
@@ -416,4 +434,17 @@ class ARViewModel : ViewModel() {
             Toast.makeText(context, "Error al guardar imagen", Toast.LENGTH_SHORT).show()
         }
     }
+
+    val tutorialPages = listOf(
+        "Pulsa el botón del mapa para ver tu ubicación actual.",
+        "Explora tu entorno moviendo el teléfono. La flecha te guiará hasta el destino.",
+        "Al llegar, verás un objeto con información sobre el lugar. Se marcará como visitado.",
+        "Completa todos los puntos del recorrido para obtener tu logro.",
+        "Elige un personaje y toma una foto divertida en realidad aumentada."
+    )
+
+    val pagesObjectTutorial = listOf(
+        "Para colocar el objeto, toca la pantalla apuntando a una superficie plana los puntos te mostrarán si es posible colocarlo o no.",
+        "Una vez colocado, puedes moverlo con un dedo y cambiarle el tamaño con dos dedos."
+    )
 }
