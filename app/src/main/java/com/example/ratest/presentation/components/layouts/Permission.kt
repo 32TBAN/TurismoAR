@@ -10,9 +10,29 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 
 @Composable
-fun CheckLocationPermission(onGranted: @Composable () -> Unit, onDenied: @Composable () -> Unit = {}) {
+fun PermissionGate(
+    permission: String,
+    onGranted: @Composable () -> Unit,
+    onDenied: @Composable () -> Unit
+) {
+    var isPermissionGranted by remember { mutableStateOf(false) }
+
+    CheckLocationPermission(
+        onGranted = { isPermissionGranted = true },
+        onDenied = { isPermissionGranted = false },
+        permission = permission
+    )
+
+    if (isPermissionGranted) {
+        onGranted()
+    } else {
+        onDenied()
+    }
+}
+
+@Composable
+fun CheckLocationPermission(onGranted: @Composable () -> Unit, onDenied: @Composable () -> Unit = {}, permission: String) {
     val context = LocalContext.current
-    val permission = Manifest.permission.ACCESS_FINE_LOCATION
     val permissionGranted = rememberSaveable { mutableStateOf(false) }
 
     val launcher = rememberLauncherForActivityResult(

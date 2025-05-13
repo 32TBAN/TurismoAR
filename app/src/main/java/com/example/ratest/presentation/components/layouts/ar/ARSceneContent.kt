@@ -3,12 +3,18 @@ package com.example.ratest.presentation.components.layouts.ar
 import android.util.Log
 import android.view.MotionEvent
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.navigation.NavController
+import com.example.ratest.presentation.components.ErrorHandler
+import com.example.ratest.presentation.components.layouts.CustomDialog
 import com.example.ratest.presentation.viewmodels.ARViewModel
+import com.example.ratest.utils.ErrorState
 import com.google.ar.core.Config
 import com.google.ar.core.Frame
 import com.google.ar.core.TrackingFailureReason
@@ -22,10 +28,13 @@ import io.github.sceneview.rememberOnGestureListener
 @Composable
 fun ARSceneContent(
     viewModel: ARViewModel,
-    type: String
+    type: String,
+    navController: NavController
 ) {
     val trackingFailureReason = remember { mutableStateOf<TrackingFailureReason?>(null) }
     val frame = remember { mutableStateOf<Frame?>(null) }
+
+    ErrorHandler(errorState = viewModel.errorState, navController = navController)
 
     val gestureListener = rememberOnGestureListener(
         onSingleTapConfirmed = { motionEvent: MotionEvent, node: Node? ->
@@ -105,10 +114,10 @@ fun ARSceneContent(
                         )
 
                     } catch (e: Exception) {
-                        Log.e("ARScreen", "Error updating session: ${e.message}")
+                        Log.e("ARScreen", "Error: ${e.message}")
+                        viewModel.errorState.setError(e)
                     }
                 }
-
                 this.onTrackingFailureChanged = {
                     trackingFailureReason.value = it
                 }

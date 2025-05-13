@@ -15,8 +15,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.ratest.presentation.components.layouts.CardType
+import com.example.ratest.presentation.components.layouts.ScrollDirection
 import com.example.ratest.presentation.components.layouts.SectionCards
 import com.example.ratest.presentation.mappers.toUiRoutes
+import com.example.ratest.presentation.navigation.DetalleScreen
 import com.example.ratest.presentation.viewmodels.RouteViewModel
 
 @Composable
@@ -36,10 +39,12 @@ fun RoutesScreen(
         Column(modifier = Modifier.fillMaxWidth()) {
             SectionCards(
                 routes = uiRoutes,
-                type = "Info",
-                scrollDirection = "vertical",
-                navController = navController,
-                viewModel = viewModel
+                cardType = CardType.Info,
+                scrollDirection = ScrollDirection.Vertical,
+                onRouteClick = { uiRoute ->
+                    viewModel.selectRouteById(uiRoute.id)
+                    navController.navigate(DetalleScreen(uiRoute.id))
+                }
             )
         }
     }
