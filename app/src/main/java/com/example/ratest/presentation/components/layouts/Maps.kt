@@ -1,6 +1,8 @@
 package com.example.ratest.presentation.components.layouts
 
+import android.content.Context
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -14,6 +16,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import com.example.ratest.ui.theme.DarkGreen
+import com.example.ratest.ui.theme.Green
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -25,98 +29,93 @@ import com.example.ratest.domain.models.GeoPoint as GeoPointCustom
 
 @Composable
 fun MapSection(
-    title: @Composable () -> Unit = {
-        Text(
-            "Mapa de Salcedo",
-            fontWeight = FontWeight.Bold,
-            fontSize = 20.sp,
-        )
-    },
+    title: String? = null,
     geoPoints: List<GeoPointCustom> = emptyList(),
     zoomLevel: Double = 15.7,
     controls: Boolean = true,
     type: String = "ruta",
     modifier: Modifier
 ) {
-    title()
-    Spacer(modifier = Modifier.height(2.dp))
-    Column() {
-//        Spacer(modifier = Modifier.height(96.dp))
+
+    Column {
+        title?.let {
+            Text(
+                text = it,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                color = DarkGreen
+            )
+        }
+        Spacer(modifier = Modifier.height(2.dp))
         AndroidView(
             modifier = modifier.clip(RoundedCornerShape(16.dp)),
             factory = { context ->
-                val userAgent = "com.example.ratest/1.0"
-                Configuration.getInstance().userAgentValue = userAgent
-                val mapview = MapView(context)
-                mapview.setTileSource(TileSourceFactory.MAPNIK)
-                mapview.setBuiltInZoomControls(controls)
-                mapview.setMultiTouchControls(controls)
-                mapview.controller.setZoom(zoomLevel)
-//                mapview.maxZoomLevel = 19.0
-//                mapview.minZoomLevel = zoomLevel
-//                mapview.setTilesScaledToDpi(true)
-                if (geoPoints.isNotEmpty()) {
-                    mapview.controller.setCenter(
-                        GeoPoint(
-                            geoPoints[0].latitude,
-                            geoPoints[0].longitude
-                        )
-                    )
-                    val osmdroidPoints = geoPoints.map { GeoPoint(it.latitude, it.longitude) }
-
-                    val polyline = Polyline().apply {
-                        setPoints(osmdroidPoints)
-                        color = Color.Blue.hashCode()
-                        width = 10f
-                    }
-                    mapview.overlays.add(polyline)
-
-                    if (type == "marcador" || type == "ruta") {
-                        geoPoints.forEach {
-                            if (it.name.isNotEmpty()) {
-                                val marker = Marker(mapview).apply {
-                                    position = GeoPoint(it.latitude, it.longitude)
-                                }
-                                marker.title = it.name
-                                mapview.overlays.add(marker)
-                            }
-                        }
-                    }
-
-                    geoPoints.forEach { (lat, lon, name) ->
-                        if (!name.isEmpty()) {
-                            val marker = Marker(mapview)
-
-                            marker.position = GeoPoint(lat, lon)
-                            marker.title = name
-                            mapview.overlays.add(marker)
-                        }
-                    }
-
-                } else {
-                    val defaultPoint = GeoPoint(-1.04559, -78.59019)
-                    mapview.controller.setCenter(defaultPoint)
-                    val marker = Marker(mapview)
-
-                    marker.position = defaultPoint
-                    marker.title = "Salcedo"
-                    mapview.overlays.add(marker)
-                }
-                mapview
+                createConfiguredMapView(
+                    context = context,
+                    geoPoints = geoPoints,
+                    zoomLevel = zoomLevel,
+                    type = type,
+                    controls = controls
+                )
             },
             update = { mapView ->
-                if (!geoPoints.isEmpty()) {
-                    val controls = mapView.controller
-                    controls.setZoom(zoomLevel)
-                    controls.setCenter(
-                        GeoPoint(
-                            geoPoints[0].latitude,
-                            geoPoints[0].longitude
-                        )
-                    )
+                geoPoints.firstOrNull()?.let {
+                    mapView.controller.setCenter(GeoPoint(it.latitude, it.longitude))
+                    mapView.controller.setZoom(zoomLevel)
                 }
-
             }
         )
+    }
+}
+
+fun createConfiguredMapView(
+    context: Context,
+    geoPoints: List<GeoPointCustom>,
+    zoomLevel: Double,
+    type: String,
+    controls: Boolean
+): MapView {
+    Configuration.getInstance().userAgentValue = "com.example.ratest/1.0"
+
+    return MapView(context).apply {
+        setTileSource(TileSourceFactory.MAPNIK)
+        setMultiTouchControls(controls)
+
+        controller.setZoom(zoomLevel)
+
+        val defaultPoint = geoPoints.firstOrNull()?.let {
+            GeoPoint(it.latitude, it.longitude)
+        } ?: GeoPoint(-1.04559, -78.59019)
+
+        controller.setCenter(defaultPoint)
+
+        if (geoPoints.isNotEmpty()) {
+            val polyline = Polyline().apply {
+                outlinePaint.strokeWidth = 10f
+                outlinePaint.color = android.graphics.Color.BLUE
+                setPoints(geoPoints.map { GeoPoint(it.latitude, it.longitude) })
+            }
+            overlays.add(polyline)
+
+            if (type == "ruta" || type == "marcador") {
+                geoPoints.forEach {
+                    if (it.name.isNotEmpty()) {
+                        val marker = Marker(this).apply {
+                            position = GeoPoint(it.latitude, it.longitude)
+                            title = it.name
+                            setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                        }
+                        overlays.add(marker)
+                    }
+                }
+            }
+        } else {
+            val marker = Marker(this).apply {
+                position = defaultPoint
+                title = "Salcedo"
+                setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+            }
+            overlays.add(marker)
+        }
     }
 }

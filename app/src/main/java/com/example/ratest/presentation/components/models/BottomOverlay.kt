@@ -1,14 +1,12 @@
 package com.example.ratest.presentation.components.models
 
-import android.net.Uri
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts.GetContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -32,22 +30,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ratest.ui.theme.White
 import androidx.compose.material3.Text
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.platform.LocalContext
-import androidx.core.content.FileProvider
 import com.example.ratest.presentation.viewmodels.ARViewModel
 import com.example.ratest.ui.theme.LightGreen
-import java.io.File
 
 @Composable
-fun BottomOverlay(distanceText: String, modifier: Modifier = Modifier, onOpenGallery: () -> Unit, viewModel: ARViewModel) {
+fun BottomOverlay(distanceText: String, onOpenGallery: () -> Unit, viewModel: ARViewModel) {
     val context = LocalContext.current
     val semiCircleShape = GenericShape { size, _ ->
         // semicírculo inferior
         moveTo(0f, size.height)
         arcTo(
-            rect = androidx.compose.ui.geometry.Rect(
+            rect = Rect(
                 0f, 0f, size.width, size.height * 2
             ),
             startAngleDegrees = 180f,
@@ -58,7 +53,7 @@ fun BottomOverlay(distanceText: String, modifier: Modifier = Modifier, onOpenGal
     }
 
     Box(
-        modifier = modifier,
+        modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.BottomCenter
     ) {
         Box(
