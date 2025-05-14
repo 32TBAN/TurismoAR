@@ -1,13 +1,11 @@
-package com.example.ratest.presentation.screens
+package com.example.ratest.presentation.screens.history
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,7 +20,7 @@ import com.example.ratest.presentation.components.layouts.CardBackgroundImage
 import com.example.ratest.presentation.mappers.UiRoute
 import com.example.ratest.presentation.navigation.DetalleScreen
 import com.example.ratest.presentation.mappers.toUiRoutes
-import com.example.ratest.presentation.viewmodels.RouteViewModel
+import com.example.ratest.presentation.viewmodels.home.RouteViewModel
 
 
 @Composable

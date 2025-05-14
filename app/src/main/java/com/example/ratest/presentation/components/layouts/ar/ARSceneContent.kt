@@ -13,7 +13,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
 import com.example.ratest.presentation.components.ErrorHandler
 import com.example.ratest.presentation.components.layouts.CustomDialog
-import com.example.ratest.presentation.viewmodels.ARViewModel
+import com.example.ratest.presentation.viewmodels.ar.ARViewModel
 import com.example.ratest.utils.ErrorState
 import com.google.ar.core.Config
 import com.google.ar.core.Frame

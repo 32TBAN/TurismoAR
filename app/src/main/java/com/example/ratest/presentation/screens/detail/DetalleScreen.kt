@@ -1,4 +1,4 @@
-package com.example.ratest.presentation.components.layouts
+package com.example.ratest.presentation.screens.detail
 
 
 import androidx.compose.foundation.layout.Spacer
@@ -18,9 +18,10 @@ import com.example.ratest.ui.theme.DarkGreen
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.LocalContext
-import com.example.ratest.presentation.viewmodels.RouteViewModel
+import com.example.ratest.presentation.viewmodels.home.RouteViewModel
 import com.example.ratest.presentation.mappers.toUiRoute
 import com.example.ratest.presentation.components.TopImageSection
+import com.example.ratest.presentation.components.layouts.map.MapSection
 
 @Composable
 fun DetailInfo(

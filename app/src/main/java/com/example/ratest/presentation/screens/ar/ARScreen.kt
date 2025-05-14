@@ -1,4 +1,4 @@
-package com.example.ratest.presentation.screens
+package com.example.ratest.presentation.screens.ar
 
 import android.annotation.SuppressLint
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -6,38 +6,30 @@ import androidx.activity.result.contract.ActivityResultContracts.GetContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
-import com.example.ratest.presentation.viewmodels.ARViewModel
+import com.example.ratest.presentation.viewmodels.ar.ARViewModel
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.ratest.domain.models.GeoPoint
 import com.example.ratest.presentation.components.layouts.ar.ARSceneContent
 import com.example.ratest.presentation.components.layouts.LoadingScreen
-import com.example.ratest.presentation.components.layouts.MapSection
+import com.example.ratest.presentation.components.layouts.map.MapSection
 import com.example.ratest.presentation.components.layouts.ar.CompassOverlay
 import com.example.ratest.presentation.components.layouts.ar.MapIntroAnimation
 import com.example.ratest.presentation.components.layouts.ar.PlayTourSound
 import com.example.ratest.presentation.components.layouts.ar.ProgressOverlay
 import com.example.ratest.presentation.components.layouts.ar.TutorialDialog
-import com.example.ratest.presentation.components.models.BottomOverlay
+import com.example.ratest.presentation.components.layouts.ar.BottomOverlay
 import com.example.ratest.presentation.viewmodels.TourUIState
-import com.example.ratest.ui.theme.Green
 import com.example.ratest.presentation.components.layouts.ar.ModelPickerDialog
 import com.example.ratest.R
 import com.example.ratest.presentation.components.ErrorHandler
 import com.example.ratest.presentation.components.layouts.ar.SelectedImageDialog
 import com.example.ratest.presentation.components.layouts.ar.TourArrivedDialog
-import com.example.ratest.presentation.components.models.ARFloatingButtons
-import com.example.ratest.ui.theme.DarkGreen
+import com.example.ratest.presentation.components.buttons.ARFloatingButtons
 import org.koin.androidx.compose.koinViewModel
 
 @SuppressLint("UnrememberedMutableState")
@@ -147,9 +139,8 @@ fun ARScreen(
                 if (isMapVisible) {
                     Box(modifier = Modifier.weight(3f)) {
                         MapSection(
-                            title = "Su ubicación",
                             geoPoints = listOfNotNull(viewModel.currentPosition.value),
-                            type = "ruta",
+                            type = "marcador",
                             zoomLevel = 20.0,
                             modifier = Modifier.fillMaxSize()
                         )

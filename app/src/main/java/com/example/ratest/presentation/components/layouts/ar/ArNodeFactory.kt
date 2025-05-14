@@ -1,4 +1,4 @@
-package com.example.ratest.domain.usecase
+package com.example.ratest.presentation.components.layouts.ar
 
 import android.util.Log
 import androidx.compose.ui.graphics.Color
@@ -42,7 +42,7 @@ object ArNodeFactory {
             engine = engine,
             size = modelNode.extents,
             center = modelNode.center,
-            materialInstance = materialLoader.createColorInstance(Color.White)
+            materialInstance = materialLoader.createColorInstance(Color.Companion.White)
         ).apply {
             isVisible = false
         }

@@ -27,7 +27,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material.icons.Icons
 import com.example.ratest.ui.theme.White
 import androidx.compose.material.icons.filled.ArrowBackIosNew
-import com.example.ratest.presentation.components.models.ExploreARButton
+import com.example.ratest.presentation.components.buttons.ExploreARButton
 import com.example.ratest.ui.theme.DarkGreen
 import androidx.compose.foundation.layout.padding
 import androidx.core.net.toUri
@@ -94,7 +94,11 @@ fun checkARSupportAndNavigate(
         }
 
         ArCoreApk.Availability.SUPPORTED_INSTALLED -> {
-            navController.navigate(RARScreen(routeId, routeType))
+            try {
+                navController.navigate(RARScreen(routeId, routeType))
+            }catch (e: Exception){
+                Toast.makeText(context, "Error al cargar la ruta", Toast.LENGTH_LONG).show()
+            }
         }
 
         else -> {

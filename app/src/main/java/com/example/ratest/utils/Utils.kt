@@ -2,6 +2,10 @@ package com.example.ratest.utils
 
 import com.example.ratest.R
 import dev.romainguy.kotlin.math.Float3
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 object Utils {
 

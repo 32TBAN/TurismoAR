@@ -1,5 +1,4 @@
-package com.example.ratest.presentation.viewmodels
-
+package com.example.ratest.presentation.viewmodels.ar
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -8,11 +7,11 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
-import android.util.Log
 import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
+import android.util.Log
 import android.view.PixelCopy
 import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
@@ -20,34 +19,35 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.graphics.createBitmap
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.ratest.domain.models.GeoPoint
+import com.example.ratest.domain.usecase.TourManager
+import com.example.ratest.presentation.components.layouts.ar.ArNodeFactory
+import com.example.ratest.presentation.viewmodels.TourUIState
+import com.example.ratest.utils.ErrorState
 import com.example.ratest.utils.Utils
 import com.google.android.filament.Engine
+import com.google.android.gms.location.LocationServices
+import com.google.ar.core.Anchor
 import com.google.ar.core.Earth
 import com.google.ar.core.Frame
 import com.google.ar.core.TrackingState
 import com.google.ar.core.exceptions.NotTrackingException
+import dev.romainguy.kotlin.math.Float3
+import io.github.sceneview.ar.ARSceneView
 import io.github.sceneview.loaders.MaterialLoader
 import io.github.sceneview.loaders.ModelLoader
 import io.github.sceneview.model.ModelInstance
 import io.github.sceneview.node.ModelNode
+import io.github.sceneview.node.Node
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import dev.romainguy.kotlin.math.Float3 as KotlinFloat3
-import androidx.lifecycle.viewModelScope
-import com.example.ratest.domain.usecase.TourManager
 import kotlinx.coroutines.launch
-import io.github.sceneview.ar.ARSceneView
-import androidx.core.graphics.createBitmap
-import com.example.ratest.domain.usecase.ArNodeFactory
-import com.example.ratest.utils.ErrorState
-import com.google.android.gms.location.LocationServices
-import com.google.ar.core.Anchor
-import io.github.sceneview.node.Node
+import kotlinx.coroutines.tasks.await
 import java.io.File
 import kotlin.math.abs
-import kotlinx.coroutines.tasks.await
 
 class ARViewModel(
     private val tourManager: TourManager
@@ -63,6 +63,7 @@ class ARViewModel(
     var imageUriState = mutableStateOf<Uri?>(null)
 
     val arNodes = mutableStateListOf<Node>()
+
     @SuppressLint("StaticFieldLeak")
     var arSceneView: ARSceneView? = null
 
@@ -81,32 +82,13 @@ class ARViewModel(
     fun initialize(context: Context, geoPoints: List<GeoPoint>) {
         tourManager.setGeoPoints(geoPoints)
 
-        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
         viewModelScope.launch {
             try {
-                val location = if (
-                    ContextCompat.checkSelfPermission(
-                        context,
-                        Manifest.permission.ACCESS_FINE_LOCATION
-                    )
-                    == PackageManager.PERMISSION_GRANTED
-                ) {
-                    try {
-                        fusedLocationClient.lastLocation.await()
-                    } catch (e: SecurityException) {
-                        uiStateMutable.value = TourUIState.Error(e.message ?: "Error desconocido")
-                        errorState.setError(e)
-                        null
-                    }
-                } else {
-                    null
-                }
-
                 tourManager.loadVisitedPoints()
                 uiStateMutable.value = TourUIState.InProgress(
                     target = tourManager.getNextTarget(
-                        location?.latitude ?: 0.0,
-                        location?.longitude ?: 0.0
+                        currentPosition.value?.latitude ?: 0.0,
+                        currentPosition.value?.longitude ?: 0.0
                     ) ?: GeoPoint(
                         0.0,
                         0.0,
@@ -231,7 +213,12 @@ class ARViewModel(
                     currentTarget.longitude
                 )
 
-                distanceTextMutable.value = "${"%.2f".format(distance)} m"
+                distanceTextMutable.value = if (distance >= 1000) {
+                    val km = distance / 1000
+                    "${"%.2f".format(km)} km"
+                } else {
+                    "${"%.0f".format(distance)} m"
+                }
 
 //                Log.d("GeoAR", type)
                 if (type == "ruta" && distance <= 2) {
@@ -256,7 +243,7 @@ class ARViewModel(
                     }
 
 //                    Log.d("GeoAR", "Anchor created at: $anchorLatLng")
-                    val adjustedTargetPosition = KotlinFloat3(
+                    val adjustedTargetPosition = Float3(
                         anchorLatLng.first.toFloat(),
                         geoPose.longitude.toFloat(),
                         geoPose.altitude.toFloat()
@@ -272,7 +259,7 @@ class ARViewModel(
                     )
 
                     pinNode.position = adjustedTargetPosition
-                    pinNode.position = KotlinFloat3(
+                    pinNode.position = Float3(
                         pinNode.position.x,
                         0f,
                         pinNode.position.z
@@ -310,7 +297,7 @@ class ARViewModel(
 
             arrowNode.isVisible = selectedModelPath.value == null
 
-            arrowNode.position = KotlinFloat3(
+            arrowNode.position = Float3(
                 pose.tx() + forwardDirection.x * hudDistance,
                 pose.ty() - hudYOffset,
                 pose.tz() + forwardDirection.z * hudDistance
@@ -333,14 +320,14 @@ class ARViewModel(
                 )
 //                val rotatedOffset = Utils.rotateVectorByQuaternion(offset, geoPose.eastUpSouthQuaternion)
 
-                KotlinFloat3(
+                Float3(
                     pose.tx() + offset.x,
                     pose.ty(),
                     pose.tz() + offset.z
                 )
             }
 
-            arrowNode.lookAt(pinPosition, KotlinFloat3(0f, 1f, 0f))
+            arrowNode.lookAt(pinPosition, Float3(0f, 1f, 0f))
         }
     }
 

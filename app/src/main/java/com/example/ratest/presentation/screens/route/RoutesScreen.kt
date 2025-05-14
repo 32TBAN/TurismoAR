@@ -1,12 +1,10 @@
-package com.example.ratest.presentation.screens
+package com.example.ratest.presentation.screens.route
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -20,7 +18,7 @@ import com.example.ratest.presentation.components.layouts.ScrollDirection
 import com.example.ratest.presentation.components.layouts.SectionCards
 import com.example.ratest.presentation.mappers.toUiRoutes
 import com.example.ratest.presentation.navigation.DetalleScreen
-import com.example.ratest.presentation.viewmodels.RouteViewModel
+import com.example.ratest.presentation.viewmodels.home.RouteViewModel
 
 @Composable
 fun RoutesScreen(

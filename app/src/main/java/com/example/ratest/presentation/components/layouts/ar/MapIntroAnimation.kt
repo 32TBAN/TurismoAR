@@ -13,7 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.example.ratest.domain.models.GeoPoint
-import com.example.ratest.presentation.components.layouts.MapSection
+import com.example.ratest.presentation.components.layouts.map.MapSection
 import kotlinx.coroutines.delay
 
 @Composable
@@ -30,9 +30,9 @@ fun MapIntroAnimation(geoPoints: List<GeoPoint>, onFinish: () -> Unit) {
     LaunchedEffect(Unit) {
         repeat(6) {
             targetZoom += 2.5f
-            delay(600)
+            delay(300)
         }
-        delay(500)
+        delay(700)
         showMap = false
         onFinish()
     }

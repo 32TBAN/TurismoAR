@@ -20,7 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.example.ratest.presentation.viewmodels.ARViewModel
+import com.example.ratest.presentation.viewmodels.ar.ARViewModel
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
@@ -39,7 +39,7 @@ fun ModelPickerDialog(
     showTapMessage: MutableState<Boolean>
 ) {
     if (showModelPicker) {
-        var selectedModelPath by remember { mutableStateOf<String?>(null) }
+        var selectedModelPath by remember { mutableStateOf<String?>("models/helado.glb") }
         var selectedScale by remember { mutableFloatStateOf(1f) }
         val sampleImages: List<Pair<Int, String>> = listOf(
             R.drawable.helado to "models/helado.glb",

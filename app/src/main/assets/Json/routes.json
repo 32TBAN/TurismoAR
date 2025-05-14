@@ -50,7 +50,7 @@
     "title": "cart_title_places_of_interest1",
     "description": "cart_description_places_of_interest1",
     "imageRes": "monumento_madre_ai",
-    "type": "marca",
+    "type": "marcador",
     "geoPoints": [
       { "latitude": -1.045560, "longitude": -78.590215, "name": "Monumento a la Madre", "model": "models/Cartel_Monumento_Madre.glb"  }
     ]
@@ -60,7 +60,7 @@
     "title": "cart_title_places_of_interest2",
     "description": "cart_description_places_of_interest2",
     "imageRes": "monumento_fray_ia",
-    "type": "marca",
+    "type": "marcador",
     "geoPoints": [
       { "latitude": -1.043688, "longitude": -78.591043, "name": "Fray José María", "model":  "models/Cartel_Monumento_Fray.glb" }
     ]
@@ -70,7 +70,7 @@
     "title": "cart_title_places_of_interest3",
     "description": "cart_description_places_of_interest3",
     "imageRes": "palacio_municipal",
-    "type": "marca",
+    "type": "marcador",
     "geoPoints": [
       { "latitude": -1.0440112, "longitude": -78.5904399, "name": "Palacio Municipal", "model": "models/Cartel_Palacio.glb" }
     ]
@@ -80,7 +80,7 @@
     "title": "cart_title_places_of_interest4",
     "description": "cart_description_places_of_interest4",
     "imageRes": "iglesia_ai",
-    "type": "marca",
+    "type": "marcador",
     "geoPoints": [
       { "latitude": -1.044253, "longitude": -78.593392, "name": "Iglesia Central", "model": "models/Cartel_Iglesia.glb" }
     ]
@@ -90,7 +90,7 @@
     "title": "cart_title_places_of_interest5",
     "description": "cart_description_places_of_interest5",
     "imageRes": "coliseo_ai",
-    "type": "marca",
+    "type": "marcador",
     "geoPoints": [
       { "latitude": -1.045173, "longitude": -78.590923, "name": "Coliseo Municipal", "model": "models/Cartel_Coliseo.glb" }
     ]
@@ -100,7 +100,7 @@
     "title": "cart_title_places_of_interest6",
     "description": "cart_description_places_of_interest6",
     "imageRes": "mercado_ai",
-    "type": "marca",
+    "type": "marcador",
     "geoPoints": [
       { "latitude": -1.043197, "longitude": -78.588561, "name": "Mercado Central", "model": "models/Cartel_Mercado.glb" }
     ]
@@ -172,7 +172,7 @@
     "title": "cart_title_places_of_interest4",
     "description": "cart_description_places_of_interest4",
     "imageRes": "iglesia_ai",
-    "type": "marca",
+    "type": "marcador",
     "geoPoints": [
       { "latitude": -1.016230, "longitude": -78.565194, "name": "Iglesia Central", "model": "models/Cartel_Iglesia.glb" }
     ]

@@ -1,4 +1,4 @@
-package com.example.ratest.presentation.components.models
+package com.example.ratest.presentation.components.text
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable

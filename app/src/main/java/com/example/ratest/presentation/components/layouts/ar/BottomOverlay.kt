@@ -1,4 +1,4 @@
-package com.example.ratest.presentation.components.models
+package com.example.ratest.presentation.components.layouts.ar
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -32,7 +32,7 @@ import com.example.ratest.ui.theme.White
 import androidx.compose.material3.Text
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.platform.LocalContext
-import com.example.ratest.presentation.viewmodels.ARViewModel
+import com.example.ratest.presentation.viewmodels.ar.ARViewModel
 import com.example.ratest.ui.theme.LightGreen
 
 @Composable

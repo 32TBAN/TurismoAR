@@ -1,4 +1,4 @@
-package com.example.ratest.presentation.components.layouts.home
+package com.example.ratest.presentation.screens.home.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -16,9 +16,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.ratest.R
-import com.example.ratest.presentation.components.models.CustomButton
-import com.example.ratest.presentation.components.models.ImageSlider
-import com.example.ratest.presentation.components.models.SectionTitle
+import com.example.ratest.presentation.components.buttons.CustomButton
+import com.example.ratest.presentation.components.inputs.ImageSlider
+import com.example.ratest.presentation.components.text.SectionTitle
 import com.example.ratest.presentation.navigation.RoutesScreen
 import com.example.ratest.ui.theme.DarkGreen
 import com.example.ratest.utils.Utils
