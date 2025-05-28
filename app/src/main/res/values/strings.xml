@@ -32,7 +32,7 @@
     <string name="cart_title_places_of_interest6">Mercado Central</string>
     <string name="cart_description_places_of_interest6">El corazón comercial de Salcedo, donde se pueden encontrar productos frescos y artesanías locales, reflejando la vida cotidiana de la ciudad.</string>
 
-    <string name="text_title_events">Eventos Cercanos</string>
+    <string name="text_title_events">Eventos</string>
     <string name="cart_title_events1">Feria Tradicional y Costumbres de la Semana Santa</string>
     <string name="cart_description_events1">Celebra la Semana Santa con eventos culturales, procesiones y actividades religiosas que destacan la rica tradición de Salcedo.</string>
 
@@ -44,4 +44,7 @@
     <string name="text_title_section_home">¡Embárcate en un viaje único por los lugares turísticos de Salcedo!</string>
     <string name="text_subtitle_home">Tus lugares favoritos, listos para explorar desde tu móvil.</string>
     <string name="button_text_home1">Comienza tu aventura</string>
+
+    <string name="cart_title_comercio">Helados Salcedo - Jijón 1956</string>
+    <string name="cart_description_comercio"> </string>
 </resources>

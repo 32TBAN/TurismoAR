@@ -1,6 +1,7 @@
 package com.example.ratest.presentation.screens.detail
 
 
+import android.util.Log
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -31,6 +32,8 @@ fun DetailInfo(
     val context = LocalContext.current
     val route = viewModel.selectedRoute.collectAsState().value?.toUiRoute(context) ?: return
 
+    Log.d("DetailInfo", "Route: $route")
+
     Column(modifier = Modifier.padding(horizontal = 17.dp)) {
         TopImageSection(route, navController)
         Spacer(modifier = Modifier.height(30.dp))
@@ -42,14 +45,50 @@ fun DetailInfo(
             color = DarkGreen,
             modifier = Modifier.padding(vertical = 8.dp)
         )
+        route.description?.let {
+            Text(
+                text = it,
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.Black,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+        }
 
-        Text(
-            text = route.description,
-            style = MaterialTheme.typography.bodyMedium,
-            color = Color.Black,
-            modifier = Modifier.padding(vertical = 8.dp)
-        )
+        if (route.type == "comercio") {
+            route.schedules?.let {
+                Text(
+                    text = "🕒 Horario: $it",
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(vertical = 4.dp)
+                )
+            }
 
+            route.promotion?.let {
+                Text(
+                    text = "🎉 Promoción: $it",
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(vertical = 4.dp)
+                )
+            }
+
+            route.phone?.let {
+                Text(
+                    text = "📞 Teléfono: $it",
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(vertical = 4.dp)
+                )
+            }
+
+            route.webSite?.let {
+                Text(
+                    text = "🌐 Sitio web: $it",
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(vertical = 4.dp),
+                    color = DarkGreen
+                )
+            }
+        }
         Spacer(modifier = Modifier.height(16.dp))
 
         MapSection(

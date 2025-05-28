@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.ratest.presentation.components.layouts.CardBackgroundImage
 import com.example.ratest.presentation.mappers.UiRoute
-import com.example.ratest.presentation.navigation.DetalleScreen
+import com.example.ratest.presentation.navigation.DetailScreen
 import com.example.ratest.presentation.mappers.toUiRoutes
 import com.example.ratest.presentation.viewmodels.home.RouteViewModel
 
@@ -29,14 +29,14 @@ fun HistoryScreen(
     viewModel: RouteViewModel
 ) {
     val context = LocalContext.current
-    val visitedRoutes by viewModel.brandRoutes.collectAsState()
+    val visitedRoutes by viewModel.markersRoutes.collectAsState()
     val uiRoutes = visitedRoutes.toUiRoutes(context)
 
     HistoryContent(
         uiRoutes = uiRoutes,
         onRouteClick = { route ->
             viewModel.selectRouteById(route.id)
-            navController.navigate(DetalleScreen(route.id))
+            navController.navigate(DetailScreen(route.id))
         }
     )
 }

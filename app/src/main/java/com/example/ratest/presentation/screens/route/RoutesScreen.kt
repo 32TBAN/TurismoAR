@@ -17,7 +17,7 @@ import com.example.ratest.presentation.components.layouts.CardType
 import com.example.ratest.presentation.components.layouts.ScrollDirection
 import com.example.ratest.presentation.components.layouts.SectionCards
 import com.example.ratest.presentation.mappers.toUiRoutes
-import com.example.ratest.presentation.navigation.DetalleScreen
+import com.example.ratest.presentation.navigation.DetailScreen
 import com.example.ratest.presentation.viewmodels.home.RouteViewModel
 
 @Composable
@@ -41,7 +41,7 @@ fun RoutesScreen(
                 scrollDirection = ScrollDirection.Vertical,
                 onRouteClick = { uiRoute ->
                     viewModel.selectRouteById(uiRoute.id)
-                    navController.navigate(DetalleScreen(uiRoute.id))
+                    navController.navigate(DetailScreen(uiRoute.id))
                 }
             )
         }

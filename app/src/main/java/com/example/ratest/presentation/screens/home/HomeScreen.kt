@@ -35,7 +35,7 @@ import com.example.ratest.presentation.components.layouts.CardType
 import com.example.ratest.presentation.components.layouts.ScrollDirection
 import com.example.ratest.presentation.mappers.UiRoute
 import com.example.ratest.presentation.mappers.toUiRoutes
-import com.example.ratest.presentation.navigation.DetalleScreen
+import com.example.ratest.presentation.navigation.DetailScreen
 import com.example.ratest.ui.theme.Green
 import com.example.ratest.ui.theme.White
 import android.content.Context
@@ -53,7 +53,8 @@ fun HomeScreen(
         listOf(
             "ruta" to uiRoutes.filter { it.type == "ruta" },
             "marcador" to uiRoutes.filter { it.type == "marcador" },
-            "evento" to uiRoutes.filter { it.type == "evento" }
+            "evento" to uiRoutes.filter { it.type == "evento" },
+            "comercio" to uiRoutes.filter { it.type == "comercio" }
         )
     }
 
@@ -91,6 +92,7 @@ fun HomeContent(
                     "ruta" -> stringResource(id = R.string.text_title_tourist_routes)
                     "marcador" -> stringResource(id = R.string.text_title_places_of_interest)
                     "evento" -> stringResource(id = R.string.text_title_events)
+                    "comercio" -> "Locales Comerciales"
                     else -> "Otros"
                 }
 
@@ -128,7 +130,7 @@ fun GroupedRoutesSection(
         scrollDirection = ScrollDirection.Horizontal,
         onRouteClick = { uiRoute ->
             viewModel.selectRouteById(uiRoute.id)
-            navController.navigate(DetalleScreen(uiRoute.id))
+            navController.navigate(DetailScreen(uiRoute.id))
         }
     )
 }
@@ -152,7 +154,7 @@ fun FullScreenMapOverlay(onClose: () -> Unit, navController: NavController, allR
 
                 if (point != null) {
                     viewModel.selectRouteById(point.id)
-                    navController.navigate(DetalleScreen(point.id))
+                    navController.navigate(DetailScreen(point.id))
                 }else{
                     Toast.makeText(context, "No se encontró mas detalles", Toast.LENGTH_SHORT).show()
                 }

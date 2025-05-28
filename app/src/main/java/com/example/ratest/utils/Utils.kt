@@ -2,10 +2,7 @@ package com.example.ratest.utils
 
 import com.example.ratest.R
 import dev.romainguy.kotlin.math.Float3
-import kotlin.math.atan2
 import kotlin.math.cos
-import kotlin.math.sin
-import kotlin.math.sqrt
 
 object Utils {
 
@@ -37,18 +34,15 @@ object Utils {
         targetLon: Double
     ): Float3 {
         // Radio medio de la Tierra en metros
-        val earthRadius = 6378137.0
+        val earthRadius = 6371e3
 
         val dLat = Math.toRadians(targetLat - currentLat)
         val dLon = Math.toRadians(targetLon - currentLon)
-        val lat1Rad = Math.toRadians(currentLat)
-        val lat2Rad = Math.toRadians(targetLat)
+        val avgLat = Math.toRadians((currentLat + targetLat) / 2)
 
-        // Fórmula de Haversine simplificada en plano local
         val deltaNorth = dLat * earthRadius
-        val deltaEast = dLon * earthRadius * Math.cos((lat1Rad + lat2Rad) / 2.0)
+        val deltaEast = dLon * earthRadius * cos(avgLat)
 
-        // ARCore coord system: +X = East, +Z = South, so -Z = North
         return Float3(
             deltaEast.toFloat(),
             0f,
@@ -57,26 +51,13 @@ object Utils {
     }
 
 
-    fun rotateVectorByQuaternion(vector: Float3, quaternion: FloatArray): Float3 {
-        // Convertimos el vector en un quaternion puro
-        val x = vector.x
-        val y = vector.y
-        val z = vector.z
+    fun rotateVectorByQuaternion(v: Float3, q: FloatArray): Float3 {
+        val x = q[0]; val y = q[1]; val z = q[2]; val w = q[3]
+        val vx = v.x; val vy = v.y; val vz = v.z
 
-        val qx = quaternion[0]
-        val qy = quaternion[1]
-        val qz = quaternion[2]
-        val qw = quaternion[3]
-
-        // Rotación del vector usando la fórmula v' = q * v * q⁻¹
-        val ix =  qw * x + qy * z - qz * y
-        val iy =  qw * y + qz * x - qx * z
-        val iz =  qw * z + qx * y - qy * x
-        val iw = -qx * x - qy * y - qz * z
-
-        val rx = ix * qw + iw * -qx + iy * -qz - iz * -qy
-        val ry = iy * qw + iw * -qy + iz * -qx - ix * -qz
-        val rz = iz * qw + iw * -qz + ix * -qy - iy * -qx
+        val rx = (1 - 2 * y * y - 2 * z * z) * vx + (2 * x * y - 2 * w * z) * vy + (2 * x * z + 2 * w * y) * vz
+        val ry = (2 * x * y + 2 * w * z) * vx + (1 - 2 * x * x - 2 * z * z) * vy + (2 * y * z - 2 * w * x) * vz
+        val rz = (2 * x * z - 2 * w * y) * vx + (2 * y * z + 2 * w * x) * vy + (1 - 2 * x * x - 2 * y * y) * vz
 
         return Float3(rx, ry, rz)
     }

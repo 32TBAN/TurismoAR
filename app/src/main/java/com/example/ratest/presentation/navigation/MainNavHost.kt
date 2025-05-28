@@ -25,9 +25,9 @@ fun MainNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = InicioScreen
+        startDestination = HomeScreen
     ) {
-        composable<InicioScreen> {
+        composable<HomeScreen> {
             setBarsVisible(true)
             HomeScreen(navController, viewModel)
         }
@@ -65,7 +65,7 @@ fun MainNavHost(
                 }
             )
         }
-        composable<DetalleScreen> {
+        composable<DetailScreen> {
             setBarsVisible(true)
             DetailInfo(navController, viewModel)
         }

@@ -1,10 +1,8 @@
 package com.example.ratest.presentation.viewmodels.ar
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Environment
@@ -17,7 +15,6 @@ import android.widget.Toast
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.graphics.createBitmap
 import androidx.lifecycle.ViewModel
@@ -29,7 +26,6 @@ import com.example.ratest.presentation.viewmodels.TourUIState
 import com.example.ratest.utils.ErrorState
 import com.example.ratest.utils.Utils
 import com.google.android.filament.Engine
-import com.google.android.gms.location.LocationServices
 import com.google.ar.core.Anchor
 import com.google.ar.core.Earth
 import com.google.ar.core.Frame
@@ -45,7 +41,6 @@ import io.github.sceneview.node.Node
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import java.io.File
 import kotlin.math.abs
 
@@ -71,15 +66,16 @@ class ARViewModel(
     private val isPinCreated = MutableStateFlow(false)
     private var stableTrackingFrames = 0
     private val requiredStableFrames = 10
-    var currentPosition = mutableStateOf<GeoPoint?>(GeoPoint(0.0, 0.0, "Posición actual", ""))
+    var currentPosition = mutableStateOf<GeoPoint?>(GeoPoint(0.0, 0.0, "Posición actual", "", ""))
     var isTrackingStable = mutableStateOf(false)
 
     val visibleRange = 5.99
     val modelInstanceList = mutableListOf<ModelInstance>()
     val errorState = ErrorState()
 
+    val targetPosition = mutableStateOf<Float3?>(null)
 
-    fun initialize(context: Context, geoPoints: List<GeoPoint>) {
+    fun initialize(geoPoints: List<GeoPoint>) {
         tourManager.setGeoPoints(geoPoints)
 
         viewModelScope.launch {
@@ -93,7 +89,7 @@ class ARViewModel(
                         0.0,
                         0.0,
                         "Sin destino",
-                        ""
+                        "", ""
                     )
                 )
 //                Log.d("GeoAR", "Initialized with target: ${uiStateMutable.value}")
@@ -128,6 +124,7 @@ class ARViewModel(
                     } else if (nextTarget != null) {
                         uiStateMutable.value = TourUIState.InProgress(nextTarget)
                     }
+                    targetPosition.value = null
                 }
 
                 else -> {}
@@ -234,20 +231,25 @@ class ARViewModel(
                         geoPose.altitude,
                         floatArrayOf(0f, 0f, 0f, 1f)
                     )
-                    val anchorLatLng = earth.getGeospatialPose(anchor.pose).let {
-                        val lat = it.latitude
-                        val lng = it.longitude
-                        val alt = it.altitude
-
-                        Triple(lat, lng, alt)
-                    }
+                    targetPosition.value = Float3(
+                        anchor.pose.tx(),
+                        anchor.pose.ty(),
+                        anchor.pose.tz()
+                    )
+//                    val anchorLatLng = earth.getGeospatialPose(anchor.pose).let {
+//                        val lat = it.latitude
+//                        val lng = it.longitude
+//                        val alt = it.altitude
+//
+//                        Triple(lat, lng, alt)
+//                    }
 
 //                    Log.d("GeoAR", "Anchor created at: $anchorLatLng")
-                    val adjustedTargetPosition = Float3(
-                        anchorLatLng.first.toFloat(),
-                        geoPose.longitude.toFloat(),
-                        geoPose.altitude.toFloat()
-                    )
+//                    val adjustedTargetPosition = Float3(
+//                        anchorLatLng.first.toFloat(),
+//                        geoPose.longitude.toFloat(),
+//                        geoPose.altitude.toFloat()
+//                    )
                     val pinNode = ArNodeFactory.createAnchorNode(
                         engine = engine,
                         modelLoader = modelLoader,
@@ -258,7 +260,7 @@ class ARViewModel(
                         scaleToUnits = 2.6f
                     )
 
-                    pinNode.position = adjustedTargetPosition
+//                    pinNode.position = adjustedTargetPosition
                     pinNode.position = Float3(
                         pinNode.position.x,
                         0f,
@@ -274,6 +276,7 @@ class ARViewModel(
                         arNodes.remove(it)
                         isPinCreated.value = false
                     }
+                    targetPosition.value = null
                 }
             }
         } catch (e: NotTrackingException) {
@@ -303,31 +306,28 @@ class ARViewModel(
                 pose.tz() + forwardDirection.z * hudDistance
             )
 
-            val pinPosition = if (arNodes.isNotEmpty()) {
-                arNodes.first().worldPosition
-            } else {
+            if (targetPosition.value == null) {
+                val earth = earth ?: return
                 val currentTarget = (uiStateMutable.value as? TourUIState.InProgress)?.target
                 if (currentTarget == null) return
 
-                val earth = earth ?: return
-                val geoPose = earth.cameraGeospatialPose
-
-                val offset = Utils.geoDistanceToLocal(
-                    currentLat = geoPose.latitude,
-                    currentLon = geoPose.longitude,
-                    targetLat = currentTarget.latitude,
-                    targetLon = currentTarget.longitude
+                val tempAnchor = earth.createAnchor(
+                    currentTarget.latitude,
+                    currentTarget.longitude,
+                    earth.cameraGeospatialPose.altitude,
+                    floatArrayOf(0f, 0f, 0f, 1f)
                 )
-//                val rotatedOffset = Utils.rotateVectorByQuaternion(offset, geoPose.eastUpSouthQuaternion)
 
-                Float3(
-                    pose.tx() + offset.x,
-                    pose.ty(),
-                    pose.tz() + offset.z
+                targetPosition.value = Float3(
+                    tempAnchor.pose.tx(),
+                    tempAnchor.pose.ty(),
+                    tempAnchor.pose.tz()
                 )
+                tempAnchor.detach()
             }
-
-            arrowNode.lookAt(pinPosition, Float3(0f, 1f, 0f))
+            targetPosition.value?.let { target ->
+                arrowNode.lookAt(target, Float3(0f, 1f, 0f))
+            }
         }
     }
 

@@ -20,6 +20,7 @@ val dataModule = module {
 val viewModelModule = module {
     viewModel { RouteViewModel(get()) }
 }
+
 val useCaseModule  = module {
     factory { GetAllRoutesUseCase(get()) }
 }

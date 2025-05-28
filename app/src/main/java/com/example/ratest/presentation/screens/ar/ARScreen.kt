@@ -54,7 +54,7 @@ fun ARScreen(
     var isShowingMessage by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        viewModel.initialize(context, validGeoPoints)
+        viewModel.initialize(validGeoPoints)
     }
 
     val pickGalleryLauncher = rememberLauncherForActivityResult(

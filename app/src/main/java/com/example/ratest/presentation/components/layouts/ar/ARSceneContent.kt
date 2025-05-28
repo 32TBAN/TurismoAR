@@ -3,8 +3,6 @@ package com.example.ratest.presentation.components.layouts.ar
 import android.util.Log
 import android.view.MotionEvent
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -12,9 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
 import com.example.ratest.presentation.components.ErrorHandler
-import com.example.ratest.presentation.components.layouts.CustomDialog
 import com.example.ratest.presentation.viewmodels.ar.ARViewModel
-import com.example.ratest.utils.ErrorState
 import com.google.ar.core.Config
 import com.google.ar.core.Frame
 import com.google.ar.core.TrackingFailureReason
@@ -38,7 +34,7 @@ fun ARSceneContent(
 
     val gestureListener = rememberOnGestureListener(
         onSingleTapConfirmed = { motionEvent: MotionEvent, node: Node? ->
-//            Log.d("GeoAR", "Single tap confirmed on node: $node")
+
             if (node == null && viewModel.selectedModelPath.value != null) {
                 val currentFrame = frame.value
 

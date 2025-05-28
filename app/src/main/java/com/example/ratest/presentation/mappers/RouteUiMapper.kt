@@ -25,11 +25,15 @@ import com.example.ratest.domain.models.Route
 data class UiRoute(
     val id: Int,
     val title: String,
-    val description: String,
+    val description: String?,
     val imageRes: Int,
     val type: String,
     val geoPoints: List<GeoPoint>,
-    val icon: ImageVector
+    val icon: ImageVector,
+    val schedules: String? = null,
+    val promotion: String? = null,
+    val phone: String? = null,
+    val webSite: String? = null
 )
 
 @Composable
@@ -38,7 +42,10 @@ fun Route.toUiRoute(context: Context): UiRoute {
         this.imageRes, "drawable", context.packageName
     )
     val titleId = context.resources.getIdentifier(this.title, "string", context.packageName)
-    val descriptionId = context.resources.getIdentifier(this.description, "string", context.packageName)
+    var descriptionId = 0
+    if (this.description != null)
+        descriptionId =
+            context.resources.getIdentifier(this.description, "string", context.packageName)
 
     val icon = when (this.id) {
         1 -> Icons.Default.Restaurant
@@ -56,11 +63,19 @@ fun Route.toUiRoute(context: Context): UiRoute {
     return UiRoute(
         id = id,
         title = stringResource(id = titleId),
-        description = stringResource(id = descriptionId),
+        description = if (descriptionId == 0) {
+            null
+        } else {
+            stringResource(id = descriptionId)
+        },
         imageRes = imageResId,
         type = type,
         geoPoints = geoPoints,
-        icon = icon
+        icon = icon,
+        schedules = schedules,
+        promotion = promotion,
+        phone = phone,
+        webSite = webSite
     )
 }
 
