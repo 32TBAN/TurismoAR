@@ -33,14 +33,19 @@
     <string name="cart_description_places_of_interest6">El corazón comercial de Salcedo, donde se pueden encontrar productos frescos y artesanías locales, reflejando la vida cotidiana de la ciudad.</string>
 
     <string name="text_title_events">Eventos</string>
-    <string name="cart_title_events1">Feria Tradicional y Costumbres de la Semana Santa</string>
-    <string name="cart_description_events1">Celebra la Semana Santa con eventos culturales, procesiones y actividades religiosas que destacan la rica tradición de Salcedo.</string>
+    <string name="cart_title_events1">Fiestas del principe San Miguel de Salcedo</string>
+    <string name="cart_description_events1">La fiesta del Patrono San Miguel se lo celebra en dos fechas, del 27 al 29 de septiembre y del 7 al 8 de octubre por el mercado de Salcedo.</string>
 
-    <string name="cart_title_events2">Concurso de Fanesca "Sabor y Tradición"</string>
-    <string name="cart_description_events2">Una competencia culinaria que resalta la preparación de la fanesca, un plato tradicional de la región, con concursos y degustaciones.</string>
+    <string name="cart_title_events2">Cantonización de Salcedo</string>
+    <string name="cart_description_events2">Cada 19 de septiembre, el cantón Salcedo conmemora su cantonización con desfiles cívicos, eventos culturales, ferias gastronómicas y actividades artísticas. Es una fecha significativa que celebra la identidad y el desarrollo del pueblo salcedense. </string>
 
-    <string name="cart_title_events3">Festival Taurino Interprovincial San Isidro Labrador </string>
-    <string name="cart_description_events3">Un evento que reúne a los mejores toreros y aficionados de la región para una emocionante temporada de corridas de toros.</string>
+    <string name="cart_title_events3">
+        Inti Raymi en Salcedo
+     </string>
+    <string name="cart_description_events3">
+    El 20 de junio, Salcedo celebra el Inti Raymi en honor al Padre Sol y la Madre Tierra, agradeciendo por la cosecha. Danzantes, bombos y el Diablo Huma llenan las calles de música, color y tradición andina.
+    </string>
+
     <string name="text_title_section_home">¡Embárcate en un viaje único por los lugares turísticos de Salcedo!</string>
     <string name="text_subtitle_home">Tus lugares favoritos, listos para explorar desde tu móvil.</string>
     <string name="button_text_home1">Comienza tu aventura</string>

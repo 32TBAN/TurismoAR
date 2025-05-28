@@ -11,7 +11,7 @@
         "longitude": -78.593458,
         "name": "Plaza Augusto Dávalos",
         "model": "models/navigation_pin.glb",
-        "description": "Toda la comida tradicional de Salcedo"
+        "description": "Mote, legumbres, frutas, menudo etc."
       },
       {
         "latitude": -1.045852,
@@ -47,7 +47,8 @@
         "latitude": -1.0432587,
         "longitude": -78.5899706,
         "name": "PICANTERIA MAMÁ CHABI",
-        "model": "models/navigation_pin.glb"
+        "model": "models/navigation_pin.glb",
+        "description": "Hornado, Yayuar locro, Cuy, Seco de chivo"
       },
       {
         "latitude": -1.043082,
@@ -59,7 +60,8 @@
         "latitude": -1.043201,
         "longitude": -78.588422,
         "name": "Mercado Central",
-        "model": "models/navigation_pin.glb"
+        "model": "models/navigation_pin.glb",
+        "description": "Agachadito tradicional de Salcedo"
       }
     ]
   },
@@ -79,7 +81,7 @@
       {
         "latitude": -1.031514,
         "longitude": -78.590702,
-        "name": "Helado",
+        "name": "Monumento helado",
         "model": "models/navigation_pin.glb"
       },
       {
@@ -109,7 +111,7 @@
       {
         "latitude": -1.045560,
         "longitude": -78.590215,
-        "name": "Madre",
+        "name": "Monumento a la madre",
         "model": "models/Cartel_Monumento_Madre.glb"
       }
     ]
@@ -277,14 +279,22 @@
     "id": 10,
     "title": "cart_title_events1",
     "description": "cart_description_events1",
-    "imageRes": "mercado_ai",
+    "imageRes": "fiestas",
     "type": "evento",
     "geoPoints": [
       {
         "latitude": -1.043197,
         "longitude": -78.588561,
-        "name": "Mercado Central",
-        "model": "models/Cartel_Mercado.glb"
+        "name": "",
+        "model": "",
+        "description": "Expo Salcedo 2024 (Eventos artísticos, artesanías,muebles,tecnología, juegos, pasarela, auto\ntunning, emprendimientos, vehículos) 27-28-29"
+      },
+      {
+        "latitude": -1.043197,
+        "longitude": -78.588561,
+        "name": "",
+        "model": "",
+        "description": "Expo Salcedo 2024 (Eventos artísticos, artesanías,muebles,tecnología, juegos, pasarela, auto\ntunning, emprendimientos, vehículos)"
       }
     ]
   },
@@ -292,14 +302,22 @@
     "id": 11,
     "title": "cart_title_events2",
     "description": "cart_description_events2",
-    "imageRes": "mercado_ai",
+    "imageRes": "parque_ai",
     "type": "evento",
     "geoPoints": [
       {
         "latitude": -1.043197,
         "longitude": -78.588561,
-        "name": "Mercado Central",
-        "model": "models/Cartel_Mercado.glb"
+        "name": "Monumento a la Madre",
+        "model": "models/Cartel_Monumento_Madre.glb",
+        "description": "Encuentro Cultural Septembrino Concentración 19/09/2025 09H00"
+      },
+      {
+        "latitude": -1.043197,
+        "longitude": -78.588561,
+        "name": "Teatro Centenario",
+        "model": "models/navigation_pin.glb",
+        "description": "Sesión Solemne por los 105 años de cantonización 19/09/2025 15H00"
       }
     ]
   },
@@ -307,122 +325,22 @@
     "id": 12,
     "title": "cart_title_events3",
     "description": "cart_description_events3",
-    "imageRes": "mercado_ai",
+    "imageRes": "inti",
     "type": "evento",
     "geoPoints": [
       {
         "latitude": -1.043197,
         "longitude": -78.588561,
-        "name": "Mercado Central",
-        "model": "models/Cartel_Mercado.glb"
-      }
-    ]
-  },
-  {
-    "id": 13,
-    "title": "cart_title_tourist_routes4",
-    "description": "cart_description_tourist_routes4",
-    "imageRes": "transporte",
-    "type": "ruta",
-    "geoPoints": [
-      {
-        "latitude": -1.016265,
-        "longitude": -78.565139,
-        "name": "Punto 1",
-        "model": "models/navigation_pin.glb"
+        "name":"",
+        "model": "models/Cartel_Monumento_Madre.glb",
+        "description": "Encuentro Cultural Septembrino Concentración 19/09/2025 09hH00"
       },
       {
-        "latitude": -1.016227,
-        "longitude": -78.565158,
-        "name": "Punto 2",
-        "model": "models/Cartel_Iglesia.glb"
-      },
-      {
-        "latitude": -1.016179,
-        "longitude": -78.565177,
+        "latitude": -1.043197,
+        "longitude": -78.588561,
         "name": "",
-        "model": ""
-      },
-      {
-        "latitude": -1.016179,
-        "longitude": -78.565177,
-        "name": "",
-        "model": ""
-      }
-    ]
-  },
-  {
-    "id": 14,
-    "title": "cart_title_tourist_routes4",
-    "description": "cart_description_tourist_routes4",
-    "imageRes": "transporte",
-    "type": "ruta",
-    "geoPoints": [
-      {
-        "latitude": -1.267947,
-        "longitude": -78.624075,
-        "name": "Punto 1",
-        "model": "models/navigation_pin.glb"
-      },
-      {
-        "latitude": -1.267857,
-        "longitude": -78.624126,
-        "name": "Punto 2",
-        "model": "models/Cartel_Iglesia.glb"
-      },
-      {
-        "latitude": -1.016179,
-        "longitude": -78.565177,
-        "name": "",
-        "model": ""
-      },
-      {
-        "latitude": -1.016179,
-        "longitude": -78.565177,
-        "name": "",
-        "model": ""
-      }
-    ]
-  },
-  {
-    "id": 15,
-    "title": "cart_title_tourist_routes4",
-    "description": "cart_description_tourist_routes4",
-    "imageRes": "transporte",
-    "type": "ruta",
-    "geoPoints": [
-      {
-        "latitude": -1.043437,
-        "longitude": -78.591789,
-        "name": "Punto 1",
-        "model": "models/navigation_pin.glb"
-      },
-      {
-        "latitude": -1.043460,
-        "longitude": -78.591787,
-        "name": "Punto 2",
-        "model": "models/Cartel_Iglesia.glb"
-      },
-      {
-        "latitude": -1.043558,
-        "longitude": -78.591684,
-        "name": "",
-        "model": ""
-      }
-    ]
-  },
-  {
-    "id": 16,
-    "title": "cart_title_places_of_interest4",
-    "description": "cart_description_places_of_interest4",
-    "imageRes": "iglesia_ai",
-    "type": "marcador",
-    "geoPoints": [
-      {
-        "latitude": -1.016230,
-        "longitude": -78.565194,
-        "name": "Iglesia Central",
-        "model": "models/Cartel_Iglesia.glb"
+        "model": "models/navigation_pin.glb",
+        "description": "Sesión Solemne por los 105 años de cantonización."
       }
     ]
   },

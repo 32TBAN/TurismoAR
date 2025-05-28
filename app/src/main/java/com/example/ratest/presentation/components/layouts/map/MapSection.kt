@@ -130,7 +130,7 @@ fun createConfiguredMapView(
                     val marker = Marker(this).apply {
                         position = GeoPoint(it.latitude, it.longitude)
                         title = it.name
-
+                        snippet = it.description
                         setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
 
 //                        val uiRoute = uiRoutes.find { route -> route.title == it.name }

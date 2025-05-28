@@ -19,6 +19,7 @@ import com.example.ratest.ui.theme.DarkGreen
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import com.example.ratest.presentation.viewmodels.home.RouteViewModel
 import com.example.ratest.presentation.mappers.toUiRoute
 import com.example.ratest.presentation.components.TopImageSection
@@ -50,6 +51,7 @@ fun DetailInfo(
                 text = it,
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.Black,
+                textAlign = TextAlign.Justify,
                 modifier = Modifier.padding(vertical = 8.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))
