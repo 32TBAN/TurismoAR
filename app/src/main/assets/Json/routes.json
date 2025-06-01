@@ -7,6 +7,19 @@
     "type": "ruta",
     "geoPoints": [
       {
+        "latitude": -1.043769,
+        "longitude": -78.595554,
+        "name": "La CUEVA DEL LOBO ",
+        "model": "models/navigation_pin.glb",
+        "description": "Cuy, Conejo, Pollo, Yaguarlocro, Ají de librillo, Llapingachos"
+      },
+      {
+        "latitude": -1.045742,
+        "longitude": -78.595498,
+        "name": "",
+        "model": ""
+      },
+      {
         "latitude": -1.046304,
         "longitude": -78.593458,
         "name": "Plaza Augusto Dávalos",
@@ -20,8 +33,33 @@
         "model": ""
       },
       {
-        "latitude": -1.044253,
-        "longitude": -78.593392,
+        "latitude": -1.045769,
+        "longitude": -78.592464,
+        "name": "",
+        "model": ""
+      },
+      {
+        "latitude": -1.046972,
+        "longitude": -78.592346,
+        "name": "",
+        "model": ""
+      },
+      {
+        "latitude": -1.046686,
+        "longitude": -78.592027,
+        "name": "Molino San Rafael",
+        "model": "models/navigation_pin.glb",
+        "description": "Pinol, panela, granos"
+      },
+      {
+        "latitude": -1.046312,
+        "longitude": -78.591642,
+        "name": "",
+        "model": ""
+      },
+      {
+        "latitude": -1.044145,
+        "longitude": -78.591883,
         "name": "",
         "model": ""
       },
@@ -44,24 +82,57 @@
         "model": ""
       },
       {
-        "latitude": -1.0432587,
-        "longitude": -78.5899706,
+        "latitude": -1.043208,
+        "longitude": -78.589734,
         "name": "PICANTERIA MAMÁ CHABI",
         "model": "models/navigation_pin.glb",
         "description": "Hornado, Yayuar locro, Cuy, Seco de chivo"
       },
       {
-        "latitude": -1.043082,
-        "longitude": -78.588926,
+        "latitude": -1.042697,
+        "longitude": -78.589750,
+        "name": "Hornados La Samba Elcira",
+        "model": "models/navigation_pin.glb",
+        "description": "Hornado, Yayuar locro, Cuy, Seco de chivo"
+      },
+      {
+        "latitude": -1.043166,
+        "longitude": -78.589670,
         "name": "",
         "model": ""
       },
       {
-        "latitude": -1.043201,
-        "longitude": -78.588422,
+        "latitude": -1.043130,
+        "longitude": -78.588884,
         "name": "Mercado Central",
         "model": "models/navigation_pin.glb",
         "description": "Agachadito tradicional de Salcedo"
+      },
+      {
+        "latitude": -1.045433,
+        "longitude": -78.588634,
+        "name": "",
+        "model": ""
+      },
+      {
+        "latitude": -1.045515,
+        "longitude": -78.589141,
+        "name": "Picanteria Mamá Emperita - Comida Típica",
+        "model": "models/navigation_pin.glb",
+        "description": "Agachadito tradicional de Salcedo"
+      },
+      {
+        "latitude": -1.046993,
+        "longitude": -78.589234,
+        "name": "",
+        "model": ""
+      },
+      {
+        "latitude": -1.047127,
+        "longitude": -78.588209,
+        "name": "Plaza San Antonío",
+        "model": "models/navigation_pin.glb",
+        "description": "Mote, caldo de nervio, togro"
       }
     ]
   },
@@ -73,20 +144,50 @@
     "type": "ruta",
     "geoPoints": [
       {
+        "latitude": -1.031058,
+        "longitude": -78.589258,
+        "name": "Monumento del Helado",
+        "model": "models/navigation_pin.glb"
+      },
+      {
+        "latitude": -1.030941,
+        "longitude": -78.589481,
+        "name": "",
+        "model": ""
+      },
+      {
+        "latitude": -1.030964,
+        "longitude": -78.589830,
+        "name": "",
+        "model": ""
+      },
+      {
+        "latitude": -1.032166,
+        "longitude": -78.589816,
+        "name": "",
+        "model": ""
+      },
+      {
         "latitude": -1.031060,
         "longitude": -78.590911,
         "name": "Redondel del Principe San Miguel",
         "model": "models/navigation_pin.glb"
       },
       {
-        "latitude": -1.031514,
-        "longitude": -78.590702,
-        "name": "Monumento helado",
+        "latitude": -1.039401,
+        "longitude": -78.590691,
+        "name": "Monumento del trofeo",
         "model": "models/navigation_pin.glb"
       },
       {
-        "latitude": -1.031554,
-        "longitude": -78.590833,
+        "latitude": -1.039721,
+        "longitude": -78.591064,
+        "name": "Monumento a Fray Manuel Salcedo",
+        "model": "models/navigation_pin.glb"
+      },
+      {
+        "latitude": -1.039760,
+        "longitude": -78.590745,
         "name": "",
         "model": ""
       },
@@ -113,6 +214,18 @@
         "longitude": -78.590215,
         "name": "Monumento a la madre",
         "model": "models/Cartel_Monumento_Madre.glb"
+      },
+      {
+        "latitude": -1.047527,
+        "longitude": -78.592902,
+        "name": "Monumento a Jaime Mata",
+        "model": "models/navigation_pin.glb"
+      },
+      {
+        "latitude": -1.047029,
+        "longitude": -78.594695,
+        "name": "Monumento a Leon Garces",
+        "model": "models/navigation_pin.glb"
       }
     ]
   },
@@ -123,6 +236,12 @@
     "imageRes": "plazas",
     "type": "ruta",
     "geoPoints": [
+      {
+        "latitude": -1.045675,
+        "longitude": -78.595173,
+        "name": "Plaza Gustavo Teran",
+        "model": "models/navigation_pin.glb"
+      },
       {
         "latitude": -1.046304,
         "longitude": -78.593458,
@@ -169,7 +288,7 @@
         "latitude": -1.043098,
         "longitude": -78.588930,
         "name": "Mercado Central",
-        "model": "Cartel_Mercado.glb"
+        "model": "models/Cartel_Mercado.glb"
       },
       {
         "latitude": -1.047000,
@@ -181,6 +300,18 @@
         "latitude": -1.047127,
         "longitude": -78.588209,
         "name": "Plaza San Antonío",
+        "model": "models/navigation_pin.glb"
+      },
+      {
+        "latitude": -1.042877,
+        "longitude": -78.585597,
+        "name": "Plaza El Loy Alfaro",
+        "model": "models/navigation_pin.glb"
+      },
+      {
+        "latitude": -1.038400,
+        "longitude": -78.581524,
+        "name": "Plaza de Hierbas",
         "model": "models/navigation_pin.glb"
       }
     ]
@@ -277,124 +408,284 @@
   },
   {
     "id": 10,
+    "title": "cart_title_places_of_interest7",
+    "description": "cart_description_places_of_interest7",
+    "imageRes": "estadio",
+    "type": "marcador",
+    "geoPoints": [
+      {
+        "latitude": -1.044360,
+        "longitude": -78.593749,
+        "name": "Estadio Carlos Alberto Tamayo",
+        "model": "models/navigation_pin.glb"
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "title": "cart_title_places_of_interest8",
+    "description": "cart_description_places_of_interest8",
+    "imageRes": "teatro",
+    "type": "marcador",
+    "geoPoints": [
+      {
+        "latitude": -1.043434,
+        "longitude": -78.592368,
+        "name": "Teatro Centenari",
+        "model": "models/navigation_pin.glb"
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "title": "cart_title_places_of_interest9",
+    "description": "cart_description_places_of_interest9",
+    "imageRes": "parque_familia",
+    "type": "marcador",
+    "geoPoints": [
+      {
+        "latitude": -1.038326,
+        "longitude": -78.592926,
+        "name": "Parque de la familia",
+        "model": "models/navigation_pin.glb"
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "title": "cart_title_places_of_interest10",
+    "description": "cart_description_places_of_interest10",
+    "imageRes": "estadio_poli",
+    "type": "marcador",
+    "geoPoints": [
+      {
+        "latitude": -1.038350,
+        "longitude": -78.593797,
+        "name": "Estadio Polideportivo",
+        "model": "models/navigation_pin.glb"
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "title": "cart_title_places_of_interest11",
+    "description": "cart_description_places_of_interest11",
+    "imageRes": "parque_antonio",
+    "type": "marcador",
+    "geoPoints": [
+      {
+        "latitude": -1.043440,
+        "longitude": -78.595677,
+        "name": "Parque Antonio Clavijo",
+        "model": "models/navigation_pin.glb"
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "title": "cart_title_places_of_interest12",
+    "description": "cart_description_places_of_interest12",
+    "imageRes": "parque_helado",
+    "type": "marcador",
+    "geoPoints": [
+      {
+        "latitude": -1.031135,
+        "longitude": -78.589240,
+        "name": "Parque de Helado",
+        "model": "models/navigation_pin.glb"
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "title": "cart_title_places_of_interest13",
+    "description": "cart_description_places_of_interest13",
+    "imageRes": "sede_utc",
+    "type": "marcador",
+    "geoPoints": [
+      {
+        "latitude": -1.033809,
+        "longitude": -78.587599,
+        "name": "Sede La Tebaida - Universidad Técnica de Cotopaxi",
+        "model": "models/navigation_pin.glb"
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "title": "cart_title_places_of_interest14",
+    "description": "cart_description_places_of_interest14",
+    "imageRes": "calvario",
+    "type": "marcador",
+    "geoPoints": [
+      {
+        "latitude": -1.049562,
+        "longitude": -78.589786,
+        "name": "Mirador El Calvario",
+        "model": "models/navigation_pin.glb"
+      }
+    ]
+  },
+  {
+    "id": 18,
     "title": "cart_title_events1",
     "description": "cart_description_events1",
     "imageRes": "fiestas",
     "type": "evento",
     "geoPoints": [
       {
-        "latitude": -1.043197,
-        "longitude": -78.588561,
-        "name": "",
+        "latitude": -1.041358,
+        "longitude": -78.586817,
+        "name": "Luis A. Martínez y Belisario Quevedo",
         "model": "",
-        "description": "Expo Salcedo 2024 (Eventos artísticos, artesanías,muebles,tecnología, juegos, pasarela, auto\ntunning, emprendimientos, vehículos) 27-28-29"
+        "description": "Paseo del Chagra 31/08/2025 10H00"
       },
       {
-        "latitude": -1.043197,
-        "longitude": -78.588561,
-        "name": "",
+        "latitude": -1.043948,
+        "longitude": -78.590088,
+        "name": "Av. Velasco Ibarra",
         "model": "",
-        "description": "Expo Salcedo 2024 (Eventos artísticos, artesanías,muebles,tecnología, juegos, pasarela, auto\ntunning, emprendimientos, vehículos)"
+        "description": "Competencia Nacional de Crossfit 31/08/2025 09H00"
+      },
+      {
+        "latitude": -1.045173,
+        "longitude": -78.590923,
+        "name": "Coliseo Deportes Salcedo",
+        "model": "",
+        "description": "Elección de la Representante de la Interculturalidad 31/08/2025 19H00"
+      },
+      {
+        "latitude": -1.043688,
+        "longitude": -78.591043,
+        "name": "Parque Central",
+        "model": "",
+        "description": "Festival de Artes 01/09/2025 09H00"
+      },
+      {
+        "latitude": -1.033697,
+        "longitude": -78.587544,
+        "name": "Edificio la Tebaida",
+        "model": "",
+        "description": "Expo Salcedo (Eventos artísticos, artesanías,muebles,tecnología, juegos, pasarela, auto tunning, emprendimientos, vehículos) 27-28-29/09/2025 11H00"
+      },
+      {
+        "latitude": -1.047127,
+        "longitude": -78.588209,
+        "name": "Barrio Augusto Dávalos",
+        "model": "",
+        "description": "Carrera de Cuyes 28/09/2025 10H00"
+      },
+      {
+        "latitude": -1.043621,
+        "longitude": -78.590622,
+        "name": "Parque Central",
+        "model": "",
+        "description": "10k del Helado 28/09/2025 18H00"
+      },
+      {
+        "latitude": -1.033794,
+        "longitude": -78.587486,
+        "name": "Barrio La Tebaida",
+        "model": "",
+        "description": "1/4 de milla Reto Cotopaxi 29/09/2025 10H00"
       }
     ]
   },
   {
-    "id": 11,
+    "id": 19,
     "title": "cart_title_events2",
     "description": "cart_description_events2",
     "imageRes": "parque_ai",
     "type": "evento",
     "geoPoints": [
       {
-        "latitude": -1.043197,
-        "longitude": -78.588561,
+        "latitude": -1.045560,
+        "longitude": -78.590215,
         "name": "Monumento a la Madre",
         "model": "models/Cartel_Monumento_Madre.glb",
         "description": "Encuentro Cultural Septembrino Concentración 19/09/2025 09H00"
       },
       {
-        "latitude": -1.043197,
-        "longitude": -78.588561,
+        "latitude": -1.043441,
+        "longitude": -78.592371,
         "name": "Teatro Centenario",
         "model": "models/navigation_pin.glb",
-        "description": "Sesión Solemne por los 105 años de cantonización 19/09/2025 15H00"
+        "description": "Sesión Solemne de cantonización 19/09/2025 15H00"
       }
     ]
   },
   {
-    "id": 12,
+    "id": 20,
     "title": "cart_title_events3",
     "description": "cart_description_events3",
     "imageRes": "inti",
     "type": "evento",
     "geoPoints": [
       {
-        "latitude": -1.043197,
-        "longitude": -78.588561,
-        "name":"",
-        "model": "models/Cartel_Monumento_Madre.glb",
-        "description": "Encuentro Cultural Septembrino Concentración 19/09/2025 09hH00"
+        "latitude": -1.043621,
+        "longitude": -78.590622,
+        "name": "Parque Central",
+        "model": "models/navigation_pin.glb",
+        "description": "Feria de Emprendimientos y Artesanos 20/06/2025 09hH00"
       },
       {
-        "latitude": -1.043197,
-        "longitude": -78.588561,
-        "name": "",
+        "latitude": -1.043441,
+        "longitude": -78.592371,
+        "name": "El Calvario",
         "model": "models/navigation_pin.glb",
-        "description": "Sesión Solemne por los 105 años de cantonización."
+        "description": "El ascenso del Danzante a la colina sagrada"
       }
     ]
   },
   {
-    "id": 17,
+    "id": 21,
     "title": "cart_title_comercio",
     "description": "",
     "imageRes": "local_helados",
     "type": "comercio",
     "schedules": "Lunes a Domingo, 10:00 - 20:00",
     "promotion": "2x1 en helados los miércoles",
-    "phone": "+593 999 123 456",
+    "phone": "+593 99 912 3456",
     "geoPoints": [
       {
         "latitude": -1.016230,
         "longitude": -78.565194,
         "name": "Helados Salcedo - Jijón 1956",
-        "model": "models/Cartel_Iglesia.glb"
+        "model": "models/navigation_pin.glb"
       }
     ]
   },
   {
-    "id": 18,
-    "title": "cart_title_comercio",
+    "id": 22,
+    "title": "cart_title_comercio1",
     "description": "",
-    "imageRes": "local_helados",
+    "imageRes": "local_lobo",
     "type": "comercio",
-    "schedules": "Lunes a Domingo, 10:00 - 20:00",
-    "promotion": "2x1 en helados los miércoles",
-    "phone": "+593 999 123 456",
+    "schedules": "Lunes a Domingo, 8:00 - 18:00",
+    "phone": "+593 98 703 1039",
     "geoPoints": [
       {
-        "latitude": -1.016230,
-        "longitude": -78.565194,
-        "name": "Helados Salcedo - Jijón 1956",
-        "model": "models/Cartel_Iglesia.glb"
+        "latitude": -1.043769,
+        "longitude": -78.595554,
+        "name": "LA CUEVA DEL LOBO ",
+        "model": "models/navigation_pin.glb"
       }
     ]
   },
   {
-    "id": 19,
-    "title": "cart_title_comercio",
+    "id": 23,
+    "title": "cart_title_comercio2",
     "description": "",
-    "imageRes": "local_helados",
+    "imageRes": "local_chabi",
     "type": "comercio",
-    "schedules": "Lunes a Domingo, 10:00 - 20:00",
-    "promotion": "2x1 en helados los miércoles",
-    "phone": "+593 999 123 456",
+    "schedules": "Lunes a Domingo, 8:00 - 15:00",
+    "phone": "(03) 272-6513",
     "geoPoints": [
       {
-        "latitude": -1.016230,
-        "longitude": -78.565194,
-        "name": "Helados Salcedo - Jijón 1956",
-        "model": "models/Cartel_Iglesia.glb"
+        "latitude": -1.043208,
+        "longitude": -78.589734,
+        "name": "PICANTERIA MAMÁ CHABI",
+        "model": "models/navigation_pin.glb"
       }
     ]
   }

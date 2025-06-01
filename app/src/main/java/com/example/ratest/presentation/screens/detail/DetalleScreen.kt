@@ -96,7 +96,7 @@ fun DetailInfo(
         MapSection(
             title = "Ruta",
             geoPoints = route.geoPoints,
-            zoomLevel = 17.0,
+            zoomLevel = 15.0,
             type = route.type,
             modifier = Modifier
                 .fillMaxWidth()

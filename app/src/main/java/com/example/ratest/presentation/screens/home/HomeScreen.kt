@@ -137,7 +137,9 @@ fun GroupedRoutesSection(
 
 @Composable
 fun FullScreenMapOverlay(onClose: () -> Unit, navController: NavController, allRoutes: List<Route>, viewModel: RouteViewModel, context: Context) {
-    val allGeoPoints = allRoutes.flatMap { it.geoPoints }
+    val allGeoPoints = allRoutes
+        .filterNot { it.type == "comercio" || it.type == "evento" }
+        .flatMap { it.geoPoints }
     Box(
         modifier = Modifier
             .fillMaxSize()
