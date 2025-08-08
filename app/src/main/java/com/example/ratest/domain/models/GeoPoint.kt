@@ -7,5 +7,6 @@ data class GeoPoint(
     var latitude: Double,
     var longitude: Double,
     val name: String,
-    val model: String
+    val model: String,
+    val description: String? = ""
 )

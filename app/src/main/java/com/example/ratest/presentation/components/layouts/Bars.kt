@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.ratest.presentation.navigation.InicioScreen
+import com.example.ratest.presentation.navigation.HomeScreen
 import com.example.ratest.ui.theme.DarkGreen
 import com.example.ratest.ui.theme.White
 
@@ -94,7 +94,7 @@ fun CustomTopBar(navController: NavController) {
                 contentDescription = "Logo",
                 tint = Color.Unspecified,
                 modifier = Modifier.clickable(
-                    onClick = { navController.navigate(InicioScreen) }
+                    onClick = { navController.navigate(HomeScreen) }
                 )
             )
 

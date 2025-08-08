@@ -4,13 +4,17 @@ package com.example.ratest.presentation.mappers
 import android.content.Context
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalance
+import androidx.compose.material.icons.filled.AddPhotoAlternate
+import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Church
 import androidx.compose.material.icons.filled.Diversity3
 import androidx.compose.material.icons.filled.Gavel
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.HistoryEdu
+import androidx.compose.material.icons.filled.Icecream
 import androidx.compose.material.icons.filled.LocationCity
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Park
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material.icons.filled.Stadium
@@ -25,11 +29,15 @@ import com.example.ratest.domain.models.Route
 data class UiRoute(
     val id: Int,
     val title: String,
-    val description: String,
+    val description: String?,
     val imageRes: Int,
     val type: String,
     val geoPoints: List<GeoPoint>,
-    val icon: ImageVector
+    val icon: ImageVector,
+    val schedules: String? = null,
+    val promotion: String? = null,
+    val phone: String? = null,
+    val webSite: String? = null
 )
 
 @Composable
@@ -38,7 +46,10 @@ fun Route.toUiRoute(context: Context): UiRoute {
         this.imageRes, "drawable", context.packageName
     )
     val titleId = context.resources.getIdentifier(this.title, "string", context.packageName)
-    val descriptionId = context.resources.getIdentifier(this.description, "string", context.packageName)
+    var descriptionId = 0
+    if (this.description != null)
+        descriptionId =
+            context.resources.getIdentifier(this.description, "string", context.packageName)
 
     val icon = when (this.id) {
         1 -> Icons.Default.Restaurant
@@ -50,17 +61,36 @@ fun Route.toUiRoute(context: Context): UiRoute {
         7 -> Icons.Filled.Church
         8 -> Icons.Default.Stadium
         9 -> Icons.Default.Storefront
+        10 -> Icons.Default.Stadium
+        11 -> Icons.Default.LocationCity
+        12 -> Icons.Default.Park
+        13 -> Icons.Default.AddPhotoAlternate
+        14 -> Icons.Default.Park
+        15 -> Icons.Default.Icecream
+        16 -> Icons.Default.LocationCity
+        17 -> Icons.Default.CameraAlt
+        21 -> Icons.Default.Storefront
+        22 -> Icons.Default.Storefront
+        23 -> Icons.Default.Storefront
         else -> Icons.Default.LocationOn
     }
 
     return UiRoute(
         id = id,
         title = stringResource(id = titleId),
-        description = stringResource(id = descriptionId),
+        description = if (descriptionId == 0) {
+            null
+        } else {
+            stringResource(id = descriptionId)
+        },
         imageRes = imageResId,
         type = type,
         geoPoints = geoPoints,
-        icon = icon
+        icon = icon,
+        schedules = schedules,
+        promotion = promotion,
+        phone = phone,
+        webSite = webSite
     )
 }
 

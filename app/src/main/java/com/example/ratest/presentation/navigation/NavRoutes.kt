@@ -3,7 +3,7 @@ package com.example.ratest.presentation.navigation
 import kotlinx.serialization.Serializable
 
 @Serializable
-object InicioScreen
+object HomeScreen
 
 @Serializable
 data class RARScreen(val routeId: Int, val type: String)
@@ -15,10 +15,10 @@ object RoutesScreen
 object HistoryScreen
 
 @Serializable
-data class DetalleScreen(val routeId: Int)
+data class DetailScreen(val routeId: Int)
 
 val screens = listOf(
-    InicioScreen,
+    HomeScreen,
     RoutesScreen,
     HistoryScreen
 )
@@ -30,7 +30,7 @@ val lables = listOf(
 )
 
 val titlesTopBar = listOf(
-    InicioScreen to "Inicio",
+    HomeScreen to "Inicio",
     RoutesScreen to "Explora las rutas turísticas",
     HistoryScreen to "Historia local"
 )

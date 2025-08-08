@@ -9,13 +9,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.ratest.presentation.components.layouts.CustomDialog
-import com.example.ratest.presentation.components.layouts.DetailInfo
+import com.example.ratest.presentation.screens.detail.DetailInfo
 import com.example.ratest.presentation.components.layouts.PermissionGate
-import com.example.ratest.presentation.screens.ARScreen
-import com.example.ratest.presentation.screens.HistoryScreen
-import com.example.ratest.presentation.screens.HomeScreen
-import com.example.ratest.presentation.screens.RoutesScreen
-import com.example.ratest.presentation.viewmodels.RouteViewModel
+import com.example.ratest.presentation.screens.ar.ARScreen
+import com.example.ratest.presentation.screens.history.HistoryScreen
+import com.example.ratest.presentation.screens.home.HomeScreen
+import com.example.ratest.presentation.screens.route.RoutesScreen
+import com.example.ratest.presentation.viewmodels.home.RouteViewModel
 
 @Composable
 fun MainNavHost(
@@ -25,9 +25,9 @@ fun MainNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = InicioScreen
+        startDestination = HomeScreen
     ) {
-        composable<InicioScreen> {
+        composable<HomeScreen> {
             setBarsVisible(true)
             HomeScreen(navController, viewModel)
         }
@@ -65,7 +65,7 @@ fun MainNavHost(
                 }
             )
         }
-        composable<DetalleScreen> {
+        composable<DetailScreen> {
             setBarsVisible(true)
             DetailInfo(navController, viewModel)
         }

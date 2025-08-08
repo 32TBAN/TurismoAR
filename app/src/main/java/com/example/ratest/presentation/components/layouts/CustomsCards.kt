@@ -1,7 +1,6 @@
 package com.example.ratest.presentation.components.layouts
 
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,8 +23,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import com.example.ratest.presentation.navigation.DetalleScreen
 import com.example.ratest.presentation.mappers.UiRoute
 
 enum class ScrollDirection { Horizontal, Vertical }
@@ -69,7 +66,8 @@ fun SectionCards(
                         CardType.Info -> InfoCard(
                             title = item.title,
                             description = item.description,
-                            onClick = { onRouteClick(item) }
+                            onClick = { onRouteClick(item) },
+                            icon = item.icon
                         )
 
                         CardType.Small -> SmallCard(
@@ -90,7 +88,8 @@ fun SectionCards(
                         CardType.Info -> InfoCard(
                             title = item.title,
                             description = item.description,
-                            onClick = { onRouteClick(item) }
+                            onClick = { onRouteClick(item) },
+                           icon = item.icon
                         )
 
                         CardType.Small -> SmallCard(

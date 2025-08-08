@@ -42,7 +42,7 @@ import com.example.ratest.ui.theme.White
 @Composable
 fun InfoCard(
     title: String,
-    description: String,
+    description: String?,
     icon: ImageVector = Icons.Default.Place,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
@@ -72,7 +72,8 @@ fun InfoCard(
                     style = MaterialTheme.typography.titleMedium,
                     color = Green
                 )
-                Text(description, style = MaterialTheme.typography.bodySmall, color = White)
+                if (description != null)
+                    Text(description, style = MaterialTheme.typography.bodySmall, color = White)
             }
         }
     }
@@ -131,7 +132,7 @@ fun SmallCard(
 @Composable
 fun CardBackgroundImage(
     title: String,
-    description: String,
+    description: String?,
     imageRes: Int,
     onClick: () -> Unit = {}
 ) {
@@ -170,7 +171,8 @@ fun CardBackgroundImage(
                         fontWeight = FontWeight.Bold,
                         color = Green
                     )
-                    Text(
+                    if (description != null)
+                        Text(
                         text = description,
                         style = MaterialTheme.typography.bodySmall,
                         color = White
