@@ -18,11 +18,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import android.hardware.*
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.*
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import com.example.ratest.R
@@ -30,9 +30,9 @@ import com.example.ratest.ui.theme.Green
 import com.example.ratest.ui.theme.White
 
 @Composable
-fun CompassOverlay(modifier: Modifier = Modifier) {
+fun CompassOverlay() {
     val context = LocalContext.current
-    var azimuth by remember { mutableStateOf(0f) }
+    var azimuth by remember { mutableFloatStateOf(0f) }
 
     val sensorManager = remember {
         context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
@@ -77,27 +77,29 @@ fun CompassOverlay(modifier: Modifier = Modifier) {
         }
     }
 
-    Surface(
-        modifier = modifier.size(40.dp),
-        tonalElevation = 6.dp,
-        shape = CircleShape,
-        shadowElevation = 8.dp,
-        color = White.copy(alpha = 0.8f)
-    ) {
-        Box(
-            modifier = Modifier
-                .padding(1.dp)
-                .graphicsLayer {
-                    rotationZ = -azimuth
-                },
-            contentAlignment = Alignment.TopEnd
+    Box(Modifier.fillMaxWidth().padding(horizontal =  17.dp, vertical = 8.dp), contentAlignment = Alignment.TopEnd){
+        Surface(
+            modifier = Modifier.size(40.dp),
+            tonalElevation = 6.dp,
+            shape = CircleShape,
+            shadowElevation = 8.dp,
+            color = Green.copy(alpha = 2.9f)
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_compass),
-                contentDescription = "Compass Icon",
-                modifier = Modifier.fillMaxSize()
-            )
+            Box(
+                modifier = Modifier
+                    .padding(1.dp)
+                    .graphicsLayer {
+                        rotationZ = -azimuth
+                    },
+                contentAlignment = Alignment.TopEnd
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_compass),
+                    contentDescription = "Compass Icon",
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+
         }
     }
-
 }

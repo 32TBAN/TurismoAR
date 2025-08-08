@@ -32,16 +32,71 @@
     <string name="cart_title_places_of_interest6">Mercado Central</string>
     <string name="cart_description_places_of_interest6">El corazón comercial de Salcedo, donde se pueden encontrar productos frescos y artesanías locales, reflejando la vida cotidiana de la ciudad.</string>
 
-    <string name="text_title_events">Eventos Cercanos</string>
-    <string name="cart_title_events1">Feria Tradicional y Costumbres de la Semana Santa</string>
-    <string name="cart_description_events1">Celebra la Semana Santa con eventos culturales, procesiones y actividades religiosas que destacan la rica tradición de Salcedo.</string>
+    <string name="cart_title_places_of_interest7">Estadio Carlos Alberto Tamayo</string>
+    <string name="cart_description_places_of_interest7">
+            Estadio de fútbol con una capacidad para 8000 espectadores. Inaugurado en el año 2000, ha sido sede de equipos como la Universidad Técnica de Cotopaxi y eventos deportivos locales.
+    </string>
 
-    <string name="cart_title_events2">Concurso de Fanesca "Sabor y Tradición"</string>
-    <string name="cart_description_events2">Una competencia culinaria que resalta la preparación de la fanesca, un plato tradicional de la región, con concursos y degustaciones.</string>
+    <string name="cart_title_places_of_interest8">Teatro Centenari</string>
+    <string name="cart_description_places_of_interest8">
+            Espacio cultural emblemático de Salcedo donde se realizan presentaciones artísticas, eventos culturales y actividades comunitarias, fomentando el arte y la cultura local.
+    </string>
 
-    <string name="cart_title_events3">Festival Taurino Interprovincial San Isidro Labrador </string>
-    <string name="cart_description_events3">Un evento que reúne a los mejores toreros y aficionados de la región para una emocionante temporada de corridas de toros.</string>
+    <string name="cart_title_places_of_interest9">Parque de la familia</string>
+    <string name="cart_description_places_of_interest9">
+    Espacio recreativo ideal para compartir en familia, con áreas verdes, juegos infantiles y senderos para caminar y disfrutar del aire libre en Salcedo.
+    </string>
+
+    <string name="cart_title_places_of_interest10">Estadio Polideportivo</string>
+    <string name="cart_description_places_of_interest10">
+            Espacio deportivo multifuncional en Salcedo, utilizado para actividades atléticas, fútbol, eventos escolares y encuentros comunitarios.
+    </string>
+
+    <string name="cart_title_places_of_interest11">Parque Antonio Clavijo</string>
+    <string name="cart_description_places_of_interest11">
+            Espacio recreativo en el centro de Salcedo, conocido como el Parque de los Enamorados. Ideal para paseos tranquilos, encuentros y eventos culturales al aire libre.
+    </string>
+
+    <string name="cart_title_places_of_interest12">Parque del Helado</string>
+    <string name="cart_description_places_of_interest12">
+    Espacio icónico de Salcedo conocido por su vínculo con la tradición heladera del cantón. Un lugar turístico ideal para disfrutar de un helado y compartir en familia.
+    </string>
+
+    <string name="cart_title_places_of_interest13">Sede La Tebaida - Universidad Técnica de Cotopaxi</string>
+    <string name="cart_description_places_of_interest13">
+    En este edificio, antes conocido como el mercado La Tebaida, funcionará la nueva sede de la Universidad Técnica de Cotopaxi. Ofrecerá carreras como Psicología, Diseño Gráfico y Derecho, impulsando la educación y economía local.
+    </string>
+
+    <string name="cart_title_places_of_interest14">Mirador el Calvario</string>
+    <string name="cart_description_places_of_interest14">
+    Ubicado en el barrio El Calvario, fundado en 1976 y legalizado en 1992, este mirador ofrece una vista panorámica de Salcedo. Es un sitio tradicional con valor histórico y cultural para la comunidad.
+    </string>
+
+    <string name="text_title_events">Eventos</string>
+    <string name="cart_title_events1">Fiestas del principe San Miguel de Salcedo</string>
+    <string name="cart_description_events1">
+            La fiesta del Patrono San Miguel se celebra en Salcedo del 31 de agosto al 29 de septiembre con eventos religiosos, culturales y tradicionales.
+    </string>
+
+    <string name="cart_title_events2">Cantonización de Salcedo</string>
+    <string name="cart_description_events2">Cada 19 de septiembre, el cantón Salcedo conmemora su cantonización con desfiles cívicos, eventos culturales, ferias gastronómicas y actividades artísticas. Es una fecha significativa que celebra la identidad y el desarrollo del pueblo salcedense. </string>
+
+    <string name="cart_title_events3">
+        Inti Raymi en Salcedo
+     </string>
+    <string name="cart_description_events3">
+    El 20 de junio, Salcedo celebra el Inti Raymi en honor al Padre Sol y la Madre Tierra, agradeciendo por la cosecha. Danzantes, bombos y el Diablo Huma llenan las calles de música, color y tradición andina.
+    </string>
+
     <string name="text_title_section_home">¡Embárcate en un viaje único por los lugares turísticos de Salcedo!</string>
     <string name="text_subtitle_home">Tus lugares favoritos, listos para explorar desde tu móvil.</string>
     <string name="button_text_home1">Comienza tu aventura</string>
+
+    <string name="cart_title_comercio">Helados Salcedo - Jijón 1956</string>
+    <string name="cart_description_comercio"> </string>
+
+    <string name="cart_title_comercio1">LA CUEVA DEL LOBO </string>
+
+    <string name="cart_title_comercio2">PICANTERIA MAMÁ CHABI</string>
+
 </resources>

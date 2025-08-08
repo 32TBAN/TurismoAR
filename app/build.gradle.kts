@@ -60,16 +60,24 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
+
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.arsceneview)
-    implementation("androidx.compose.material:material:1.8.0")
-    implementation("org.osmdroid:osmdroid-android:6.1.20")
-    implementation("com.google.android.gms:play-services-location:18.0.0")
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
-    implementation("androidx.compose.material:material-icons-extended:1.6.1")
-    implementation("com.google.ar:core:1.43.0")
-    implementation("com.airbnb.android:lottie-compose:6.6.6")
-    implementation("io.coil-kt:coil-compose:2.5.0")
+    implementation(libs.androidx.material)
+    implementation(libs.androidx.material.icons.extended)
+    implementation(libs.osmdroid.android)
+    implementation(libs.play.services.location)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.google.arcore)
+    implementation(libs.lottie.compose)
+    implementation(libs.coil.compose)
+    implementation(libs.accompanist.pager)
+    implementation(libs.accompanist.pager.indicators)
+    implementation(libs.kotlinx.coroutines.play.services)
 
 }
+

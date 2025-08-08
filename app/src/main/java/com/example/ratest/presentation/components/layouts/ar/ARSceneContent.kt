@@ -1,119 +1,125 @@
 package com.example.ratest.presentation.components.layouts.ar
 
 import android.util.Log
-import androidx.compose.foundation.layout.Box
+import android.view.MotionEvent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import com.example.ratest.presentation.viewmodels.ARViewModel
-import com.google.android.filament.Engine
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.navigation.NavController
+import com.example.ratest.presentation.components.ErrorHandler
+import com.example.ratest.presentation.viewmodels.ar.ARViewModel
 import com.google.ar.core.Config
 import com.google.ar.core.Frame
 import com.google.ar.core.TrackingFailureReason
-import io.github.sceneview.ar.ARScene
-import io.github.sceneview.ar.node.AnchorNode
-import io.github.sceneview.ar.rememberARCameraNode
-import io.github.sceneview.model.ModelInstance
+import io.github.sceneview.ar.ARSceneView
+import io.github.sceneview.ar.arcore.createAnchorOrNull
+import io.github.sceneview.ar.arcore.isValid
 import io.github.sceneview.node.ModelNode
-import io.github.sceneview.rememberCollisionSystem
-import io.github.sceneview.rememberMaterialLoader
-import io.github.sceneview.rememberModelLoader
-import io.github.sceneview.rememberNodes
-import io.github.sceneview.rememberView
+import io.github.sceneview.node.Node
+import io.github.sceneview.rememberOnGestureListener
 
 @Composable
 fun ARSceneContent(
-    engine: Engine,
     viewModel: ARViewModel,
-    type: String
+    type: String,
+    navController: NavController
 ) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        val modelLoader = rememberModelLoader(engine = engine)
-        val materialLoader = rememberMaterialLoader(engine = engine)
-        val cameraNode = rememberARCameraNode(engine = engine)
-        val view = rememberView(engine = engine)
-        val childNodes = rememberNodes {
-            add(
-                ModelNode(
-                    modelInstance = modelLoader.createModelInstance("models/flecha.glb"),
-                    scaleToUnits = 0.05f
-                )
-            )
-        }
-        val collisionSystem = rememberCollisionSystem(view = view)
-        val planeRenderer = remember {
-            mutableStateOf(false)
-        }
-        val modelInstance = remember {
-            mutableListOf<ModelInstance>()
-        }
-        val trackingFailureReason = remember {
-            mutableStateOf<TrackingFailureReason?>(null)
-        }
-        val frame = remember {
-            mutableStateOf<Frame?>(null)
-        }
+    val trackingFailureReason = remember { mutableStateOf<TrackingFailureReason?>(null) }
+    val frame = remember { mutableStateOf<Frame?>(null) }
 
-        ARScene(
-            modifier = Modifier.fillMaxSize(),
-            childNodes = childNodes,
-            engine = engine,
-            view = view,
-            modelLoader = modelLoader,
-            collisionSystem = collisionSystem,
-            planeRenderer = planeRenderer.value,
-            cameraNode = cameraNode,
-            materialLoader = materialLoader,
-            onTrackingFailureChanged = {
-                trackingFailureReason.value = it
-            },
-            onSessionUpdated = { session, updatedFrame ->
-                try {
-                    frame.value = updatedFrame
-                    val earth = session.earth
+    ErrorHandler(errorState = viewModel.errorState, navController = navController)
 
-                    viewModel.updateTarget(
-                        earth?.cameraGeospatialPose?.latitude,
-                        earth?.cameraGeospatialPose?.longitude
-                    )
+    val gestureListener = rememberOnGestureListener(
+        onSingleTapConfirmed = { motionEvent: MotionEvent, node: Node? ->
 
-                    viewModel.updateSession(
-                        updatedFrame, earth,
-                        { anchorNode ->
-                            if (anchorNode != null) {
-                                childNodes.add(anchorNode)
-                            } else {
-                                if (childNodes.size > 1) {
-                                    childNodes.removeAt(1)
-                                }
-                            }
-                        },
-                        modelInstance, engine, modelLoader, materialLoader, type
-                    )
+            if (node == null && viewModel.selectedModelPath.value != null) {
+                val currentFrame = frame.value
 
-                    viewModel.updateArrowNode(
-                        arrowNode = childNodes[0] as ModelNode,
-                        frame = updatedFrame,
-                        pinNode = if (childNodes.size > 1) childNodes[1] as? AnchorNode else null,
-                        earth = earth
-                    )
-                } catch (e: Exception) {
-                    Log.e("ARScreen", "Error updating session: ${e.message}")
+                val hitResult = currentFrame?.hitTest(motionEvent.x, motionEvent.y)
+
+                hitResult?.firstOrNull {
+                    it.isValid(depthPoint = false, point = false)
+                }?.createAnchorOrNull()?.let {
+                    viewModel.createModelNode(it)
                 }
-            },
-            sessionConfiguration = { session, config ->
-                config.geospatialMode = Config.GeospatialMode.ENABLED
-                config.depthMode =
-                    when (session.isDepthModeSupported(Config.DepthMode.AUTOMATIC)) {
-                        true -> Config.DepthMode.AUTOMATIC
-                        else -> Config.DepthMode.DISABLED
-                    }
-                config.lightEstimationMode = Config.LightEstimationMode.ENVIRONMENTAL_HDR
-                config.updateMode = Config.UpdateMode.LATEST_CAMERA_IMAGE
-                session.configure(config)
+                viewModel.selectedModelPath.value = null
+                viewModel.arSceneView?.planeRenderer?.isVisible = false
             }
-        )
-    }
+        }
+    )
+
+    AndroidView(
+        modifier = Modifier.fillMaxSize(),
+        factory = { ctx ->
+            ARSceneView(ctx).apply {
+                val engine = this.engine
+                val modelLoader = this.modelLoader
+                val materialLoader = this.materialLoader
+                viewModel.arSceneView = this
+
+                val arrowNode = mutableListOf<Node>().apply {
+                    add(
+                        ModelNode(
+                            modelInstance = modelLoader.createModelInstance("models/flecha.glb"),
+                            scaleToUnits = 0.05f
+                        )
+                    )
+                }
+
+                this.addChildNodes(arrowNode)
+
+                this.planeRenderer.isVisible = false
+
+                this.sessionConfiguration = { session, config ->
+                    config.geospatialMode = Config.GeospatialMode.ENABLED
+                    config.depthMode =
+                        if (session.isDepthModeSupported(Config.DepthMode.AUTOMATIC))
+                            Config.DepthMode.AUTOMATIC
+                        else
+                            Config.DepthMode.DISABLED
+
+                    config.lightEstimationMode = Config.LightEstimationMode.ENVIRONMENTAL_HDR
+                    config.updateMode = Config.UpdateMode.LATEST_CAMERA_IMAGE
+                    session.configure(config)
+                }
+
+                this.onGestureListener = gestureListener
+
+                this.onSessionUpdated = { session, updatedFrame ->
+                    try {
+                        frame.value = updatedFrame
+                        val earth = session.earth
+
+                        viewModel.updateTarget(
+                            earth?.cameraGeospatialPose?.latitude,
+                            earth?.cameraGeospatialPose?.longitude
+                        )
+
+                        viewModel.updateSession(
+                            updatedFrame, earth,
+                            engine, modelLoader, materialLoader, type
+                        )
+
+                        viewModel.updateArrowNode(
+                            arrowNode = childNodes[0] as ModelNode,
+                            frame = updatedFrame,
+                            earth = earth
+                        )
+
+                    } catch (e: Exception) {
+                        Log.e("ARScreen", "Error: ${e.message}")
+                        viewModel.errorState.setError(e)
+                    }
+                }
+                this.onTrackingFailureChanged = {
+                    trackingFailureReason.value = it
+                }
+
+
+            }
+        }
+    )
 }
