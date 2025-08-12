@@ -3,14 +3,15 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     kotlin("plugin.serialization") version "1.8.0"
+    id("com.google.gms.google-services")
 }
 
 android {
-    namespace = "com.example.ratest"
+    namespace = "com.esteban.turismoar"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.ratest"
+        applicationId = "com.esteban.turismoar"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
@@ -78,6 +79,13 @@ dependencies {
     implementation(libs.accompanist.pager)
     implementation(libs.accompanist.pager.indicators)
     implementation(libs.kotlinx.coroutines.play.services)
+    
+    testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.firestore.ktx)
+    implementation(libs.firebase.storage.ktx)
 
 }
-

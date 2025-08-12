@@ -1,9 +1,9 @@
 [
   {
     "id": 1,
-    "title": "cart_title_tourist_routes1",
-    "description": "cart_description_tourist_routes1",
-    "imageRes": "comidas",
+    "title": "",
+    "description": "",
+    "imageURL": "",
     "type": "ruta",
     "geoPoints": [
       {
@@ -305,7 +305,7 @@
       {
         "latitude": -1.042877,
         "longitude": -78.585597,
-        "name": "Plaza El Loy Alfaro",
+        "name": "Plaza Eloy Alfaro",
         "model": "models/navigation_pin.glb"
       },
       {
@@ -318,9 +318,9 @@
   },
   {
     "id": 4,
-    "title": "cart_title_places_of_interest1",
-    "description": "cart_description_places_of_interest1",
-    "imageRes": "monumento_madre_ai",
+    "title": "",
+    "description": "",
+    "imageRes": "",
     "type": "marcador",
     "geoPoints": [
       {
@@ -686,6 +686,93 @@
         "longitude": -78.589734,
         "name": "PICANTERIA MAMÁ CHABI",
         "model": "models/navigation_pin.glb"
+      }
+    ]
+  },
+  {
+    "id": 24,
+    "title": "cart_title_tourist_routes4",
+    "description": "cart_description_tourist_routes4",
+    "imageRes": "transporte",
+    "type": "ruta",
+    "geoPoints": [
+      {
+        "latitude": -1.016265,
+        "longitude": -78.565139,
+        "name": "Punto 1",
+        "model": "models/navigation_pin.glb"
+      },
+      {
+        "latitude": -1.016227,
+        "longitude": -78.565158,
+        "name": "Punto 2",
+        "model": "models/Cartel_Iglesia.glb"
+      },
+      {
+        "latitude": -1.016179,
+        "longitude": -78.565177,
+        "name": "",
+        "model": ""
+      },
+      {
+        "latitude": -1.016179,
+        "longitude": -78.565177,
+        "name": "",
+        "model": ""
+      }
+    ]
+  },
+  {
+    "id": 25,
+    "title": "cart_title_tourist_routes4",
+    "description": "cart_description_tourist_routes4",
+    "imageRes": "transporte",
+    "type": "ruta",
+    "geoPoints": [
+      {
+        "latitude": -1.267947,
+        "longitude": -78.624075,
+        "name": "Punto 1",
+        "model": "models/navigation_pin.glb"
+      },
+      {
+        "latitude": -1.267857,
+        "longitude": -78.624126,
+        "name": "Punto 2",
+        "model": "models/Cartel_Iglesia.glb"
+      },
+      {
+        "latitude": -1.016179,
+        "longitude": -78.565177,
+        "name": "",
+        "model": ""
+      },
+      {
+        "latitude": -1.016179,
+        "longitude": -78.565177,
+        "name": "",
+        "model": ""
+      }
+    ]
+  },
+  {
+    "id": 26,
+    "title": "cart_title_tourist_routes4",
+    "description": "cart_description_tourist_routes4",
+    "imageRes": "transporte",
+    "type": "ruta",
+    "geoPoints": [
+      {
+        "latitude": -1.267724,
+        "longitude": -78.624237,
+        "name": "Punto 1",
+        "model": "models/navigation_pin.glb"
+      },
+      {
+        "latitude": -1.043558,
+        "longitude": -78.591684,
+        "name": "",
+        "model": ""
       }
     ]
   }
