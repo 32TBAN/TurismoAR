@@ -110,8 +110,8 @@ fun SectionCards(
 @Composable
 fun PreviewSectionCards() {
     val dummyRoutes = listOf(
-        UiRoute(1, "Ruta 1", "Desc", 0, "ruta", emptyList(), Icons.Default.LocationOn),
-        UiRoute(2, "Ruta 2", "Desc", 0, "ruta", emptyList(), Icons.Default.LocationOn)
+        UiRoute(1, "Ruta 1", "Desc", "", "ruta", emptyList(), Icons.Default.LocationOn),
+        UiRoute(2, "Ruta 2", "Desc", "", "ruta", emptyList(), Icons.Default.LocationOn)
     )
 
     SectionCards(

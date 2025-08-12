@@ -20,7 +20,7 @@ class RouteViewModel(
     private val _allRoutes = MutableStateFlow<List<Route>>(emptyList())
     val allRoutes: StateFlow<List<Route>> = _allRoutes.asStateFlow()
 
-    val tourRoutes = _allRoutes.map { it.filter { it.type == "ruta" } }
+    val tourRoutes = _allRoutes.map { it.filter { it.type == "rute" } }
         .stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(5_000), emptyList())
 
     val markersRoutes = _allRoutes.map { it.filter { it.type == "marcador" } }

@@ -17,6 +17,9 @@ object HistoryScreen
 @Serializable
 data class DetailScreen(val routeId: Int)
 
+@Serializable
+object AddScreen
+
 val screens = listOf(
     HomeScreen,
     RoutesScreen,

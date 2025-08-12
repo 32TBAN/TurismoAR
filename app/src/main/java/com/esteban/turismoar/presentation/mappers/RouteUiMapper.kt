@@ -20,15 +20,15 @@ import androidx.compose.material.icons.filled.Storefront
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import coil.compose.AsyncImage
 import com.esteban.turismoar.domain.models.GeoPoint
 import com.esteban.turismoar.domain.models.Route
-import com.esteban.turismoar.R
 
 data class UiRoute(
     val id: Int,
     val title: String,
     val description: String?,
-    val imageRes: Int,
+    val imageRes: String?,
     val type: String,
     val geoPoints: List<GeoPoint>,
     val icon: ImageVector,
@@ -40,14 +40,6 @@ data class UiRoute(
 
 @Composable
 fun Route.toUiRoute(context: Context): UiRoute {
-    val imageResId = context.resources.getIdentifier(
-        this.imageUrl, "drawable", context.packageName
-    )
-    val titleId = context.resources.getIdentifier(this.title, "string", context.packageName)
-    var descriptionId = 0
-    if (this.description != null)
-        descriptionId =
-            context.resources.getIdentifier(this.description, "string", context.packageName)
 
     val icon = when (this.id) {
         1 -> Icons.Default.Restaurant
@@ -75,13 +67,9 @@ fun Route.toUiRoute(context: Context): UiRoute {
 
     return UiRoute(
         id = id,
-        title = stringResource(id = titleId),
-        description = if (descriptionId == 0) {
-            null
-        } else {
-            stringResource(id = descriptionId)
-        },
-        imageRes = imageResId,
+        title = title,
+        description = description,
+        imageRes = imageUrl,
         type = type,
         geoPoints = geoPoints,
         icon = icon,

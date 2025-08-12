@@ -1,6 +1,7 @@
 package com.esteban.turismoar.data.di
 
 import com.esteban.turismoar.data.local.RouteDataSource
+import com.esteban.turismoar.data.remote.RouteDataSourceFirestore
 import com.esteban.turismoar.data.repository.RouteRepositoryImpl
 import com.esteban.turismoar.data.repository.TourRepositoryImpl
 import com.esteban.turismoar.domain.repository.RouteRepository
@@ -11,9 +12,12 @@ import com.esteban.turismoar.presentation.viewmodels.ar.ARViewModel
 import com.esteban.turismoar.presentation.viewmodels.home.RouteViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
+import com.google.firebase.firestore.FirebaseFirestore
 
 val dataModule = module {
     single { RouteDataSource(get()) }
+    single { FirebaseFirestore.getInstance() }
+    single { RouteDataSourceFirestore(get()) }
     single<RouteRepository> { RouteRepositoryImpl(get()) }
 }
 

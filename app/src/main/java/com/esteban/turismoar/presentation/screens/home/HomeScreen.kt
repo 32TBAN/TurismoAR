@@ -50,7 +50,7 @@ fun HomeScreen(
 
     val groupedRoutes = remember(uiRoutes) {
         listOf(
-            "ruta" to uiRoutes.filter { it.type == "ruta" },
+            "rute" to uiRoutes.filter { it.type == "rute" },
             "marcador" to uiRoutes.filter { it.type == "marcador" },
             "evento" to uiRoutes.filter { it.type == "evento" },
             "comercio" to uiRoutes.filter { it.type == "comercio" }
@@ -88,7 +88,7 @@ fun HomeContent(
 
             itemsIndexed(groupedRoutes) { _, (type, routes) ->
                 val title = when (type) {
-                    "ruta" -> stringResource(id = R.string.text_title_tourist_routes)
+                    "rute" -> stringResource(id = R.string.text_title_tourist_routes)
                     "marcador" -> stringResource(id = R.string.text_title_places_of_interest)
                     "evento" -> stringResource(id = R.string.text_title_events)
                     "comercio" -> "Locales Comerciales"

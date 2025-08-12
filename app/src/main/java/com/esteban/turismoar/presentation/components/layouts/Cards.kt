@@ -35,6 +35,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.esteban.turismoar.ui.theme.DarkGreen
 import com.esteban.turismoar.ui.theme.Green
 import com.esteban.turismoar.ui.theme.White
@@ -133,7 +134,7 @@ fun SmallCard(
 fun CardBackgroundImage(
     title: String,
     description: String?,
-    imageRes: Int,
+    imageRes: String?,
     onClick: () -> Unit = {}
 ) {
     Card(
@@ -147,8 +148,8 @@ fun CardBackgroundImage(
         Box(
             modifier = Modifier.height(150.dp)
         ) {
-            Image(
-                painter = painterResource(id = imageRes),
+            AsyncImage(
+                model = imageRes,
                 contentDescription = "Imagen de $title",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier

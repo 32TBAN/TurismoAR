@@ -31,6 +31,7 @@ import com.esteban.turismoar.presentation.components.buttons.ExploreARButton
 import com.esteban.turismoar.ui.theme.DarkGreen
 import androidx.compose.foundation.layout.padding
 import androidx.core.net.toUri
+import coil.compose.AsyncImage
 import com.esteban.turismoar.presentation.navigation.RARScreen
 import com.google.ar.core.ArCoreApk
 
@@ -43,8 +44,9 @@ fun TopImageSection(route: UiRoute, navController: NavController) {
             .fillMaxWidth()
             .height(220.dp)
     ) {
-        Image(
-            painter = painterResource(id = route.imageRes),
+
+        AsyncImage(
+            model = route.imageRes,
             contentDescription = "Imagen de ${route.title}",
             modifier = Modifier
                 .fillMaxSize()
