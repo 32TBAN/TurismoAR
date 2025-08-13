@@ -36,7 +36,7 @@ fun InputTextField(title: String? = null, placeholder: String, type: String? = n
         else -> KeyboardType.Text
     }
 
-    Column(modifier = Modifier.fillMaxWidth().padding(8.dp)){
+    Column(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)){
         title?.let {
             Text(
                 it,
