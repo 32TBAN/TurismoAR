@@ -42,7 +42,7 @@ fun MapSection(
     uiRoutes: List<UiRoute> = emptyList()
 ) {
     var selectedPoint by remember { mutableStateOf<GeoPointCustom?>(null) }
-    Column {
+    Column(modifier = Modifier.height(300.dp)){
         Box(modifier = Modifier.weight(3f)) {
             title?.let {
                 Text(
@@ -106,8 +106,13 @@ fun createConfiguredMapView(
     return MapView(context).apply {
         setTileSource(TileSourceFactory.MAPNIK)
         setMultiTouchControls(controls)
-
+        isClickable = controls
         controller.setZoom(zoomLevel)
+
+        if (!controls) {
+            // Bloquea toda interacción táctil
+            setOnTouchListener { _, _ -> true }
+        }
 
         val defaultPoint = geoPoints.firstOrNull()?.let {
             GeoPoint(it.latitude, it.longitude)

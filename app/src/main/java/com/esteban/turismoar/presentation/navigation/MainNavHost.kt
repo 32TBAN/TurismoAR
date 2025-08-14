@@ -16,6 +16,7 @@ import com.esteban.turismoar.presentation.screens.history.HistoryScreen
 import com.esteban.turismoar.presentation.screens.home.HomeScreen
 import com.esteban.turismoar.presentation.screens.route.RoutesScreen
 import com.esteban.turismoar.presentation.screens.accions.AddScreen
+import com.esteban.turismoar.presentation.screens.map.MapScreen
 import com.esteban.turismoar.presentation.viewmodels.home.RouteViewModel
 
 @Composable
@@ -73,6 +74,9 @@ fun MainNavHost(
         composable<AddScreen> {
             setBarsVisible(false)
             AddScreen(navController)
+        }
+        composable<MapScreen> {
+            MapScreen(navController)
         }
     }
 }

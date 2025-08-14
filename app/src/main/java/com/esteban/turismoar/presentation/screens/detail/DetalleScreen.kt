@@ -1,6 +1,7 @@
 package com.esteban.turismoar.presentation.screens.detail
 
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -39,7 +40,7 @@ fun DetailInfo(
 
     val configuration = LocalConfiguration.current
     val isLandscape =
-        configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
+        configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     val scrollState = rememberScrollState()
 
     val columnModifier = if (isLandscape) {
@@ -119,7 +120,7 @@ fun DetailInfo(
                     geoPoints = route.geoPoints,
                     zoomLevel = 15.0,
                     type = route.type,
-                    modifier = Modifier.fillMaxSize()
+                    modifierMap = Modifier.fillMaxSize()
                 )
             }
         } else {
@@ -129,7 +130,7 @@ fun DetailInfo(
                 geoPoints = route.geoPoints,
                 zoomLevel = 15.0,
                 type = route.type,
-                modifier = Modifier
+                modifierMap = Modifier
                     .fillMaxWidth()
                     .height(200.dp)
             )

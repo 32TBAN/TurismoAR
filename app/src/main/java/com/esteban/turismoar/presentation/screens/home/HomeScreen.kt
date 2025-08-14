@@ -145,7 +145,7 @@ fun FullScreenMapOverlay(onClose: () -> Unit, navController: NavController, allR
             .background(White)
     ) {
         MapSection(
-            modifier = Modifier.fillMaxSize(),
+            modifierMap = Modifier.fillMaxSize(),
             type = "marcadorG",
             geoPoints = allGeoPoints,
             onMarkerClick = { selectPoint ->
