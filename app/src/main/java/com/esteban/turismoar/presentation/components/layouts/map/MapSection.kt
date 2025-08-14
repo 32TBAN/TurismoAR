@@ -37,7 +37,7 @@ fun MapSection(
     zoomLevel: Double = 15.7,
     controls: Boolean = true,
     type: String = "",
-    modifier: Modifier,
+    modifierMap: Modifier = Modifier,
     onMarkerClick: ((GeoPointCustom) -> Unit)? = null,
     uiRoutes: List<UiRoute> = emptyList()
 ) {
@@ -54,7 +54,7 @@ fun MapSection(
             }
             Spacer(modifier = Modifier.height(2.dp))
             AndroidView(
-                modifier = modifier.clip(RoundedCornerShape(16.dp)),
+                modifier = modifierMap.clip(RoundedCornerShape(8.dp)),
                 factory = { context ->
                     createConfiguredMapView(
                         context = context,

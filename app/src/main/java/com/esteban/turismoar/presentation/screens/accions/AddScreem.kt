@@ -13,17 +13,22 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -43,6 +48,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -55,6 +61,7 @@ import androidx.navigation.NavController
 import com.esteban.turismoar.presentation.components.image.ImagePicker
 import com.esteban.turismoar.presentation.components.inputs.InputTextField
 import com.esteban.turismoar.presentation.components.inputs.Select
+import com.esteban.turismoar.presentation.components.layouts.map.MapSection
 import com.esteban.turismoar.ui.theme.DarkGreen
 import com.esteban.turismoar.ui.theme.Green
 import com.esteban.turismoar.ui.theme.White
@@ -68,6 +75,7 @@ fun AddScreen(navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
+                modifier = Modifier.background(White).border(1.dp, White),
                 title = {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -86,21 +94,13 @@ fun AddScreen(navController: NavController) {
                                 fontSize = 20.sp
                             )
                         }
-                        Spacer(modifier = Modifier.size(48.dp))
+                        Spacer(modifier = Modifier.width(48.dp).border(1.dp, Green))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = if (isScrolled) White.copy(alpha = 0.1f,blue = 1f) else White,
+                    containerColor = if (isScrolled) Color.Gray.copy(0.1f) else White,
                 )
             )
-            if (isScrolled) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(1.dp)
-                        .background(DarkGreen)
-                )
-            }
         }
     )
     { innerPadding ->
@@ -132,10 +132,51 @@ fun AddScreen(navController: NavController) {
                 ImagePicker(title = "Edit image for the place", onImageSelected = { uri ->
                     //Todo Aquí puedes subir la imagen a Firebase Storage o guardarla
                     Log.d("ImagePicker", "Imagen seleccionada: $uri")
-
                 })
+                MapPreview({}, title = "Edit map for the place")
             }
         }
     }
 }
+
+@Composable
+fun MapPreview(onClick: () -> Unit, title: String? = null) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(140.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .background(Color.LightGray)
+            .clickable { onClick() }.border(1.dp, DarkGreen, RoundedCornerShape(8.dp))
+    ) {
+        MapSection(zoomLevel = 14.0, controls = false)
+        title?.let {
+            Row(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(12.dp)
+                    .clip(CircleShape)
+                    .background(White)
+                    .padding(horizontal = 12.dp, vertical = 4.dp)
+            ) {
+                Icon(
+                    Icons.Default.LocationOn,
+                    contentDescription = null,
+                    tint = Green,
+                    modifier = Modifier
+                        .size(18.dp)
+                        .padding(end = 4.dp)
+                        .align(Alignment.CenterVertically)
+                )
+                Text(
+                    text = it,
+                    fontFamily = FontFamily.SansSerif,
+                    fontSize = 15.sp,
+                    color = DarkGreen
+                )
+            }
+        }
+    }
+}
+
 

@@ -14,7 +14,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,7 +21,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,6 +28,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontFamily
@@ -53,45 +52,44 @@ fun ImagePicker(
         selectedImageUri = uri
         uri?.let { onImageSelected(it) }
     }
-    Column{
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(140.dp)
+            .padding(bottom = 8.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .background(Color.LightGray)
+            .clickable {
+                launcher.launch("image/*")
+            }
+            .border(1.dp, DarkGreen, RoundedCornerShape(8.dp))
+    ) {
+        AsyncImage(
+            model = selectedImageUri ?: defaultImageUrl,
+            contentDescription = "Imagen seleccionada",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        )
+
+        // Overlay semitransparente con ícono de cámara
         Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(140.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .background(Color.LightGray)
-                .clickable {
-                    launcher.launch("image/*")
-                }.border(1.dp, DarkGreen, RoundedCornerShape(8.dp)),
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.3f)),
             contentAlignment = Alignment.Center
         ) {
-            AsyncImage(
-                model = selectedImageUri ?: defaultImageUrl,
-                contentDescription = "Imagen seleccionada",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
+            Icon(
+                imageVector = Icons.Default.CameraAlt,
+                contentDescription = null,
+                tint = Color.White,
+                modifier = Modifier.size(32.dp)
             )
-
-            // Overlay semitransparente con ícono de cámara
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.3f)),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Default.CameraAlt,
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.size(32.dp)
-                )
-            }
         }
         title?.let {
             Row(
                 modifier = Modifier
-                    .offset(x = 16.dp, y = (-55).dp)
-                    .padding(4.dp)
+                    .align(Alignment.BottomStart)
+                    .padding(12.dp)
                     .clip(CircleShape)
                     .background(White)
                     .padding(horizontal = 12.dp, vertical = 4.dp)
@@ -114,5 +112,4 @@ fun ImagePicker(
             }
         }
     }
-
 }
