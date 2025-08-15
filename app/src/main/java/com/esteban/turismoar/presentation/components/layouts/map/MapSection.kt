@@ -1,5 +1,6 @@
 package com.esteban.turismoar.presentation.components.layouts.map
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color.BLUE
 import androidx.compose.foundation.layout.Box
@@ -37,12 +38,11 @@ fun MapSection(
     zoomLevel: Double = 15.7,
     controls: Boolean = true,
     type: String = "",
-    modifierMap: Modifier = Modifier,
-    onMarkerClick: ((GeoPointCustom) -> Unit)? = null,
-    uiRoutes: List<UiRoute> = emptyList()
+    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier,
+    onMarkerClick: ((GeoPointCustom) -> Unit)? = null
 ) {
     var selectedPoint by remember { mutableStateOf<GeoPointCustom?>(null) }
-    Column(modifier = Modifier.height(300.dp)){
+    Column{
         Box(modifier = Modifier.weight(3f)) {
             title?.let {
                 Text(
@@ -54,7 +54,7 @@ fun MapSection(
             }
             Spacer(modifier = Modifier.height(2.dp))
             AndroidView(
-                modifier = modifierMap.clip(RoundedCornerShape(8.dp)),
+                modifier = modifier.clip(RoundedCornerShape(8.dp)),
                 factory = { context ->
                     createConfiguredMapView(
                         context = context,
@@ -62,8 +62,7 @@ fun MapSection(
                         zoomLevel = zoomLevel,
                         type = type,
                         controls = controls,
-                        onMarkerSelected = { selectedPoint = it },
-                        uiRoutes
+                        onMarkerSelected = { selectedPoint = it }
                     )
                 },
                 update = { mapView ->
@@ -92,14 +91,14 @@ fun MapSection(
 }
 
 
+@SuppressLint("ClickableViewAccessibility")
 fun createConfiguredMapView(
     context: Context,
     geoPoints: List<GeoPointCustom>,
     zoomLevel: Double,
     type: String,
     controls: Boolean,
-    onMarkerSelected: ((GeoPointCustom) -> Unit)? = null,
-    uiRoutes: List<UiRoute>
+    onMarkerSelected: ((GeoPointCustom) -> Unit)? = null
 ): MapView {
     Configuration.getInstance().userAgentValue = "com.esteban.ratest/1.0"
 
@@ -120,7 +119,7 @@ fun createConfiguredMapView(
 
         controller.setCenter(defaultPoint)
 
-        if (geoPoints.isNotEmpty()) {
+//        if (geoPoints.isNotEmpty()) {
             if (type == "ruta") {
                 val polyline = Polyline().apply {
                     outlinePaint.strokeWidth = 10f
@@ -157,14 +156,14 @@ fun createConfiguredMapView(
                     overlays.add(marker)
                 }
             }
-        } else {
-            val marker = Marker(this).apply {
-                position = defaultPoint
-                title = "Salcedo"
-                setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-            }
-            overlays.add(marker)
-        }
+//        } else {
+//            val marker = Marker(this).apply {
+//                position = defaultPoint
+//                title = "Salcedo"
+//                setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+//            }
+//            overlays.add(marker)
+//        }
 
     }
 }

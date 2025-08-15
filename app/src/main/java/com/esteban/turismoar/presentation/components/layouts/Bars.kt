@@ -135,10 +135,10 @@ fun CustomTopBar(navController: NavController, scope: CoroutineScope, drawerStat
 }
 
 @Composable
-fun CustomLateralPlane(navController: NavController) {
+fun CustomLateralPlane(navController: NavController, scope: CoroutineScope, drawerState: DrawerState) {
     ModalDrawerSheet(
         modifier = Modifier.width(240.dp)
-    ){
+    ) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
@@ -155,7 +155,16 @@ fun CustomLateralPlane(navController: NavController) {
                 label = { Text("Add") },
                 selected = false,
                 icon = { Icon(Icons.Outlined.AddLocation, contentDescription = null) },
-                onClick = { navController.navigate(AddScreen) }
+                onClick = {
+                    navController.navigate(AddScreen)
+                    scope.launch {
+                        if (drawerState.isClosed) {
+                            drawerState.open()
+                        } else {
+                            drawerState.close()
+                        }
+                    }
+                }
             )
             NavigationDrawerItem(
                 label = { Text("Settings") },

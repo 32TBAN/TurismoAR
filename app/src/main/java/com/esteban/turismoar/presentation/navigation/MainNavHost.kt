@@ -68,7 +68,7 @@ fun MainNavHost(
             )
         }
         composable<DetailScreen> {
-            setBarsVisible(true)
+            setBarsVisible(false)
             DetailInfo(navController, viewModel)
         }
         composable<AddScreen> {
@@ -76,6 +76,7 @@ fun MainNavHost(
             AddScreen(navController)
         }
         composable<MapScreen> {
+            setBarsVisible(false)
             MapScreen(navController)
         }
     }

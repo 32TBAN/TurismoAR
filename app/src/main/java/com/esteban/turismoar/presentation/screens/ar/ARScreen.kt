@@ -142,7 +142,7 @@ fun ARScreen(
                             geoPoints = listOfNotNull(viewModel.currentPosition.value),
                             type = "marcador",
                             zoomLevel = 20.0,
-                            modifierMap = Modifier.fillMaxSize()
+                            modifier = Modifier.fillMaxSize()
                         )
                     }
                 }

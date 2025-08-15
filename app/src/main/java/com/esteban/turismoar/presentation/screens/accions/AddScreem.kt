@@ -17,29 +17,23 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-
 import androidx.compose.material.icons.Icons
-
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -134,10 +128,14 @@ fun MapPreview(onClick: () -> Unit, title: String? = null) {
             .fillMaxWidth()
             .height(140.dp)
             .clip(RoundedCornerShape(8.dp))
-            .background(Color.LightGray)
-            .clickable { onClick() }.border(1.dp, DarkGreen, RoundedCornerShape(8.dp))
+            .background(Color.LightGray).border(1.dp, DarkGreen, RoundedCornerShape(8.dp))
     ) {
         MapSection(zoomLevel = 15.5, controls = false)
+        Box(
+            modifier = Modifier
+                .matchParentSize()
+                .clickable { onClick() }
+        )
         title?.let {
             Row(
                 modifier = Modifier

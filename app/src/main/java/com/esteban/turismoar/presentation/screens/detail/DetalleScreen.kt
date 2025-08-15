@@ -120,7 +120,7 @@ fun DetailInfo(
                     geoPoints = route.geoPoints,
                     zoomLevel = 15.0,
                     type = route.type,
-                    modifierMap = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize()
                 )
             }
         } else {
@@ -130,7 +130,7 @@ fun DetailInfo(
                 geoPoints = route.geoPoints,
                 zoomLevel = 15.0,
                 type = route.type,
-                modifierMap = Modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .height(200.dp)
             )
