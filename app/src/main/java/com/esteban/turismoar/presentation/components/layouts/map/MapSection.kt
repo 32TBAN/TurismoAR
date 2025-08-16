@@ -39,7 +39,8 @@ fun MapSection(
     controls: Boolean = true,
     type: String = "",
     @SuppressLint("ModifierParameter") modifier: Modifier = Modifier,
-    onMarkerClick: ((GeoPointCustom) -> Unit)? = null
+    onMarkerClick: ((GeoPointCustom) -> Unit)? = null,
+    onTouch: ((GeoPointCustom) -> Unit)? = null
 ) {
     var selectedPoint by remember { mutableStateOf<GeoPointCustom?>(null) }
     Column{
@@ -62,7 +63,8 @@ fun MapSection(
                         zoomLevel = zoomLevel,
                         type = type,
                         controls = controls,
-                        onMarkerSelected = { selectedPoint = it }
+                        onMarkerSelected = { selectedPoint = it },
+                        onTouch = onTouch
                     )
                 },
                 update = { mapView ->
@@ -98,7 +100,8 @@ fun createConfiguredMapView(
     zoomLevel: Double,
     type: String,
     controls: Boolean,
-    onMarkerSelected: ((GeoPointCustom) -> Unit)? = null
+    onMarkerSelected: ((GeoPointCustom) -> Unit)? = null,
+    onTouch: ((GeoPointCustom) -> Unit)? = null
 ): MapView {
     Configuration.getInstance().userAgentValue = "com.esteban.ratest/1.0"
 
@@ -156,6 +159,14 @@ fun createConfiguredMapView(
                     overlays.add(marker)
                 }
             }
+
+//        setOnClickListener { _, event ->
+//            if (event.action == android.view.MotionEvent.ACTION_UP) {
+//                val projection = projection
+//            }
+//            false
+//        }
+
 //        } else {
 //            val marker = Marker(this).apply {
 //                position = defaultPoint
