@@ -23,21 +23,33 @@ import com.esteban.turismoar.presentation.components.layouts.map.MapSection
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.FontWeight.Companion.Light
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.esteban.turismoar.domain.models.GeoPoint
 import com.esteban.turismoar.presentation.components.inputs.InputTextField
+import com.esteban.turismoar.ui.theme.DarkGreen
 import com.esteban.turismoar.ui.theme.Green
 import com.esteban.turismoar.ui.theme.White
+import com.google.android.filament.IndirectLight
 import io.github.sceneview.SceneView
+import io.github.sceneview.environment.Environment
 import io.github.sceneview.loaders.ModelLoader
+import io.github.sceneview.math.Position
+import io.github.sceneview.math.Position2
+import io.github.sceneview.math.Rotation
 import io.github.sceneview.model.ModelInstance
 import io.github.sceneview.node.ModelNode
 import io.github.sceneview.node.Node
+import androidx.core.graphics.toColorInt
+import com.google.android.filament.LightManager
+import io.github.sceneview.node.LightNode
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -109,7 +121,7 @@ fun MapScreen(navController: NavController) {
                     .padding(16.dp)
             ) {
                 item {
-                    geoPointActied?.let{
+                    geoPointActied?.let {
                         Row {
                             Text("Coord. X: ", fontWeight = FontWeight.Bold)
                             Text("${it.latitude}")
@@ -166,19 +178,33 @@ fun Model3DViewer(
     AndroidView(
         factory = { context ->
             SceneView(context).apply {
-                val modelDefault = mutableListOf<Node>().apply {
-                    add(
-                        ModelNode(
-                            modelInstance = modelLoader.createModelInstance(modelFile),
-                            scaleToUnits = 1f
-                        )
-                    )
+//                setBackgroundColor("#F5F5F5".toColorInt())
+
+//                val light = IndirectLight.Builder()
+//
+//                val lightNode = Node(engine = engine).apply {
+//                    Light = IndirectLight.Builder().build()
+//                }
+
+                val modelNode = ModelNode(
+                    modelInstance = modelLoader.createModelInstance(modelFile),
+                    scaleToUnits = 1.0f,
+//                    centerOrigin = Position(x = 0.0f, y = 0.0f, z = -5.0f)
+                ).apply {
+                    rotation = Rotation(x = 0f, y = 65f, z = 0f)
+                    position = Position(x = 0f, y = 0f, z = 0f)
                 }
-                this.addChildNodes(modelDefault)
+
+                addChildNode(modelNode)
+
+                cameraNode.position = Position(x = 0f, y = 0f, z = 3f)
+                cameraNode.lookAt(modelNode)
             }
         },
         modifier = Modifier
             .fillMaxWidth()
             .height(300.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .border(1.dp, DarkGreen, RoundedCornerShape(8.dp))
     )
 }
