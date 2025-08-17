@@ -3,6 +3,8 @@ package com.esteban.turismoar.presentation.components.layouts.map
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color.BLUE
+import android.view.MotionEvent
+import android.view.View
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -43,7 +45,7 @@ fun MapSection(
     onTouch: ((GeoPointCustom) -> Unit)? = null
 ) {
     var selectedPoint by remember { mutableStateOf<GeoPointCustom?>(null) }
-    Column{
+    Column {
         Box(modifier = Modifier.weight(3f)) {
             title?.let {
                 Text(
@@ -69,7 +71,7 @@ fun MapSection(
                 },
                 update = { mapView ->
                     geoPoints.firstOrNull()?.let {
-                        if (type == ""){
+                        if (type == "") {
                             mapView.controller.setCenter(GeoPoint(it.latitude, it.longitude))
                             mapView.controller.setZoom(zoomLevel)
                         }
@@ -122,23 +124,46 @@ fun createConfiguredMapView(
 
         controller.setCenter(defaultPoint)
 
-//        if (geoPoints.isNotEmpty()) {
-            if (type == "ruta") {
-                val polyline = Polyline().apply {
-                    outlinePaint.strokeWidth = 10f
-                    outlinePaint.color = BLUE
-                    setPoints(geoPoints.map { GeoPoint(it.latitude, it.longitude) })
-                }
-                overlays.add(polyline)
+        setOnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_UP) {
+                val geoPoint = projection.fromPixels(event.x.toInt(), event.y.toInt())
+//                val marker = Marker(this).apply {
+//                position = GeoPoint(geoPoint.latitude, geoPoint.longitude)
+//                title = "latitud: ${geoPoint.latitude}, longitud: ${geoPoint.longitude}"
+//                setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+//            }
+//            overlays.add(marker)
+                onTouch?.invoke(
+                    GeoPointCustom(
+                        latitude = geoPoint.latitude,
+                        longitude = geoPoint.longitude,
+                        name = "",
+                        model = "",
+                        description = ""
+                    )
+                )
             }
+            false
+        }
 
-            geoPoints.forEach {
-                if (it.name.isNotEmpty()) {
-                    val marker = Marker(this).apply {
-                        position = GeoPoint(it.latitude, it.longitude)
-                        title = it.name
-                        snippet = it.description
-                        setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+
+//        if (geoPoints.isNotEmpty()) {
+        if (type == "ruta") {
+            val polyline = Polyline().apply {
+                outlinePaint.strokeWidth = 10f
+                outlinePaint.color = BLUE
+                setPoints(geoPoints.map { GeoPoint(it.latitude, it.longitude) })
+            }
+            overlays.add(polyline)
+        }
+
+        geoPoints.forEach {
+            if (it.name.isNotEmpty()) {
+                val marker = Marker(this).apply {
+                    position = GeoPoint(it.latitude, it.longitude)
+                    title = it.name
+                    snippet = it.description
+                    setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
 
 //                        val uiRoute = uiRoutes.find { route -> route.title == it.name }
 //
@@ -147,25 +172,18 @@ fun createConfiguredMapView(
 //                            marker.icon = iconDrawable
 //                        }
 
-                        setOnMarkerClickListener { marker, _ ->
-                            marker.showInfoWindow()
-                            if (onMarkerSelected != null && type == "marcadorG"){
-                                onMarkerSelected.invoke(it)
-                            }
-                            true
+                    setOnMarkerClickListener { marker, _ ->
+                        marker.showInfoWindow()
+                        if (onMarkerSelected != null && type == "marcadorG") {
+                            onMarkerSelected.invoke(it)
                         }
+                        true
                     }
-
-                    overlays.add(marker)
                 }
-            }
 
-//        setOnClickListener { _, event ->
-//            if (event.action == android.view.MotionEvent.ACTION_UP) {
-//                val projection = projection
-//            }
-//            false
-//        }
+                overlays.add(marker)
+            }
+        }
 
 //        } else {
 //            val marker = Marker(this).apply {

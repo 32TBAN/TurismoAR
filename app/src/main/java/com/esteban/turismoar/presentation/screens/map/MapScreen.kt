@@ -24,17 +24,20 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material.icons.outlined.KeyboardArrowUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import com.esteban.turismoar.domain.models.GeoPoint
-import com.esteban.turismoar.presentation.components.layouts.InfoCard
+import com.esteban.turismoar.presentation.components.inputs.InputTextField
 import com.esteban.turismoar.ui.theme.Green
 import com.esteban.turismoar.ui.theme.White
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
+import io.github.sceneview.SceneView
+import io.github.sceneview.loaders.ModelLoader
+import io.github.sceneview.model.ModelInstance
+import io.github.sceneview.node.ModelNode
+import io.github.sceneview.node.Node
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,6 +53,15 @@ fun MapScreen(navController: NavController) {
 
     val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState)
 
+    var geoPointActied by remember { mutableStateOf<GeoPoint?>(null) }
+
+    LaunchedEffect(geoPointActied) {
+        if (geoPointActied != null) {
+            scaffoldState.bottomSheetState.expand()
+        } else {
+            scaffoldState.bottomSheetState.show()
+        }
+    }
     BottomSheetScaffold(
         topBar = {
             // Ocultar si la hoja está expandida completamente
@@ -97,7 +109,20 @@ fun MapScreen(navController: NavController) {
                     .padding(16.dp)
             ) {
                 item {
-                    if (selectPints.isEmpty()) {
+                    geoPointActied?.let{
+                        Row {
+                            Text("Coord. X: ", fontWeight = FontWeight.Bold)
+                            Text("${it.latitude}")
+                        }
+                        Row {
+                            Text("Coord. Y: ", fontWeight = FontWeight.Bold)
+                            Text("${it.longitude}")
+                        }
+                        InputTextField(placeholder = "Name")
+                        InputTextField(placeholder = "Description")
+                        Text("Update a  model 3D for the place")
+                        Model3DViewer(modelFile = "models/navigation_pin.glb")
+                    } ?: run {
                         Box(
                             modifier = Modifier.fillMaxWidth(),
                             contentAlignment = Alignment.Center
@@ -110,10 +135,6 @@ fun MapScreen(navController: NavController) {
                                 color = Green,
                             )
 
-                        }
-                    } else {
-                        selectPints.forEach { geoPoint ->
-                            InfoCard(geoPoint.name, geoPoint.description)
                         }
                     }
                 }
@@ -130,8 +151,34 @@ fun MapScreen(navController: NavController) {
             MapSection(
                 modifier = Modifier.fillMaxSize(),
                 zoomLevel = 15.5,
-
+                onTouch = { point ->
+                    geoPointActied = point
+                }
             )
         }
     }
+}
+
+@Composable
+fun Model3DViewer(
+    modelFile: String = "models/example.glb"
+) {
+    AndroidView(
+        factory = { context ->
+            SceneView(context).apply {
+                val modelDefault = mutableListOf<Node>().apply {
+                    add(
+                        ModelNode(
+                            modelInstance = modelLoader.createModelInstance(modelFile),
+                            scaleToUnits = 1f
+                        )
+                    )
+                }
+                this.addChildNodes(modelDefault)
+            }
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(300.dp)
+    )
 }
