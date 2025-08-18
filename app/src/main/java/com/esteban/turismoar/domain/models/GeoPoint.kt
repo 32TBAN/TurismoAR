@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class GeoPoint(
     var latitude: Double,
     var longitude: Double,
-    val name: String,
-    val model: String,
-    val description: String? = ""
+    var name: String,
+    var model: String,
+    var description: String? = ""
 )

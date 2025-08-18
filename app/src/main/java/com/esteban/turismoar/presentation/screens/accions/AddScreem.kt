@@ -28,6 +28,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,6 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.esteban.turismoar.domain.models.Route
 import com.esteban.turismoar.presentation.components.image.ImagePicker
 import com.esteban.turismoar.presentation.components.inputs.InputTextField
 import com.esteban.turismoar.presentation.components.inputs.Select
@@ -51,7 +56,7 @@ import com.esteban.turismoar.ui.theme.White
 fun AddScreen(navController: NavController) {
     val listState = rememberLazyListState()
     val isScrolled = listState.firstVisibleItemScrollOffset > 0
-
+    var route by remember { mutableStateOf<Route?>(null) }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -105,13 +110,14 @@ fun AddScreen(navController: NavController) {
                     fontSize = 15.sp,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
-                InputTextField(placeholder = "Name")
+                InputTextField(placeholder = "Title", onValueChange = { text -> route?.title = text })
                 var options = listOf("Rute", "Mark", "Event", "Business")
                 Select(options = options, placeholder = "Category")
-                InputTextField(placeholder = "Description")
+                InputTextField(placeholder = "Description", onValueChange = { text -> route?.description = text })
                 ImagePicker(title = "Edit image for the place", onImageSelected = { uri ->
                     //Todo Aquí puedes subir la imagen a Firebase Storage o guardarla
                     Log.d("ImagePicker", "Imagen seleccionada: $uri")
+                    route?.imageUrl = uri.toString()
                 })
                 MapPreview({
                     navController.navigate(MapScreen)
