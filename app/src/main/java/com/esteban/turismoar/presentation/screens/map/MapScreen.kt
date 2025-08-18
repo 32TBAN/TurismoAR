@@ -167,20 +167,23 @@ fun MapScreen(navController: NavController) {
                             selectPints.forEach {
                                 InfoCard(title = it.name, description = it.description)
                             }
-                        }
-                        Box(
-                            modifier = Modifier.fillMaxWidth(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                "Has not selected any points yet",
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 15.sp,
-                                modifier = Modifier.padding(16.dp),
-                                color = Green,
-                            )
+                        } else {
+                            Box(
+                                modifier = Modifier.fillMaxWidth(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    "Has not selected any points yet",
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 15.sp,
+                                    modifier = Modifier.padding(16.dp),
+                                    color = Green,
+                                )
 
+                            }
+                            Spacer(modifier = Modifier.height(18.dp))
                         }
+
                     }
                 }
             }
