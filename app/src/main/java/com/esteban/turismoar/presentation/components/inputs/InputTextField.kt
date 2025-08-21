@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.sp
 import com.esteban.turismoar.ui.theme.DarkGreen
 
 @Composable
-fun InputTextField(title: String? = null, placeholder: String, type: String? = null) {
+fun InputTextField(title: String? = null, placeholder: String, type: String? = null, onValueChange: (String) -> Unit) {
     var text by remember { mutableStateOf("") }
 
     val keyboardType = when (type) {
@@ -36,7 +36,9 @@ fun InputTextField(title: String? = null, placeholder: String, type: String? = n
         else -> KeyboardType.Text
     }
 
-    Column(modifier = Modifier.fillMaxWidth().padding(8.dp)){
+
+
+    Column(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)){
         title?.let {
             Text(
                 it,
@@ -52,6 +54,7 @@ fun InputTextField(title: String? = null, placeholder: String, type: String? = n
                     "email" -> newText.filter { it.isLetterOrDigit() || it == '@' || it == '.' }
                     else -> newText
                 }
+                onValueChange(text)
             },
             placeholder = { Text(placeholder) },
             modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp)),

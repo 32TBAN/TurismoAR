@@ -1,11 +1,16 @@
 package com.esteban.turismoar.presentation.components.buttons
 
+import android.annotation.SuppressLint
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -40,23 +45,87 @@ import com.esteban.turismoar.ui.theme.Blue
 import com.esteban.turismoar.ui.theme.Green
 import com.esteban.turismoar.ui.theme.White
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.TextButton
+import com.esteban.turismoar.ui.theme.LightGreen
+
+enum class VariantButton { Solid, Bordered, Text }
+enum class ColorButton {  Default, Primary, Secondary, Success, Warning, Danger }
 
 @Composable
 fun CustomButton(
     text: String,
     onClick: () -> Unit,
     icon: ImageVector? = null,
-    modifier: Modifier = Modifier
+    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier,
+    variant: VariantButton = VariantButton.Solid,
+    color: ColorButton = ColorButton.Default
 ) {
-    Button(
-        onClick = onClick,
-        modifier = modifier,
-        colors = ButtonDefaults.buttonColors(containerColor = DarkGreen)
-    ) {
-        icon?.let {
-            Icon(imageVector = icon, contentDescription = null, tint = Color.White)
+    // Colores de fondo según el tipo
+    val colorFill = when (color) {
+        ColorButton.Default -> White
+        ColorButton.Primary -> Blue
+        ColorButton.Secondary -> DarkGreen
+        ColorButton.Success -> Green
+        ColorButton.Warning -> Color.Yellow
+        ColorButton.Danger -> Color.Red
+    }
+
+    // Colores de contenido (texto / icono)
+    val colorContent = when (color) {
+        ColorButton.Default -> DarkGreen
+        else -> White
+    }
+
+    when (variant) {
+        VariantButton.Solid -> {
+            Button(
+                onClick = onClick,
+                modifier = modifier,
+                shape = RoundedCornerShape(8.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = colorFill,
+                    contentColor = colorContent
+                )
+            ) {
+                if (icon != null) {
+                    Icon(icon, contentDescription = null, modifier = Modifier.padding(end = 8.dp))
+                }
+                Text(text)
+            }
         }
-        Text(text = text, color = Color.White)
+
+        VariantButton.Bordered -> {
+            OutlinedButton(
+                onClick = onClick,
+                modifier = modifier,
+                shape = RoundedCornerShape(8.dp),
+                border = BorderStroke(1.dp, colorFill),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = colorFill
+                )
+            ) {
+                if (icon != null) {
+                    Icon(icon, contentDescription = null, modifier = Modifier.padding(end = 8.dp))
+                }
+                Text(text)
+            }
+        }
+
+        VariantButton.Text -> {
+            TextButton(
+                onClick = onClick,
+                modifier = modifier,
+                colors = ButtonDefaults.textButtonColors(
+                    contentColor = colorFill
+                )
+            ) {
+                if (icon != null) {
+                    Icon(icon, contentDescription = null, modifier = Modifier.padding(end = 8.dp))
+                }
+                Text(text)
+            }
+        }
     }
 }
 

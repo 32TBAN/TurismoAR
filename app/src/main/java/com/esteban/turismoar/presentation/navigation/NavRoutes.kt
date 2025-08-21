@@ -20,6 +20,9 @@ data class DetailScreen(val routeId: Int)
 @Serializable
 object AddScreen
 
+@Serializable
+object MapScreen
+
 val screens = listOf(
     HomeScreen,
     RoutesScreen,
@@ -35,5 +38,6 @@ val lables = listOf(
 val titlesTopBar = listOf(
     HomeScreen to "Inicio",
     RoutesScreen to "Explora las rutas turísticas",
-    HistoryScreen to "Historia local"
+    HistoryScreen to "Historia local",
+    MapScreen to "Map"
 )
