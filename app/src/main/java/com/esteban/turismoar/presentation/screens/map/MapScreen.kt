@@ -29,6 +29,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Save
 import androidx.compose.material.icons.outlined.Upload
 import androidx.compose.material3.*
@@ -165,7 +166,28 @@ fun MapScreen(navController: NavController) {
                     } ?: run {
                         if (selectPints.isNotEmpty()) {
                             selectPints.forEach {
-                                InfoCard(title = it.name, description = it.description)
+                                if (it.name.isNotEmpty()) {
+                                    Row(modifier = Modifier.fillMaxWidth()) {
+                                        Box(modifier = Modifier.weight(1f)) {
+                                            InfoCard(title = it.name, description = it.description)
+                                        }
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        IconButton(
+                                            onClick = { selectPints = selectPints - it },
+                                            modifier = Modifier
+                                                .fillMaxHeight()
+                                                .align(alignment = Alignment.CenterVertically)
+                                        ) {
+                                            Icon(
+                                                Icons.Outlined.Delete,
+                                                contentDescription = "Delete",
+                                                tint = Color.Red
+                                            )
+                                        }
+                                    }
+                                    Spacer(modifier = Modifier.height(8.dp))
+
+                                }
                             }
                         } else {
                             Box(
@@ -201,7 +223,8 @@ fun MapScreen(navController: NavController) {
                 zoomLevel = 15.5,
                 onTouch = { point ->
                     geoPointActied = point
-                }
+                },
+                geoPoints = selectPints
             )
         }
 //        if (showModelLoader.value) {

@@ -70,12 +70,45 @@ fun MapSection(
                     )
                 },
                 update = { mapView ->
-                    geoPoints.firstOrNull()?.let {
-                        if (type == "") {
-                            mapView.controller.setCenter(GeoPoint(it.latitude, it.longitude))
-                            mapView.controller.setZoom(zoomLevel)
+                    mapView.overlays.clear()
+
+                    if (type == "ruta") {
+                        val polyline = Polyline().apply {
+                            outlinePaint.strokeWidth = 10f
+                            outlinePaint.color = BLUE
+                            setPoints(geoPoints.map { GeoPoint(it.latitude, it.longitude) })
+                        }
+                        mapView.overlays.add(polyline)
+                    }
+
+                    // 🔹 Vuelve a dibujar todos los marcadores
+                    geoPoints.forEach {
+                        if (it.name.isNotEmpty()) {
+                            val marker = Marker(mapView).apply {
+                                position = GeoPoint(it.latitude, it.longitude)
+                                this.title = it.name
+                                snippet = it.description
+                                setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+
+                                setOnMarkerClickListener { marker, _ ->
+                                    marker.showInfoWindow()
+                                    if (onMarkerClick != null && type == "marcadorG") {
+                                        onMarkerClick.invoke(it)
+                                    }
+                                    true
+                                }
+                            }
+                            mapView.overlays.add(marker)
                         }
                     }
+
+                    // 🔹 Ajustar cámara al último punto agregado (opcional)
+                    geoPoints.lastOrNull()?.let {
+                        mapView.controller.setCenter(GeoPoint(it.latitude, it.longitude))
+                        mapView.controller.setZoom(zoomLevel)
+                    }
+
+                    mapView.invalidate()
                 }
             )
         }
