@@ -72,16 +72,8 @@ fun MapSection(
                 update = { mapView ->
                     mapView.overlays.clear()
 
-                    if (type == "ruta") {
-                        val polyline = Polyline().apply {
-                            outlinePaint.strokeWidth = 10f
-                            outlinePaint.color = BLUE
-                            setPoints(geoPoints.map { GeoPoint(it.latitude, it.longitude) })
-                        }
-                        mapView.overlays.add(polyline)
-                    }
 
-                    // 🔹 Vuelve a dibujar todos los marcadores
+                    // Se Vuelve a dibujar todos los marcadores
                     geoPoints.forEach {
                         if (it.name.isNotEmpty()) {
                             val marker = Marker(mapView).apply {
@@ -102,11 +94,20 @@ fun MapSection(
                         }
                     }
 
-                    // 🔹 Ajustar cámara al último punto agregado (opcional)
-                    geoPoints.lastOrNull()?.let {
-                        mapView.controller.setCenter(GeoPoint(it.latitude, it.longitude))
-                        mapView.controller.setZoom(zoomLevel)
+                    if (type == "ruta") {
+                        val polyline = Polyline().apply {
+                            outlinePaint.strokeWidth = 10f
+                            outlinePaint.color = BLUE
+                            setPoints(geoPoints.map { GeoPoint(it.latitude, it.longitude) })
+                        }
+                        mapView.overlays.add(polyline)
                     }
+
+                    // La cámara al último punto agregado
+//                    geoPoints.lastOrNull()?.let {
+//                        mapView.controller.setCenter(GeoPoint(it.latitude, it.longitude))
+//                        mapView.controller.setZoom(zoomLevel)
+//                    }
 
                     mapView.invalidate()
                 }
@@ -158,7 +159,7 @@ fun createConfiguredMapView(
         controller.setCenter(defaultPoint)
 
         setOnTouchListener { _, event ->
-            if (event.action == MotionEvent.ACTION_UP) {
+            if (event.action == MotionEvent.ACTION_UP && event.eventTime - event.downTime > 1000) {
                 val geoPoint = projection.fromPixels(event.x.toInt(), event.y.toInt())
 //                val marker = Marker(this).apply {
 //                position = GeoPoint(geoPoint.latitude, geoPoint.longitude)

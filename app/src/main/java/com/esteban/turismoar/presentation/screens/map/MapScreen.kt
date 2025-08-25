@@ -145,6 +145,10 @@ fun MapScreen(navController: NavController) {
                                 onClick = {
                                     selectPints = selectPints + geoPointActied!!
                                     geoPointActied = null
+
+                                    navController.previousBackStackEntry
+                                        ?.savedStateHandle
+                                        ?.set("selectedPoints", selectPints)
                                 },
                                 modifier = Modifier.weight(1f),
                                 color = ColorButton.Success,

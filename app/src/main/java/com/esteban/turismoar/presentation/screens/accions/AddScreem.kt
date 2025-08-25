@@ -28,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,6 +42,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.esteban.turismoar.domain.models.GeoPoint
 import com.esteban.turismoar.domain.models.Route
 import com.esteban.turismoar.presentation.components.image.ImagePicker
 import com.esteban.turismoar.presentation.components.inputs.InputTextField
@@ -57,10 +59,16 @@ fun AddScreen(navController: NavController) {
     val listState = rememberLazyListState()
     val isScrolled = listState.firstVisibleItemScrollOffset > 0
     var route by remember { mutableStateOf<Route?>(null) }
+
+    val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
+    val selectedPoints by savedStateHandle?.getStateFlow("selectedPoints", emptyList<GeoPoint>())
+        ?.collectAsState() ?: remember { mutableStateOf(emptyList<GeoPoint>()) }
     Scaffold(
         topBar = {
             TopAppBar(
-                modifier = Modifier.background(White).border(1.dp, White),
+                modifier = Modifier
+                    .background(White)
+                    .border(1.dp, White),
                 title = {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -79,7 +87,9 @@ fun AddScreen(navController: NavController) {
                                 fontSize = 20.sp
                             )
                         }
-                        Spacer(modifier = Modifier.width(48.dp).border(1.dp, Green))
+                        Spacer(modifier = Modifier
+                            .width(48.dp)
+                            .border(1.dp, Green))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -110,10 +120,14 @@ fun AddScreen(navController: NavController) {
                     fontSize = 15.sp,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
-                InputTextField(placeholder = "Title", onValueChange = { text -> route?.title = text })
+                InputTextField(
+                    placeholder = "Title",
+                    onValueChange = { text -> route?.title = text })
                 var options = listOf("Rute", "Mark", "Event", "Business")
                 Select(options = options, placeholder = "Category")
-                InputTextField(placeholder = "Description", onValueChange = { text -> route?.description = text })
+                InputTextField(
+                    placeholder = "Description",
+                    onValueChange = { text -> route?.description = text })
                 ImagePicker(title = "Edit image for the place", onImageSelected = { uri ->
                     //Todo Aquí puedes subir la imagen a Firebase Storage o guardarla
                     Log.d("ImagePicker", "Imagen seleccionada: $uri")
@@ -121,22 +135,23 @@ fun AddScreen(navController: NavController) {
                 })
                 MapPreview({
                     navController.navigate(MapScreen)
-                }, title = "Edit map for the place")
+                }, title = "Edit map for the place", geoPoints = selectedPoints)
             }
         }
     }
 }
 
 @Composable
-fun MapPreview(onClick: () -> Unit, title: String? = null) {
+fun MapPreview(onClick: () -> Unit, title: String? = null, geoPoints: List<GeoPoint>? = emptyList()) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(140.dp)
             .clip(RoundedCornerShape(8.dp))
-            .background(Color.LightGray).border(1.dp, DarkGreen, RoundedCornerShape(8.dp))
+            .background(Color.LightGray)
+            .border(1.dp, DarkGreen, RoundedCornerShape(8.dp))
     ) {
-        MapSection(zoomLevel = 15.5, controls = false)
+        MapSection(zoomLevel = 15.5, controls = false, geoPoints = geoPoints!!)
         Box(
             modifier = Modifier
                 .matchParentSize()
