@@ -44,14 +44,17 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.esteban.turismoar.domain.models.GeoPoint
 import com.esteban.turismoar.domain.models.Route
+import com.esteban.turismoar.presentation.components.buttons.CustomButton
 import com.esteban.turismoar.presentation.components.image.ImagePicker
 import com.esteban.turismoar.presentation.components.inputs.InputTextField
 import com.esteban.turismoar.presentation.components.inputs.Select
 import com.esteban.turismoar.presentation.components.layouts.map.MapSection
 import com.esteban.turismoar.presentation.navigation.MapScreen
+import com.esteban.turismoar.presentation.viewmodels.home.RouteViewModel
 import com.esteban.turismoar.ui.theme.DarkGreen
 import com.esteban.turismoar.ui.theme.Green
 import com.esteban.turismoar.ui.theme.White
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,9 +63,8 @@ fun AddScreen(navController: NavController) {
     val isScrolled = listState.firstVisibleItemScrollOffset > 0
     var route by remember { mutableStateOf<Route?>(null) }
 
-    val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
-    val selectedPoints by savedStateHandle?.getStateFlow("selectedPoints", emptyList<GeoPoint>())
-        ?.collectAsState() ?: remember { mutableStateOf(emptyList<GeoPoint>()) }
+    val viewModel: RouteViewModel = koinViewModel()
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -135,7 +137,11 @@ fun AddScreen(navController: NavController) {
                 })
                 MapPreview({
                     navController.navigate(MapScreen)
-                }, title = "Edit map for the place", geoPoints = selectedPoints)
+                }, title = "Edit map for the place", geoPoints = viewModel.selectedGeoPoints as List<GeoPoint>?)
+                Row {
+                    CustomButton("Save",{})
+                    CustomButton("Cancel",{})
+                }
             }
         }
     }

@@ -39,7 +39,7 @@ fun MapSection(
     geoPoints: List<GeoPointCustom> = emptyList(),
     zoomLevel: Double = 15.7,
     controls: Boolean = true,
-    type: String = "",
+    type: String = "rute",
     @SuppressLint("ModifierParameter") modifier: Modifier = Modifier,
     onMarkerClick: ((GeoPointCustom) -> Unit)? = null,
     onTouch: ((GeoPointCustom) -> Unit)? = null
@@ -94,7 +94,7 @@ fun MapSection(
                         }
                     }
 
-                    if (type == "ruta") {
+                    if (type == "rute") {
                         val polyline = Polyline().apply {
                             outlinePaint.strokeWidth = 10f
                             outlinePaint.color = BLUE

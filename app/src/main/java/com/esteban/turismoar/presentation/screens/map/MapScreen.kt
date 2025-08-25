@@ -52,6 +52,8 @@ import com.esteban.turismoar.presentation.components.buttons.ColorButton
 import com.esteban.turismoar.presentation.components.buttons.CustomButton
 import com.esteban.turismoar.presentation.components.buttons.VariantButton
 import com.esteban.turismoar.presentation.components.layouts.InfoCard
+import com.esteban.turismoar.presentation.viewmodels.home.RouteViewModel
+import org.koin.androidx.compose.koinViewModel
 import java.io.File
 import java.io.FileOutputStream
 
@@ -62,7 +64,9 @@ fun MapScreen(navController: NavController) {
         initialValue = SheetValue.PartiallyExpanded,
         skipHiddenState = false
     )
-    var selectPints by remember { mutableStateOf(listOf<GeoPoint>()) }
+    val viewModel: RouteViewModel = koinViewModel()
+
+    var selectPints = viewModel.selectedGeoPoints
     val listState = rememberLazyListState()
     val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState)
     var geoPointActied by remember { mutableStateOf<GeoPoint?>(null) }

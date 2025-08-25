@@ -29,6 +29,9 @@ class RouteViewModel(
     private val _selectedRoute = MutableStateFlow<Route?>(null)
     val selectedRoute: StateFlow<Route?> = _selectedRoute.asStateFlow()
 
+    private var _selectedGeoPoints = MutableStateFlow<List<GeoPoint>>(emptyList())
+    var selectedGeoPoints: StateFlow<List<GeoPoint>> = _selectedGeoPoints.asStateFlow()
+
     init {
         viewModelScope.launch {
             getAllRoutesUseCase().collect {
